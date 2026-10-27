@@ -40,6 +40,7 @@ Each topic has one home skill. Others get one line and a pointer. Current owners
 | `@directus/sdk` usage | `directus-sdk` |
 | Live Preview, Visual Editor, reading drafts in a frontend | `directus-visual-editing` |
 | Extensions | `directus-extensions` |
+| Deploying, configuring, scaling, and backing up an instance | `directus-self-hosting` |
 | Version-to-version changes | `directus-upgrade` |
 
 ## Frontmatter

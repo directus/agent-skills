@@ -118,6 +118,8 @@ the server.
   out of the allowed fields. **Licensed.**
 - Unrestricted create or update on `directus_users`, `directus_roles`, `directus_policies`, `directus_access`, or
   `directus_permissions` is a privilege escalation path: the holder can make themselves admin.
+- `POST /users/invite` returns 204 even when the caller lacks permission, and creates nothing. Check that the user
+  exists afterwards (`directus` skill, `users-and-signup.md`).
 
 ## Sources
 

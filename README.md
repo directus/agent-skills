@@ -9,7 +9,7 @@
 
 <p align="center">
   Teach your AI coding agent to work with Directus: the API and MCP server, Flows, Insights, access control, content modeling,
-  Environment Sync, the SDK and visual editing, extensions, and upgrades.
+  Environment Sync, the SDK and visual editing, extensions, self-hosting, and upgrades.
 </p>
 
 <p align="center">
@@ -36,6 +36,7 @@ against **Directus 12.5.1**.
 | [`directus-sdk`](skills/directus-sdk)                           | Building frontends and apps with `@directus/sdk`: setup, auth, typing, Next.js / Nuxt / Astro / SvelteKit data fetching                                                                          |
 | [`directus-visual-editing`](skills/directus-visual-editing)     | Wiring a site to Live Preview, the Visual Editor, and content versions with `@directus/visual-editing`: Directus config, CSP, draft reads, editable page builder blocks, and safe preview tokens |
 | [`directus-extensions`](skills/directus-extensions)             | Building extensions: picking a type, scaffolding, app and API extension APIs, sandboxing, and publishing to the marketplace                                                                      |
+| [`directus-self-hosting`](skills/directus-self-hosting) | Deploying and running Directus: Docker Compose, configuration, file storage and email, scaling past one instance, backups, and what differs on Directus Cloud |
 | [`directus-upgrade`](skills/directus-upgrade)                   | Upgrading a project across versions (v9 to 12.x), with the breaking changes and how to find affected code                                                                                        |
 
 ## Install

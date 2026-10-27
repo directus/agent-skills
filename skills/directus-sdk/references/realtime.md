@@ -4,7 +4,7 @@ The WebSocket message protocol (message types, `items` actions, server events) b
 
 ## Server prerequisites
 
-- Self-hosted: `WEBSOCKETS_ENABLED=true` (default `false`). Directus Cloud has it on.
+- Self-hosted: `WEBSOCKETS_ENABLED=true` (default `false`). On Directus Cloud, check `GET /server/info` (`websocket`).
 - Path: `WEBSOCKETS_REST_PATH`, default `/websocket`.
 - Server auth mode `WEBSOCKETS_REST_AUTH`: `public`, `handshake` (default), or `strict`. The client `authMode` must match.
 - Unauthenticated connections close after `WEBSOCKETS_REST_AUTH_TIMEOUT` seconds (default 10 in source; the configuration docs say 30).

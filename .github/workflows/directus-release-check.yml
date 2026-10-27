@@ -1,0 +1,43 @@
+name: Directus release check
+
+# Opens an issue when Directus ships a release newer than the version the skills are verified against.
+
+on:
+  schedule:
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare the latest Directus release with the skills
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(gh release view -R directus/directus --json tagName --jq .tagName | sed 's/^v//')
+          verified=$(grep -h "directus-version:" skills/*/SKILL.md | sed -E "s/.*['\"]([0-9.]+)['\"].*/\1/" | sort -V | head -1)
+          echo "latest: $latest, skills verified against: $verified"
+          [ "$latest" = "$verified" ] && exit 0
+          [ "$(printf '%s\n%s\n' "$latest" "$verified" | sort -V | tail -1)" = "$verified" ] && exit 0
+
+          title="Directus $latest released (skills verified against $verified)"
+          if gh issue list --state open --search "\"$title\" in:title" --json number --jq 'length' | grep -qv '^0$'; then
+            echo "issue already open"
+            exit 0
+          fi
+
+          gh issue create --title "$title" --body "$(cat <<EOF
+          Directus [$latest](https://github.com/directus/directus/releases/tag/v$latest) is out. The skills are verified against $verified.
+
+          - [ ] Read the release notes and breaking changes between $verified and $latest
+          - [ ] Add the new minor to \`skills/directus-upgrade/references/12.x-minors.md\` (or a new hop file)
+          - [ ] Re-check the traps in skills that touch what changed
+          - [ ] Bump \`directus-version\` in every \`SKILL.md\` and add a changeset
+          EOF
+          )"

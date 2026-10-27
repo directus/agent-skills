@@ -21,8 +21,9 @@ user or the existing schema says otherwise.
 3. **Check the license tier.** Junction and `*_translations` collections count toward the collection limit. Plan the
    total before you build. See [conventions.md](references/conventions.md#plan-limits).
 4. **Show the plan, then build.** List the collections, fields, and relations you'll create. If the user asked for
-   them, proceed. Get explicit approval before anything destructive: deleting or renaming fields or collections,
-   changing a field's type, or bulk-editing data. Deleting drops the column and its data.
+   them, proceed. Get explicit approval before anything destructive: deleting fields or collections, changing a
+   field's type, or bulk-editing data. Deleting drops the column and its data. There is no rename: PATCHing a new name
+   returns 200 and changes nothing. Renames are add, copy, drop ([schema-changes.md](references/schema-changes.md)).
 
 ## Critical traps
 
@@ -55,6 +56,9 @@ user or the existing schema says otherwise.
 | Multilingual content: `languages`, `*_translations` junctions, the translations interface                              | [references/translations.md](references/translations.md)                   |
 | URLs (permalink vs slug vs nested pages), SEO fields (JSON vs shared `seo` collection), redirects                      | [references/routing-and-seo.md](references/routing-and-seo.md)             |
 | Applying schema: MCP vs REST vs snapshot/apply vs Environment Sync (`d6s`) vs templates, dev to prod, seeding          | [references/applying-schema.md](references/applying-schema.md)             |
+| Indexes: which fields to index, FK columns, `is_indexed` / `is_unique`, composite indexes via migrations               | [references/indexes.md](references/indexes.md)                             |
+| Changing a schema that holds data: rename, type change, text to relation, split/merge, required/unique, delete         | [references/schema-changes.md](references/schema-changes.md)               |
+| Starting a new Directus + framework site from a starter: pick, run, apply, frontend env, first checks                  | [references/new-project.md](references/new-project.md)                     |
 
 ## Reference implementation
 

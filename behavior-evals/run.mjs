@@ -50,6 +50,7 @@ const SEEDS = {
 	'flows-newsletter-fanout': ['subscribers'],
 	'access-editor-role': ['posts'],
 	'insights-author-dashboard': ['posts', 'authors'],
+	'model-indexes': ['posts', 'authors'],
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));

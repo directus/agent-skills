@@ -1,6 +1,6 @@
 ---
 name: directus
-description: 'Use when calling a running Directus instance over REST, GraphQL, WebSockets, or its built-in MCP server (/mcp): reading and writing items, fields/filter/deep/sort query params, filter syntax, relational writes, login and tokens, reading error codes, file uploads and /assets transforms, realtime, the versions API and promote, and MCP setup. Not for Flows (directus-flows), Insights dashboards (directus-insights), roles and permissions (directus-access-control), schema design (directus-content-modeling), @directus/sdk code (directus-sdk), Live Preview, Visual Editor, or reading drafts in a frontend (directus-visual-editing), extensions (directus-extensions), or upgrades (directus-upgrade).'
+description: 'Use when calling a running Directus instance over REST, GraphQL, WebSockets, or its built-in MCP server (/mcp): reading and writing items, fields/filter/deep/sort query params, filter syntax, relational writes, login and tokens, reading error codes, file uploads and /assets transforms, realtime, the versions API and promote, MCP setup, member registration, CSV/JSON import and export, revisions and restore, and AI settings. Not for Flows (directus-flows), Insights dashboards (directus-insights), roles and permissions (directus-access-control), schema design (directus-content-modeling), @directus/sdk code (directus-sdk), Live Preview, Visual Editor, or reading drafts in a frontend (directus-visual-editing), extensions (directus-extensions), or upgrades (directus-upgrade).'
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -68,6 +68,11 @@ _Verified against Directus v12.5.1. If the instance behaves differently, trust t
 | WebSockets or GraphQL subscriptions, auth on the socket, CRUD over the socket                | [references/realtime.md](references/realtime.md)                     |
 | Versions API: `version` param, save, compare, promote                                        | [references/content-versioning.md](references/content-versioning.md) |
 | Using GraphQL instead of REST                                                                | [references/graphql.md](references/graphql.md)                       |
+| Slow queries: `fields` and relation cost, limits and paging, counts, `search`, data caching  | [references/performance.md](references/performance.md)               |
+| Member signup: `/users/register`, email verification, password reset, invites, seats         | [references/users-and-signup.md](references/users-and-signup.md)     |
+| Bulk import (CSV/JSON, `/utils/import`), upsert by slug, export, migrating from another CMS  | [references/import-and-export.md](references/import-and-export.md)   |
+| Activity log, revisions, who changed what, reverting, recovering deleted items, retention    | [references/audit-and-restore.md](references/audit-and-restore.md)   |
+| AI Assistant, AI Translations, provider keys, which AI features need a license               | [references/ai-settings.md](references/ai-settings.md)               |
 
 **Related skills:** `directus-flows`, `directus-access-control`, `directus-content-modeling`, `directus-sdk`,
 `directus-visual-editing`, `directus-extensions`, `directus-environment-sync` (promoting schema and config with `d6s`),

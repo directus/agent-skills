@@ -51,11 +51,11 @@ system endpoints too.
 | Param                    | Notes                                                                                                                                     |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `fields`                 | `title,author.name`, `*`, `*,images.*`. Send it every time.                                                                               |
-| `search`                 | All string and text fields in the collection, not related fields. Slower than a filter.                                                   |
+| `search`                 | String and text fields (numbers or UUIDs when the term is one), not related, concealed, or `meta.searchable: false` fields. Slower than a filter.                                                   |
 | `limit`                  | Default `100` (`QUERY_LIMIT_DEFAULT`). `-1` = all, capped by `QUERY_LIMIT_MAX` if set.                                                    |
 | `offset` / `page`        | `page` starts at 1 and multiplies `limit`. Use a stable `sort`.                                                                           |
 | `aggregate` / `groupBy`  | `aggregate[count]=*`, `groupBy[]=author&groupBy[]=year(publish_date)`                                                                     |
-| `deep`                   | Query params on nested relations, prefixed with `_`: `_filter`, `_sort`, `_limit`, `_offset`, `_page`, `_search`. Not `fields` or `deep`. |
+| `deep`                   | Query params on nested relations, prefixed with `_`: `_filter`, `_sort`, `_limit`, `_offset`, `_page`, `_search`. Not `fields` or `deep`. Nested to-many lists stop at 100 per parent unless `_limit: -1` ([performance.md](performance.md)). |
 | `alias`                  | `alias[nl]=translations&deep[nl][_filter][code][_eq]=nl-NL`. No relational paths or dots in the alias.                                    |
 | `version` / `versionRaw` | See [content-versioning.md](content-versioning.md).                                                                                       |
 | `backlink`               | `backlink=false` drops reverse relations from `*.*` expansion only.                                                                       |

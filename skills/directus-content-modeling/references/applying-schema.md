@@ -74,7 +74,8 @@ and wants PostgreSQL (don't extract from SQLite and apply to Postgres). v0.5.0+ 
 - **Don't create tables directly in the database** and expect them to behave. Directus sees unregistered tables but
   they have no metadata (interfaces, relations, permissions). If you must, register them afterwards
   (`POST /collections` with the existing name) and create relations through Directus.
-- **Don't change a field's `type` on a column with data** without a backup. Some conversions fail or truncate.
+- **Don't change a field's `type` on a column with data** without a backup. `type` without a `schema` object is
+  silently ignored, Postgres fails or truncates, and SQLite keeps mixed data. Safe paths: [schema-changes.md](schema-changes.md).
 - **Don't delete and recreate a field to "fix" it.** That drops the column's data. `PATCH` the `meta` instead.
 
 ## Sources
