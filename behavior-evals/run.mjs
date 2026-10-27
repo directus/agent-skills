@@ -46,6 +46,10 @@ const SEEDS = {
 	'flows-publish': ['posts'],
 	'flows-duplicate': ['posts'],
 	insights: ['posts'],
+	'flows-publish-guard': ['posts'],
+	'flows-newsletter-fanout': ['subscribers'],
+	'access-editor-role': ['posts'],
+	'insights-author-dashboard': ['posts', 'authors'],
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));

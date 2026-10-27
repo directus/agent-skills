@@ -75,7 +75,8 @@ Shape: `module.exports = async function (data) { ... }`, returning the result. F
 - `data` is the whole data chain. `process.env` holds only allow-listed `$env` values.
 - `console.log` writes to the **server** log, not the flow log. Return what you want to inspect.
 - Limits: `FLOWS_RUN_SCRIPT_TIMEOUT` (default `10000` ms) and `FLOWS_RUN_SCRIPT_MAX_MEMORY` (default `32` MB).
-- Return JSON-serializable data. Throwing takes the reject path.
+- Return JSON-serializable data. Throwing takes the reject path; if that ends a filter flow, the caller gets a 500.
+  Return a flag and branch to `throw-error` instead.
 
 ## Request
 

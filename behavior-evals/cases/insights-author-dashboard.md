@@ -1,0 +1,1 @@
+Build an Insights dashboard where someone picks an author and a date range, and the panels update to show that author's number of published posts and a chart of their posts per week within that range.

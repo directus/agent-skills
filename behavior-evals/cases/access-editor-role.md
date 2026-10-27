@@ -1,0 +1,1 @@
+Create an "Editor" role for our content team. Editors log into the Studio and can create, read, and update posts, but they must not be able to delete posts, and they must not be able to change users or project settings. Create a test user editor@example.com with password editor-password in that role so we can try it.

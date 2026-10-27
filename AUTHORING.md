@@ -86,6 +86,11 @@ _when_ to use which tool, what order, and the traps the tool descriptions don't 
 `items`, `collections`, `fields`, `relations`, `flows`, `operations`, `trigger-flow`, `files`, `folders`, `assets`,
 `system-prompt`).
 
+## Changesets
+
+Add one per PR that changes what an agent sees: `npm run changeset`. Patch for fixes, minor for new skills or
+references, major for renamed or removed skills. Details in [.changeset/README.md](.changeset/README.md).
+
 ## Voice
 
 Plain, short, direct. Imperative ("Send `fields` on every read"). Tables for lookups, code blocks for anything an

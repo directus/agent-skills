@@ -1,0 +1,9 @@
+{
+	"$schema": "../node_modules/@changesets/config/schema.json",
+	"changelog": ["@changesets/changelog-github", { "repo": "directus/agent-skills" }],
+	"commit": false,
+	"privatePackages": { "version": true, "tag": true },
+	"access": "restricted",
+	"baseBranch": "main",
+	"ignore": []
+}

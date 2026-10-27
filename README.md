@@ -36,7 +36,7 @@ against **Directus 12.5.1**.
 ### Any agent (skills CLI)
 
 ```bash
-npx skills add directus/agent-skills
+npx skills@latest add directus/agent-skills
 ```
 
 Installs into Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, and other agents that support the standard.
@@ -136,7 +136,15 @@ Results land in `behavior-evals/results/` (git-ignored). Add a case as `cases/<n
 ## Contributing
 
 Read [AUTHORING.md](AUTHORING.md). Keep `SKILL.md` short, put depth in `references/`, and ground every claim in the
-Directus source or docs, not memory. Run `node scripts/validate.mjs --strict` before opening a PR (CI runs the same).
+Directus source or docs, not memory. Run `npm run validate` before opening a PR (CI runs the same), and add a changeset (`npm run changeset`) for any
+change an agent would notice. See [.changeset/README.md](.changeset/README.md) for which bump to pick.
+
+## Releases
+
+Versions and `CHANGELOG.md` come from [Changesets](https://github.com/changesets/changesets). Merging to `main` opens a
+"Version skills" PR; merging it bumps the version in `package.json` and both plugin manifests, writes the changelog,
+and tags `vX.Y.Z` with a GitHub release. `npx skills` and the Claude Code plugin install from the repo, so there's no
+npm publish.
 
 ## License
 

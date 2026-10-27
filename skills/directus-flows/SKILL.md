@@ -38,6 +38,8 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
   webhook, nobody (no checks) for a schedule. Pick `$full` or a role on purpose.
 - **In a filter event flow, a final reject cancels the save.** A `condition` that doesn't match is a reject. Link every
   "nothing to do" branch to a `log` operation so the write still goes through.
+- **To block a save with a clear error, end the branch with `throw-error`** (`status: "400"`, your `code` and
+  `message`). A throw in Run Script reaches the caller as a 500; a failed `condition` as a generic 400.
 - **Event scopes need `collections`.** `items.create` with no `collections` registers nothing, silently.
 - **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow through
   a parent flow or a temporary manual wrapper.

@@ -1,0 +1,1 @@
+Editors keep publishing empty posts. Block publishing a post that has no content: if a save would make a post published while its content is empty, reject the save with a clear error message. Every other save (editing drafts, editing published posts that have content) must keep working. Use a Directus Flow.

@@ -13,7 +13,8 @@ Operation links need UUIDs that only exist after creation, so build in this orde
 1. **Create the flow** as `inactive` while you wire it: `name`, `trigger`, `options`, `accountability: "all"` (logs),
    `status: "inactive"`. Options go inside `options`, not beside them.
 2. **Create each operation** with `flow`, a unique `key` (snake_case, it becomes the data chain name), `type`,
-   `options`, `resolve: null`, `reject: null`.
+   `options`, `resolve: null`, `reject: null`. Over REST, `position_x` and `position_y` are required too (any
+   integers, e.g. `19`, `37`, `55` along one row). The MCP `operations` tool works them out from the links.
 3. **Link them:** patch each operation's `resolve` / `reject` to the next operation's **UUID**, not its key.
 4. **Set the entry point:** patch the flow's `operation` to the first operation's UUID.
 5. **Activate:** patch `status: "active"`. This is the step that counts against the license, and the moment an event
@@ -29,12 +30,13 @@ curl -s -X POST "$URL/flows" -H "Authorization: Bearer $TOKEN" -H 'Content-Type:
 # 4. PATCH /flows/<flow-id> {"operation": "<first-uuid>"}, 5. PATCH /flows/<flow-id> {"status": "active"}
 ```
 
-Omit `position_x` / `position_y`; the Studio lays the graph out from the links. Read the result back with
+Read the result back with
 `GET /flows/<id>?fields=*,operations.*` and check every link. Deleting a flow deletes its operations. Deleting one operation leaves a gap: relink its neighbors first.
 
 ## With MCP
 
-- `flows` and `operations` are admin-only tools. Same build order as above.
+- `flows` and `operations` are admin-only tools. Same build order as above, but leave out positions: the tool lays
+  out the graph from the links.
 - `trigger-flow` (active manual flows only): read the flow with `flows` first and pass the full definition. Its `data`
   is merged into `$trigger.body` with `collection` and `keys`.
 - Flow folders are `folders` with `type: "flows"`.
@@ -100,4 +102,5 @@ so you're not writing a revision with the full payload on every save.
 - https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/flows.ts
 - https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/flows/prompt.md
 - https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/operations/prompt.md
+- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/operations/position.ts
 - https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/trigger-flow/index.ts
