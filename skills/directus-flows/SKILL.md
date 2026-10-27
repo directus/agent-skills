@@ -3,7 +3,7 @@ name: directus-flows
 description: "Use when automating Directus with Flows: event, webhook, schedule, and manual triggers, the data chain and {{ }} templates, operations (condition, item CRUD, Run Script, request, mail), reusable utility flows and loops, and building or debugging flows over the API or MCP. Not for hook or operation extensions (directus-extensions) or promoting flows (directus-environment-sync)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus Flows
@@ -15,7 +15,7 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 
 1. **Read what exists.** `GET /flows?fields=id,name,status,trigger,options,operation&limit=-1`. Reuse or extend an
    existing utility flow before building a new one.
-2. **Check the license.** Active flows count toward the limit (5 on the unlicensed core tier), and that includes every
+2. **Check the license.** Active flows count toward the core-tier limit (`GET /license`), and that includes every
    utility flow. Inactive flows don't count. See
    [utility-flows-and-loops.md](references/utility-flows-and-loops.md#licensing).
 3. **Ask where it's hosted** before suggesting a hook instead. Directus Cloud runs custom extensions only on Enterprise.
@@ -30,9 +30,11 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
   `body`.
 - **Child failures don't fail the parent.** The parent's `trigger` operation resolves with whatever the child returns
   (`null` if the child is inactive or missing). Return a status from the child and check it with a `condition`.
-- **`mail` never fails on delivery.** It queues the send and resolves; SMTP errors only reach the server log. `to` with
+- **`mail` doesn't fail on delivery.** It queues the send and resolves; SMTP errors only reach the server log (it
+  rejects only when the flow mail rate limit is on and spent). `to` with
   several addresses sends one email everyone can see. Loop for one email per person.
-- **`request` rejects on non-2xx.** The reject path gets `{ status, statusText, headers, data }`.
+- **`request` rejects on non-2xx** with `{ status, statusText, headers, data }`. Network errors and timeouts reject
+  with no `status`.
 - **Item operations default to `emitEvents: false`.** Writes from a flow don't fire other flows or hooks unless you turn
   it on. Turning it on in a flow that listens to the same collection loops forever.
 - **Permissions follow the trigger.** `permissions: "$trigger"` (the default) uses the caller: public for an anonymous

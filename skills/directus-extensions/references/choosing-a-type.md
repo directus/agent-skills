@@ -24,7 +24,7 @@ Flows and Run Script belong to the `directus-flows` skill. Run Script can't impo
 
 ## Types
 
-Types come from `@directus/constants` at v12.5.1.
+Types come from `@directus/constants` at v12.6.0 (`richtext` is new in 12.6.0).
 
 | Type        | Runs in | What it is                                                                      | Define function                             |
 | ----------- | ------- | ------------------------------------------------------------------------------- | ------------------------------------------- |
@@ -34,6 +34,7 @@ Types come from `@directus/constants` at v12.5.1.
 | `module`    | Studio  | Top-level page in the module bar, with its own routes                           | `defineModule`                              |
 | `panel`     | Studio  | Widget on an Insights dashboard                                                 | `definePanel`                               |
 | `theme`     | Studio  | Named set of theme rules (no custom CSS)                                        | `defineTheme`                               |
+| `richtext`  | Studio  | Tiptap nodes, marks, and toolbar buttons for the WYSIWYG interface (12.6.0+)    | `defineRichText`                            |
 | `hook`      | API     | Listener: `filter`, `action`, `init`, `schedule`, `embed`                       | `defineHook`                                |
 | `endpoint`  | API     | Express router mounted at `/<id>`                                               | `defineEndpoint`                            |
 | `operation` | Both    | A Flows step: `app` half (options UI) + `api` half (handler), same `id` in both | `defineOperationApp` + `defineOperationApi` |
@@ -66,7 +67,7 @@ Types come from `@directus/constants` at v12.5.1.
 - https://directus.com/docs/guides/extensions/bundles
 - https://directus.com/docs/guides/flows/operations
 - https://directus.com/docs/cloud/configuration/custom-extensions
-- https://github.com/directus/directus/blob/v12.5.1/packages/constants/src/extensions.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/index.ts
-- https://github.com/directus/directus/tree/v12.5.1/api/src/operations (built-in operation ids)
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/fields/settings.yaml (`theme_light_overrides`, `custom_css`)
+- https://github.com/directus/directus/blob/v12.6.0/packages/constants/src/extensions.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/index.ts
+- https://github.com/directus/directus/tree/v12.6.0/api/src/operations (built-in operation ids)
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/fields/settings.yaml (`theme_light_overrides`, `custom_css`)

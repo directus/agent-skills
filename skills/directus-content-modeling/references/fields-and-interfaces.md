@@ -62,6 +62,8 @@ categories, regions, event types), make a small config collection and relate to 
 
 - **House rule:** `input-rich-text-html` (WYSIWYG) for editor-facing long-form content (posts, rich text blocks).
   Editors expect WYSIWYG, and the frontend renders HTML directly.
+- From 12.6.0, `richtext` extensions add editor features to `input-rich-text-html` through `meta.options.extensions`
+  (ids) and `extensionOptions`. None are on by default. Building one: `directus-extensions`.
 - `input-rich-text-md` when the content is developer-facing (docs, changelogs) or the frontend already renders
   Markdown.
 - The WYSIWYG editor doesn't load your frontend CSS. Custom formats (`options.customFormats`) only add classes. Style
@@ -111,7 +113,7 @@ list) or ask the user to install it. A field with a missing interface still save
 - https://directus.com/docs/guides/data-model/fields
 - https://directus.com/docs/guides/data-model/interfaces
 - https://directus.com/docs/guides/data-model/rich-text
-- https://github.com/directus/directus/tree/v12.5.1/app/src/interfaces
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/fields/prompt.md
+- https://github.com/directus/directus/tree/v12.6.0/app/src/interfaces
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/fields/prompt.md
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/fields.json
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/extensions.json

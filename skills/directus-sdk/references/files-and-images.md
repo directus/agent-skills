@@ -60,7 +60,7 @@ const imported = await directus.request(importFile('https://example.com/photo.jp
 ```
 
 - `readAssetRaw`/`Blob`/`ArrayBuffer` take the same params as the URL. `downloadFilesZip(ids)` and `downloadFolderZip(folderId)` return a ZIP. Use `readFiles`/`readFile`, not `readItems('directus_files')`, which throws.
-- **Order matters.** The API reads multipart fields that arrive before each file; fields appended after the `file` part are not applied to it. The file part must be named `file` and have a filename.
+- **Order matters.** The API reads multipart fields that arrive before each file; fields appended after the `file` part are not applied to it. The file part needs a filename; its field name is ignored (`file` by convention).
 - `storage` must be one of `STORAGE_LOCATIONS` exactly, or `INVALID_PAYLOAD`. Omit it to use the first location.
 - The SDK removes its `Content-Type` header for `FormData` so fetch sets the multipart boundary.
 - Uploading needs create on `directus_files`. **House rule:** for public forms, upload from a server route with a narrow-permission token, not from the browser with a privileged one (as the starters' form handlers do).
@@ -71,13 +71,13 @@ const imported = await directus.request(importFile('https://example.com/photo.jp
 - https://directus.com/docs/guides/files/transform
 - https://directus.com/docs/guides/files/upload
 - https://directus.com/docs/configuration/files
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/read/assets.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/types/assets.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/create/files.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/files.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/assets.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/transformations.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/assets.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/read/assets.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/types/assets.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/create/files.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/files.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/assets.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/transformations.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/assets.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/lib/directus/directus-utils.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/next.config.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nuxt/nuxt.config.ts

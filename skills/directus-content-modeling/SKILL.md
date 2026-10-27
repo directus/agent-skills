@@ -1,9 +1,9 @@
 ---
 name: directus-content-modeling
-description: "Use when designing or changing a Directus data model or starting a new project from a starter: collections, fields, relations (M2O, O2M, M2M, M2A, translations), field types and interfaces, page builders, multilingual content, slugs and SEO fields, indexes, schema changes on live data, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
+description: "Use when designing or changing a Directus data model or starting a new project from a starter: collections, fields, relations (M2O, O2M, M2M, M2A, translations), field types and interfaces, page builders, multilingual content, slugs and SEO fields, indexes and slow queries, schema changes on live data, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus content modeling
@@ -41,7 +41,8 @@ the existing schema says otherwise.
   [relationships.md](references/relationships.md#on_delete).
 - **Name FKs after what they point to, singular, no `_id`:** `page_blocks.page`, `post_tags.tag`. Junctions are
   `<singular parent>_<alias field>`: `posts.tags` → `post_tags`, `pages.blocks` → `page_blocks` (not the Studio's
-  `posts_tags` / `posts_id`). Translations are the exception: `posts_translations` with `posts` and `languages_code`.
+  `posts_tags` / `posts_id`). Translations are the exception: `posts_translations` with FKs `posts` (not `posts_id`)
+  and `languages_code`.
 - **Archived and `hidden: true` only affect the Studio.** The API still returns archived items unless the caller
   filters, and hidden fields unless permissions restrict them.
 - **M2A junction `item` is a string column** so it can hold keys from any collection. Keep every block collection on the
@@ -68,7 +69,7 @@ The Directus CMS starter shows these conventions at scale (22 collections plus 2
 builder, an i18n variant). Copy its shapes, not all of its settings. **Where the starter differs from the house rules,
 the house rules win:**
 
-- Junction and translation relations use `SET NULL`; the rule is `CASCADE` on both sides.
+- `page_blocks.page` (and the i18n variant's translation relations) use `SET NULL`; the rule is `CASCADE`.
 - `pages.permalink` is nullable and `posts.slug` isn't unique; make both required and unique.
 - Preview URLs hardcode `http://localhost:3000`; use `{{$preview_base_url}}`.
 - Its core-tier permissions are unsafe as shipped (see `directus-access-control`).

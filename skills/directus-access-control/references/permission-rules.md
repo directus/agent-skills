@@ -11,7 +11,7 @@ A full row in context: [applying-and-testing.md](applying-and-testing.md#create-
 | ------------- | --------------------------- | --------------------------------------------------------------------- |
 | `action`      | -                           | `create`, `read`, `update`, `delete`, or `share`                      |
 | `permissions` | read, update, delete, share | Item rule: a filter rows must match. `{}` or null means all rows      |
-| `fields`      | read, create, update        | Allowed fields. `["*"]` is all fields. `null` or `[]` means no fields |
+| `fields`      | read, create, update        | Allowed fields. `["*"]` is all fields. `null` or `[]` means no fields. Ignored for delete and share, but on core those rows still need `["*"]` or they count as custom |
 | `validation`  | create, update              | Filter the incoming payload (after presets) must satisfy              |
 | `presets`     | create, update              | Default values merged under the payload                               |
 
@@ -76,12 +76,12 @@ Normal filter syntax, including relational paths and `_and` / `_or`. Examples: [
 - https://directus.com/docs/guides/auth/access-control
 - https://directus.com/docs/guides/connect/filter-rules
 - https://directus.com/docs/guides/security/best-practices
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/constants/src/permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/parse-filter.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/is-dynamic-variable.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/utils/fetch-dynamic-variable-data.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/utils/process-permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/modules/process-payload/process-payload.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/modules/process-ast/utils/validate-path/validate-path-permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/modules/validate-access/validate-access.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/constants/src/permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/parse-filter.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/is-dynamic-variable.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/utils/fetch-dynamic-variable-data.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/utils/process-permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/modules/process-payload/process-payload.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/modules/process-ast/utils/validate-path/validate-path-permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/modules/validate-access/validate-access.ts

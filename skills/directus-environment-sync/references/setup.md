@@ -1,8 +1,17 @@
 # Setup
 
+- [Install](#install)
+- [Profiles](#profiles)
+- [directus.config.json](#directusconfigjson)
+- [Credentials](#credentials)
+- [Projects](#projects)
+- [First pull](#first-pull)
+
 ## Install
 
-- `npm install -g @directus/cli@12`, then `d6s --version`. Node 22+. `directus-cli` is the same program as `d6s`.
+- `npm install -g @directus/cli@12`, then `d6s --version`. Node 22+. Use 12.4.0 or newer with Directus 12.6+:
+  older CLIs push the new `default_exports_folder` setting with the source's folder id. `directus-cli` is the
+  same program as `d6s`.
 - Pin `@12`. The same package name carried a deprecated 9.x client CLI (bins `directusctl`, `directus-ctl`). The CLI
   version doesn't need to match Directus; every instance needs 12.2.0+, checked before each pull, diff, and push.
 
@@ -91,9 +100,9 @@ Pulling twice with no instance changes produces byte-identical files. Next: [wor
 - https://directus.com/docs/guides/environment-sync
 - https://directus.com/docs/guides/environment-sync/quickstart
 - https://directus.com/docs/guides/environment-sync/reference
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/package.json
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/kernel/run.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/kernel/env.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/kernel/config/credentials.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/utils/preflight.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/package.json
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/kernel/run.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/kernel/env.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/kernel/config/credentials.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/utils/preflight.ts
 - `npm view @directus/cli@9.14.3 deprecated bin` (deprecated 9.x client CLI)

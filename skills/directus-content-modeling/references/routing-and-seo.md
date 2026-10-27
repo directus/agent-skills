@@ -76,5 +76,5 @@ or slug changes.
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/fields.json (pages.permalink, posts.slug, seo, redirects)
 - https://github.com/directus-labs/extensions/tree/main/packages/seo-plugin
 - https://github.com/directus-labs/extensions/tree/main/packages/tree-view-table-layout
-- https://github.com/directus/directus/tree/v12.5.1/app/src/interfaces/list-o2m-tree-view
+- https://github.com/directus/directus/tree/v12.6.0/app/src/interfaces/list-o2m-tree-view
 - https://directus.com/docs/guides/data-model/relationships

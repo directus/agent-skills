@@ -45,7 +45,7 @@ https://directus.com/docs/guides/environment-sync/reference. What automation get
 ## GitHub Actions pipeline
 
 Adapted from the docs (which also post the diff report as a PR comment): diff on PRs, push on merge to `main`.
-Secret `DIRECTUS_PRODUCTION_TOKEN`, variable `DIRECTUS_PRODUCTION_URL`. The CLI is pinned to `12.3.1`, the version this skill was checked against; bump it
+Secret `DIRECTUS_PRODUCTION_TOKEN`, variable `DIRECTUS_PRODUCTION_URL`. The CLI is pinned to `12.4.0` (the release that ships with Directus 12.6.0); bump it
 deliberately after reading the CLI's release notes, since flags and report fields can change between minors.
 
 ```yaml
@@ -67,7 +67,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install -g @directus/cli@12.3.1
+      - run: npm install -g @directus/cli@12.4.0
       - name: Verify the production profile URL
         env:
           EXPECTED_URL: ${{ vars.DIRECTUS_PRODUCTION_URL }}
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install -g @directus/cli@12.3.1
+      - run: npm install -g @directus/cli@12.4.0
       - name: Load the latest ID map (before the URL check, so it checks what gets pushed)
         run: git pull --ff-only origin "$GITHUB_REF_NAME"
       - name: Verify the production profile URL
@@ -195,10 +195,10 @@ d6s sync push --to staging --mode mirror --yes --dangerously-allow-delete
 
 - https://directus.com/docs/guides/environment-sync/ci-and-automation
 - https://directus.com/docs/guides/environment-sync/reference
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/kernel/run.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/kernel/env.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/kernel/config/credentials.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/push.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/wizard.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/kernel/run.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/kernel/env.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/kernel/config/credentials.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/push.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/wizard.ts
 - https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/control-the-concurrency-of-workflows-and-jobs
 - https://github.com/actions/checkout#usage

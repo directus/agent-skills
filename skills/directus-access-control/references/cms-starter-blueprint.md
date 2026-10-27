@@ -42,7 +42,7 @@ flat core rules.
 | `Team - App Access`      | app        | Studio access for staff. Dashboards and panels CRUD, `ai_prompts` CRUD, shares, read roles, users, files, folders, flows, update users                                                                                                                                   | Users update only own profile fields; shares read by role, update/delete own; flows read only `trigger = manual` with limited fields; `ai_prompts` read own or published, update/delete own                                                                                                                                                                                                  |
 
 The cms-i18n variant adds public read on `languages` and every `*_translations` collection, and `translations` to the
-public `globals` field list. It has 37 collections, over the core tier's 25, so it needs a license
+public `globals` field list. It has 37 collections, over the core tier's collection limit, so it needs a license
 (`directus-content-modeling` new-project reference).
 
 ## Roles and attachments
@@ -85,7 +85,7 @@ Apply the starter to a fresh instance with `npx directus-template-cli@latest app
 - https://github.com/directus-labs/starters/tree/main/cms/directus/template/src
 - https://github.com/directus-labs/starters/tree/main/cms/directus/template-licensed/src
 - https://directus.com/docs/guides/content/content-versioning
-- https://github.com/directus/directus/blob/v12.5.1/packages/constants/src/permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/app-access-permissions/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/versions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/users.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/constants/src/permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/app-access-permissions/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/users.ts

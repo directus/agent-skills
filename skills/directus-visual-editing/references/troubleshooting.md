@@ -62,10 +62,10 @@ Work through in order:
 - https://directus.com/docs/guides/content/visual-editor/studio-module
 - https://directus.com/docs/guides/content/visual-editor/frontend-library
 - https://directus.com/docs/guides/content/content-versioning
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/directus-frame.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/editable-element.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/visual/components/editing-layer.vue
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/visual/routes/visual-editor.vue
-- https://github.com/directus/directus/blob/v12.5.1/app/src/composables/use-preview-url.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/versioning/handle-version.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/directus-frame.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/editable-element.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/visual/components/editing-layer.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/visual/routes/visual-editor.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/composables/use-preview-url.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/versioning/handle-version.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts

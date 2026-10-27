@@ -152,7 +152,7 @@ limits: see `directus-access-control` (licensing.md).
 - https://directus.com/docs/guides/data-model/collections
 - https://directus.com/docs/guides/data-model/fields
 - https://directus.com/docs/licensing/overview
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/collections/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/fields/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/collections/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/fields/prompt.md
 - https://github.com/directus-labs/starters/tree/main/cms/directus/template/src (collections.json, fields.json)
 - https://github.com/directus-labs/starters/blob/main/README.md (tier table)

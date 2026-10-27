@@ -29,7 +29,7 @@ collection → Translations). It creates `languages` if missing (seeded with 8 l
 1. Make sure `languages` exists: `code` (string PK, e.g. `en-US`), `name` (string), `direction` (string, `ltr`/`rtl`,
    `select-dropdown`). Seed the languages the user wants.
 2. Create `<collection>_translations`: UUID `id`, `meta.hidden: true`, `meta.group: "<collection>"`. Add
-   `<collection>` (FK named after the parent collection, same type as its PK) and `languages_code` (`string`).
+   `<collection>` (FK named exactly like the parent collection, `posts` not `posts_id`, same type as its PK) and `languages_code` (`string`).
 3. Add the translated fields to the junction with the same names, types, and interfaces as on the parent.
 4. Create the alias on the parent:
 
@@ -117,8 +117,8 @@ handles slugs, Markdown, and HTML; booleans, dates, files, and selects are skipp
 - https://directus.com/docs/guides/content/translations
 - https://directus.com/docs/guides/ai/translations
 - https://directus.com/docs/guides/data-model/relationships#translations
-- https://github.com/directus/directus/blob/v12.5.1/app/src/interfaces/_system/system-collections-translations/system-collections-translations-dialog.vue
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/settings/routes/data-model/field-detail/store/alterations/translations.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/fields/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/app/src/interfaces/_system/system-collections-translations/system-collections-translations-dialog.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/settings/routes/data-model/field-detail/store/alterations/translations.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/fields/prompt.md
 - https://github.com/directus-labs/starters/tree/main/cms-i18n/directus/template/src
 - https://github.com/directus-labs/starters/blob/main/cms-i18n/nextjs/src/lib/directus/fetchers.ts

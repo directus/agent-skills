@@ -14,7 +14,9 @@ Docs: https://directus.com/docs/licensing/overview.
 
 ## Core tier limits and lockdown
 
-From `DIRECTUS_CORE_LICENSE` in `@directus/license` 0.6.1 (the version v12.5.1 pins):
+These limits ship in the `@directus/license` package and can change without a Directus release. Read the live values
+before relying on them: `GET /license` (admin) returns `entitlements` (limits) and `usage` (current counts). Other
+skills point here instead of repeating the numbers. As of `@directus/license` 0.6.1 (pinned by v12.5.1):
 
 | Entitlement                   | Core tier | Over the limit or using it                                                                                           |
 | ----------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -123,24 +125,24 @@ Every permission you write on core is "whole collection, all fields, no validati
 - https://directus.com/docs/releases/breaking-changes/version-12
 - https://directus.com/docs/guides/environment-sync/secrets-and-limitations
 - https://directus.com/docs/guides/security/best-practices
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/custom-permission-rules-enabled.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/custom-permission-rules-enabled.test.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/manager.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/sso-enabled.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/utils/is-sso-bypass-allowed.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/middleware/is-locked.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/utils/compute-license-status.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/utils/get-core-grace-expires-at.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/seats.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/get-history-filter-query.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/auth/utils/check-sso-enabled.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/authentication.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/custom-permission-rules-enabled.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/custom-permission-rules-enabled.test.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/manager.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/sso-enabled.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/utils/is-sso-bypass-allowed.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/middleware/is-locked.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/utils/compute-license-status.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/utils/get-core-grace-expires-at.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/seats.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/get-history-filter-query.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/auth/utils/check-sso-enabled.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/authentication.ts
 - https://www.npmjs.com/package/@directus/license/v/0.6.1
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/utils/fetch-raw-permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/users.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/app-access-permissions/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/errors/src/errors/resource-restricted.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/utils/fetch-raw-permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/users.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/app-access-permissions/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/errors/src/errors/resource-restricted.ts
 - https://github.com/directus-labs/starters/tree/main/cms/directus/README.md
 - https://github.com/directus-labs/starters/tree/main/cms/directus/template/src
 - https://github.com/directus-labs/starters/tree/main/_shared/rbac

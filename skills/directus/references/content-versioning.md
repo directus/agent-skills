@@ -74,8 +74,8 @@ Missing pieces show up as a disabled Create button, a read-only form, or FORBIDD
 - https://directus.com/docs/guides/connect/query-parameters
 - https://directus.com/docs/api/versions
 - https://directus.com/docs/releases/breaking-changes/version-12
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/versions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/versions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/versioning/handle-version.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/constants/src/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/versioning/handle-version.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/constants/src/versions.ts
 - https://github.com/directus-labs/starters/tree/main/cms

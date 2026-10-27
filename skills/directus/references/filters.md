@@ -89,8 +89,8 @@ GraphQL uses `<field>_func: { year: { _eq: 2024 } }` instead.
 - https://directus.com/docs/guides/connect/query-parameters
 - https://directus.com/docs/guides/connect/json/quickstart
 - https://directus.com/docs/guides/auth/access-control
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/filter.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/parse-filter.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/database/run-ast/lib/apply-query/filter/operator.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/items/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/operations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/filter.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/parse-filter.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/database/run-ast/lib/apply-query/filter/operator.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/items/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/operations/prompt.md

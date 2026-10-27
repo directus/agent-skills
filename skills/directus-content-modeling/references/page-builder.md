@@ -91,7 +91,7 @@ The frontend switches on `block.collection` to pick a component. See the starter
 ## Sources
 
 - https://directus.com/docs/guides/data-model/relationships#many-to-any-m2a
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/relations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/relations/prompt.md
 - https://github.com/directus-labs/starters/tree/main/cms/directus/template/src (collections.json, fields.json, relations.json)
 - https://github.com/directus-labs/starters/blob/main/cms/nextjs/src/lib/directus/fetchers.ts
 - https://github.com/directus-labs/starters/blob/main/cms/nextjs/src/components/blocks/BaseBlock.tsx

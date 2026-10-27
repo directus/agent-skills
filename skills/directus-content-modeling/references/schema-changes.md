@@ -109,9 +109,9 @@ enforced by the Studio; see [fields-and-interfaces.md](fields-and-interfaces.md#
 - https://directus.com/docs/guides/data-model/fields
 - https://directus.com/docs/guides/connect/query-parameters
 - https://directus.com/docs/configuration/migrations
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/fields.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/fields.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/collections.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/payload.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/schema/get-snapshot-diff.ts
-- https://github.com/directus/directus/tree/v12.5.1/packages/errors/src/errors
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/fields.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/fields.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/collections.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/payload.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/schema/get-snapshot-diff.ts
+- https://github.com/directus/directus/tree/v12.6.0/packages/errors/src/errors

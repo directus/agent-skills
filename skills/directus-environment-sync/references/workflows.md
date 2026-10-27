@@ -110,5 +110,5 @@ planned upgrade.
 - https://directus.com/docs/guides/environment-sync/how-it-works
 - https://directus.com/docs/guides/environment-sync/ci-and-automation
 - https://directus.com/docs/guides/environment-sync/secrets-and-limitations
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/pull.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/push.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/pull.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/push.ts

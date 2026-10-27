@@ -87,7 +87,7 @@ Order: `system-prompt` (if enabled), `schema` with no args, `schema` with `keys`
 | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 401 with `WWW-Authenticate`                             | No or bad credential. With OAuth the client should follow `resource_metadata`. With a token, test it: `curl -H "Authorization: Bearer $T" $URL/users/me`. |
 | 403 "MCP OAuth must be enabled"                         | OAuth token used but `MCP_OAUTH_ENABLED` or the OAuth setting is off.                                                                                     |
-| 405                                                     | Client didn't accept `application/json`. Send `Accept: application/json, text/event-stream`.                                                              |
+| 405                                                     | Client didn't accept `application/json` (send `Accept: application/json, text/event-stream`), or, from 12.6.0, a GET or HEAD: `/mcp` takes POST only.    |
 | 404 on `/mcp`                                           | `MCP_ENABLED=false`, or the URL is missing `/mcp`.                                                                                                        |
 | FORBIDDEN on items                                      | Missing permission, wrong field name, or inactive collection. Re-check `schema`.                                                                          |
 | 403 `RESOURCE_RESTRICTED`                               | Instance locked down (license status `locked`). An admin must resolve it; see `directus-access-control`.                                                  |
@@ -104,12 +104,12 @@ Order: `system-prompt` (if enabled), `schema` with no args, `schema` with `keys`
 - https://directus.com/docs/guides/ai/mcp/troubleshooting
 - https://directus.com/docs/guides/ai/mcp/local-mcp
 - https://directus.com/docs/configuration/ai
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/mcp/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/mcp/server.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/registry.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/system/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/schema/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/items/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/files/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/folders/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/trigger-flow/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/mcp/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/mcp/server.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/registry.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/system/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/schema/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/items/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/files/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/folders/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/trigger-flow/prompt.md

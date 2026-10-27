@@ -16,7 +16,7 @@ Starters live in `directus-labs/starters`. The folder name is the `--template` i
 | Starter    | Frontends (`--frontend` id)                              | Tier                                               | What it is                                                       |
 | ---------- | -------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
 | `cms`      | `nextjs`, `nuxt`, `astro`, `svelte` (folder `sveltekit`) | Core. `template-licensed/` variant needs a license | Page builder, blog, forms, Live Preview, Visual Editor           |
-| `cms-i18n` | `nextjs`, `nuxt`                                         | Needs a license: 37 collections, core allows 25    | The CMS plus `*_translations`, locale routing, language switcher |
+| `cms-i18n` | `nextjs`, `nuxt`                                         | Needs a license: 37 collections, over core's limit | The CMS plus `*_translations`, locale routing, language switcher |
 | `blank`    | none                                                     | Core                                               | Docker Compose only, no schema                                   |
 
 No starter for the user's framework? Apply the `cms` Directus template on its own and write the frontend with
@@ -104,7 +104,8 @@ Fix these before the project leaves your machine. Each is documented once:
 ## First checks after setup
 
 1. `GET /server/info` with the admin token: `data.version` matches the Compose image (`12.5.1`).
-2. `GET /license` (admin): the tier you expected. The `cms` starter uses 22 of core's 25 collections.
+2. `GET /license` (admin): the tier you expected. Compare `usage.collections` with `entitlements.collections.limit`;
+   the `cms` starter uses 22.
 3. Users: your admin, Frontend Bot, and Content Writer (`writer@example.com`).
 4. The frontend home page renders, and a page edited in Content shows up after a reload.
 5. Live Preview opens from a page item without a CSP error.
@@ -123,6 +124,6 @@ Fix these before the project leaves your machine. Each is documented once:
 - https://github.com/directus-labs/directus-template-cli/blob/main/README.md
 - https://github.com/directus-labs/directus-template-cli/blob/main/src/lib/init/index.ts
 - https://github.com/directus-labs/directus-template-cli/blob/main/src/commands/init.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/create-admin.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/create-admin.ts
 - https://directus.com/docs/frameworks/nextjs/build-a-cms
 - https://directus.com/docs/licensing/overview

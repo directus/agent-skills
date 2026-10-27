@@ -89,8 +89,8 @@ then subscribe with `subscription { posts_mutated(event: create) { key event dat
 - https://directus.com/docs/guides/realtime/actions
 - https://directus.com/docs/configuration/realtime
 - https://directus.com/docs/releases/breaking-changes/version-12
-- https://github.com/directus/directus/blob/v12.5.1/api/src/websocket/messages.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/websocket/handlers/subscribe.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/websocket/handlers/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/websocket/messages.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/websocket/handlers/subscribe.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/websocket/handlers/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts

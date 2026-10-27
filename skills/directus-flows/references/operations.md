@@ -91,7 +91,8 @@ Shape: `module.exports = async function (data) { ... }`, returning the result. F
 
 - `headers` is an array of `{ header, value }`. `Content-Type: application/json` is added when the body is JSON.
 - Resolves with `{ status, statusText, headers, data }`. Use `{{ call_api.data.id }}` downstream.
-- Rejects on non-2xx with the same shape, so the reject branch can read `{{ call_api.status }}`.
+- Rejects on non-2xx with the same shape, so the reject branch can read `{{ call_api.status }}`. A network error,
+  timeout, or deny-list block rejects with a plain error and no `status`, so don't branch only on `status`.
 - Outbound requests go through the same IP deny list as file imports (`IMPORT_IP_DENY_LIST`, which blocks `0.0.0.0` and
   the cloud metadata address by default).
 
@@ -121,9 +122,9 @@ Check `GET /extensions` before using one; a flow pushed to an instance without i
 
 - https://directus.com/docs/guides/flows/operations
 - https://directus.com/docs/configuration/flows
-- https://github.com/directus/directus/tree/v12.5.1/api/src/operations
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/generate-joi.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/apply-options-data.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/tree/v12.6.0/api/src/operations
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/generate-joi.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/apply-options-data.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts
 - https://github.com/directus-labs/extensions/tree/main/packages

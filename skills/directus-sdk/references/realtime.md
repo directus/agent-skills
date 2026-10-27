@@ -79,8 +79,8 @@ for await (const message of subscription) {
 - https://directus.com/docs/guides/realtime/subscriptions
 - https://directus.com/docs/configuration/realtime
 - https://directus.com/docs/guides/connect/sdk
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/realtime/composable.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/realtime/types.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/readme.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/websocket/controllers/base.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/realtime/composable.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/realtime/types.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/readme.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/websocket/controllers/base.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts

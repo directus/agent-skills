@@ -88,12 +88,12 @@ API extensions run with the server's full power. Before shipping:
 - https://directus.com/docs/guides/extensions/api-extensions/endpoints (Sandboxed Endpoints)
 - https://directus.com/docs/configuration/extensions
 - https://directus.com/docs/guides/security/best-practices
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions/src/shared/schemas/options.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions/api.d.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/extensions/manager.ts (`registerSandboxedApiExtension`)
-- https://github.com/directus/directus/blob/v12.5.1/api/src/extensions/lib/sandbox/generate-api-extensions-sandbox-entrypoint.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/extensions/lib/sandbox/sdk/generators/request.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/extensions/lib/sandbox/register/route.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/extensions.ts (`MARKETPLACE_TRUST`)
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions/src/shared/schemas/options.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions/api.d.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/manager.ts (`registerSandboxedApiExtension`)
+- https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/lib/sandbox/generate-api-extensions-sandbox-entrypoint.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/lib/sandbox/sdk/generators/request.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/lib/sandbox/register/route.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/extensions.ts (`MARKETPLACE_TRUST`)
 - Marketplace registry scraper, `directus/registry` repo (private): `apps/scraper/src/lib/format-version.ts` (bundle sandbox rule)
 - https://github.com/directus-labs/extensions/tree/main/packages/resend-operation (sandboxed operation)

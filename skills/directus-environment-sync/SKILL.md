@@ -3,7 +3,7 @@ name: directus-environment-sync
 description: "Use when moving Directus schema and config between instances (dev, staging, production): Environment Sync and the d6s CLI (pull, diff, push), directus.config.json, id_map.json, push modes, CI pipelines, drift, rollback, and schema snapshot/apply. Not for designing schema (directus-content-modeling), version upgrades (directus-upgrade), or moving content items."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus Environment Sync
@@ -12,7 +12,7 @@ Environment Sync pulls an instance's Schema and Configuration into JSON sync fil
 those files to other instances. Pull overwrites the files in scope. Push applies only what is on disk, never the source
 instance. Requires Directus 12.2.0 or later on every instance.
 
-_Verified against Directus v12.5.1 (CLI source `packages/cli`, `@directus/cli` 12.3.1) and the Environment Sync docs._
+_Verified against Directus v12.6.0 (CLI source `packages/cli`, `@directus/cli` 12.4.0) and the Environment Sync docs._
 
 ## First checks
 
@@ -29,7 +29,8 @@ _Verified against Directus v12.5.1 (CLI source `packages/cli`, `@directus/cli` 1
 - **Exact version + same DB vendor or the schema diff is refused.** `--allow-drift` sends the server's `force` bypass.
   It converts nothing between versions or vendors. Re-pull after upgrading the source.
 - **Admin token only.** Non-admin reads are silently permission-filtered and would write sync files that look complete
-  but aren't, so the CLI refuses them. **House rule (strong):** a dedicated sync admin user per instance with its own
+  but aren't, so the CLI refuses them. If it can't check (network error), it only warns ("Could not verify ...
+  admin access; continuing"): treat that warning as a stop. **House rule (strong):** a dedicated sync admin user per instance with its own
   static token, never a person's account (separate in the logs, revocable alone).
 - **Deletions only in `mirror`, behind their own consent, from freshly pulled files.** `merge` (default) and `add` never
   delete. `--yes` **never** authorizes a deletion (CI needs `--dangerously-allow-delete`). Stale or partially scoped

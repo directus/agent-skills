@@ -24,7 +24,8 @@ The CMS starters in `directus-labs/starters` are the canonical examples: the sam
 | Preview | Unsafe. Nuxt, Astro, SvelteKit: bare `?preview=true` switches to the admin token and drops the `status` filter. Next.js: reads already run as admin; `?preview=true` drops the `status` filter and any `?version=<key>` reads that version, no secret needed. Use `directus-visual-editing` for gating and draft reads. |
 | Images | `getDirectusAssetURL(fileOrId)` builds `/assets/<id>` ([files-and-images.md](files-and-images.md)). |
 
-The starters pin `@directus/sdk` 22.0.0; the command and composable APIs they use are unchanged in 27.0.0.
+The starters pin `@directus/sdk` 22.0.0. Before mixing their code with a newer SDK, check the SDK majors in between
+(`directus-upgrade`, `references/sdk-and-extensions.md`).
 
 ## Fetching an M2A page
 
@@ -71,7 +72,7 @@ Canonical files: [lib/directus/directus.ts](https://github.com/directus-labs/sta
 
   On-demand: call `revalidateTag('posts', 'max')` (Next 16; on Next 15 it's `revalidateTag('posts')`) from a route handler that a Directus Flow (on item create/update) calls with a shared secret. The starters don't; they render dynamically because pages read `searchParams`.
 
-- **Draft mode.** The starter's `/api/draft` route takes the admin `DIRECTUS_SERVER_TOKEN` itself as the URL secret. Don't copy it. Never cache preview responses.
+- **Draft mode** and preview gating: `directus-visual-editing` (`references/preview-security.md`). Never cache preview responses.
 - **Images.** `next/image` needs `images.remotePatterns` for the Directus host and `/assets/**`.
 
 ## Nuxt
@@ -111,7 +112,7 @@ Canonical files: [lib/directus/directus.ts](https://github.com/directus-labs/sta
 - https://directus.com/docs/frameworks/nuxt/data-fetching
 - https://directus.com/docs/frameworks/astro/data-fetching
 - https://directus.com/docs/frameworks/sveltekit/data-fetching
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/utils/extract-data.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/helpers/with-options.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/utils/extract-data.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/helpers/with-options.ts
 - https://github.com/vercel/next.js/blob/v16.2.9/docs/01-app/03-api-reference/04-functions/fetch.mdx
 - https://github.com/vercel/next.js/blob/v16.2.9/docs/01-app/03-api-reference/04-functions/revalidateTag.mdx

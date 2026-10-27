@@ -3,14 +3,14 @@ name: directus-insights
 description: "Use when building Directus Insights dashboards and panels: metrics, lists, time series, bar, line, and pie charts, meters, labels, variables, layout, and dashboard access, including creating them over the API. Not for aggregate queries from code (directus) or custom panel extensions (directus-extensions)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus Insights
 
 Build dashboards (`directus_dashboards`) made of panels (`directus_panels`). Each panel is a `type` plus an `options`
-object. The Studio turns the options of every data panel (not labels or variables) into one batched GraphQL request and
-runs it **as the person viewing the dashboard**. Nothing is precomputed.
+object. The Studio turns the options of every data panel (not labels or variables) into batched GraphQL requests
+(`/graphql`, plus `/graphql/system` for `directus_*` collections) and runs them **as the person viewing the dashboard**. Nothing is precomputed.
 
 ## First checks
 
@@ -32,6 +32,8 @@ runs it **as the person viewing the dashboard**. Nothing is precomputed.
 - **`time-series` filters to `range` on `dateField`** (`$NOW(-<range>)` to `$NOW`, default `1 week`). Use `auto` for all
   data. It needs a datetime field.
 - **Singletons can't be charted** by `metric`, `metric-list`, `list`, or `time-series`. They render empty.
+- **Picking an item (an author, a product) is a `relational-variable`,** not a `variable` with a text input. It holds
+  the id (or ids with `multiple`); filter the related key: `{"author": {"id": {"_eq": "{{author}}"}}}`.
 - **Variables are typed.** A variable used in a datetime filter must be a datetime. Values live in the open Studio tab,
   not per user.
 - **Data panels query on load and on each auto-refresh.** Filter large collections, or chart a summary collection a

@@ -3,8 +3,8 @@ name: directus-sdk
 description: "Use when writing JavaScript or TypeScript with @directus/sdk: client setup (rest, graphql, realtime), auth and tokens, typed schemas, reading and writing items, files and asset URLs, CORS and cookies, and data fetching in Next.js, Nuxt, Astro, or SvelteKit. Load directus alongside for complex queries. Not for live preview or drafts (directus-visual-editing) or SDK version migrations (directus-upgrade)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
-  sdk-version: '27.0.0'
+  directus-version: '12.6.0'
+  sdk-version: '27.1.0'
 ---
 
 # Directus SDK
@@ -13,7 +13,7 @@ How `@directus/sdk` composes a client, authenticates, sends queries, types resul
 semantics (filters, `deep`, relational writes) live in `directus`. Drafts, live preview, and visual editing live in
 `directus-visual-editing`.
 
-_Verified against Directus v12.5.1, `@directus/sdk` 27.0.0, and `@directus/visual-editing` 2.1.0. The CMS starters pin
+_Verified against Directus v12.6.0, `@directus/sdk` 27.1.0, and `@directus/visual-editing` 2.1.0. The CMS starters pin
 SDK 22.0.0. If the instance disagrees, trust the instance._
 
 ## First checks

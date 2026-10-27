@@ -3,7 +3,7 @@ name: directus-self-hosting
 description: "Use when deploying or running a Directus server: Docker Compose, Postgres and Redis, hosting platforms, env vars, email, file storage, reverse proxies, health checks, running several instances, caching and stale data, rate limits, backups and restores, and Directus Cloud differences. Not for version upgrades (directus-upgrade), moving config between instances (directus-environment-sync), or licensing (directus-access-control)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus self-hosting
@@ -11,8 +11,8 @@ metadata:
 Run Directus in production: the container, its env, the database, file storage, Redis, scaling, and backups. Directus
 ships as the `directus/directus` Docker image; everything is configured through environment variables.
 
-_Verified against Directus v12.5.1 source (`Dockerfile`, `docker-entrypoint.cjs`, `packages/env`, `api/src`), a live
-12.5.1 container, and the self-hosting docs._
+_Verified against Directus v12.6.0 source (`Dockerfile`, `docker-entrypoint.cjs`, `packages/env`, `api/src`), live
+12.5.1 and 12.6.0 containers, and the self-hosting docs._
 
 ## First checks
 

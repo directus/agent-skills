@@ -93,7 +93,7 @@ const stats = await directus.request(customEndpoint<{ total: number }>({ path: '
 - Helpers compose: `withToken(token, withOptions(readItems('posts'), { cache: 'no-store' }))`.
 - **Trap:** `withOptions(cmd, { headers: {...} })` replaces the whole `headers` object, which holds `Authorization` (from `withToken` or the client token) and `Content-Type`. The request goes out as Public and writes lose their JSON content type. Always use the function form.
 - `withSearch` uses the HTTP `SEARCH` method, which is not in the default `CORS_METHODS`.
-- `customEndpoint` responses are unwrapped the same way (a top-level `data` key is returned alone). For a JSON body pass `body: JSON.stringify(...)`; `Content-Type: application/json` is added for you.
+- `customEndpoint` responses are unwrapped the same way (a top-level `data` key is returned alone). For a JSON body pass `body: JSON.stringify(...)`; `Content-Type: application/json` is added for you. A `FormData` body drops it so fetch sets the boundary (SDK 27.1+; older versions only did that for an explicit `multipart/form-data` header).
 
 ## Errors
 
@@ -132,19 +132,19 @@ Output is whatever generic you pass; the Schema does not type GraphQL results.
 - https://directus.com/docs/guides/connect/query-parameters
 - https://directus.com/docs/guides/connect/errors
 - https://directus.com/docs/configuration/security-limits
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/utils/query-to-params.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/utils/extract-data.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/utils/request.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/utils/is-directus-error.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/read/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/read/aggregate.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/types/aggregate.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/update/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/delete/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/helpers/with-options.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/composable.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/helpers/with-search.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/helpers/custom-endpoint.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/graphql/composable.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/utils/query-to-params.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/utils/extract-data.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/utils/request.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/utils/is-directus-error.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/read/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/read/aggregate.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/types/aggregate.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/update/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/delete/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/helpers/with-options.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/composable.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/helpers/with-search.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/helpers/custom-endpoint.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/graphql/composable.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/items.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/lib/directus/fetchers.ts

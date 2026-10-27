@@ -22,7 +22,7 @@ project per tenant. Rows marked **licensed** need a license on v12 ([licensing.m
 
 **On core, one project can't isolate tenants.** Without item rules every grant covers whole collections, so any user
 who can edit `pages` can edit every site's pages, and public read on `pages` returns every site's rows. Core limits are
-also shared by all tenants: 3 seats and 25 collections per instance. Per-tenant collections (`site_a_pages`) burn the
+also shared by all tenants: the seat and collection limits are per instance (`GET /license`). Per-tenant collections (`site_a_pages`) burn the
 collection limit (junctions and translations count too) and multiply every policy; don't.
 
 ## One project: data model
@@ -58,12 +58,12 @@ resolve to an array for `_in`:
 
 A tenant editor policy (**licensed**), several-tenants form. Swap in the one-tenant rule as needed:
 
-| Collection            | Action               | Item rule                                                                                         | Validation                                      |
-| --------------------- | -------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `pages`, `posts`      | read, update, delete | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}`                                                   | update: same filter as the item rule            |
-| `pages`, `posts`      | create               | -                                                                                                 | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}` |
-| `page_blocks`         | read, update, delete | `{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}`                                          | -                                               |
-| each block collection | read, update, delete | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}}` | -                                               |
+| Collection            | Action               | Item rule                                                                                         | Validation                                           |
+| --------------------- | -------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `pages`, `posts`      | read, update, delete | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}`                                                   | update: same filter as the item rule                 |
+| `pages`, `posts`      | create               | -                                                                                                 | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}`      |
+| `page_blocks`         | read, update, delete | `{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}`                                          | -                                                    |
+| each block collection | read, update, delete | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}}` | -                                                    |
 | `directus_files`      | read, update, delete | `{"folder":{"_in":["$CURRENT_USER.sites.site.folder"]}}`                                          | create and update: `{"folder":{"_in":[...same...]}}` |
 
 - **File moves need update validation too.** The item rule checks the file's current folder, not the new one. Without
@@ -104,13 +104,13 @@ A tenant editor policy (**licensed**), several-tenants form. Swap in the one-ten
 - https://directus.com/docs/licensing/overview
 - https://directus.com/docs/cloud/getting-started/introduction
 - https://directus.com/docs/guides/environment-sync
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/parse-filter.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/parse-filter.test.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/get-with-arrays.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/lib/fetch-permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/utils/fetch-dynamic-variable-data.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/permissions/modules/process-payload/process-payload.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/fields.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/should-clear-cache.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/collections.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/parse-filter.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/parse-filter.test.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/get-with-arrays.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/lib/fetch-permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/utils/fetch-dynamic-variable-data.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/permissions/modules/process-payload/process-payload.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/fields.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/should-clear-cache.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/collections.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts

@@ -13,7 +13,7 @@ runs on every write of a busy collection.
 | More than ~10 operations, or nested loops    | Hook or endpoint                                   |
 | Needs a library (Stripe SDK, PDF generation) | Operation extension, called from a flow, or a hook |
 | Must be unit tested or code reviewed         | Hook or endpoint                                   |
-| Core tier and already at 5 active flows      | Merge flows, or a hook (extensions don't count)    |
+| Core tier and already at the active-flow limit | Merge flows, or a hook (extensions don't count)    |
 
 ## Slug on create
 
@@ -93,5 +93,5 @@ Treat `$trigger.body` as untrusted input, especially before a `$full` write.
 - https://directus.com/docs/guides/flows
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/flows.json
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/operations.json
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/operations/condition/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/operations/condition/index.ts

@@ -56,7 +56,7 @@ Call it in the page loader with the `preview_secret` and `version` query values 
 - https://directus.com/docs/guides/content/content-versioning
 - https://directus.com/docs/frameworks/nextjs/live-preview
 - https://directus.com/docs/frameworks/nextjs/live-preview-draft-mode
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/visual/components/editing-layer.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/visual/components/editing-layer.vue
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/lib/directus/fetchers.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/app/api/draft/route.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/.env.example

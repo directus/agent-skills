@@ -52,9 +52,9 @@ In `cms-i18n`, default-locale content sits on the block's own fields and other l
 
 - https://directus.com/docs/guides/content/visual-editor/studio-module
 - https://directus.com/docs/guides/content/visual-editor/frontend-library
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/editable-element.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/visual/components/editing-layer.vue
-- https://github.com/directus/directus/blob/v12.5.1/app/src/views/private/components/overlay-item.vue
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/editable-element.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/visual/components/editing-layer.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/views/private/components/overlay-item.vue
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/lib/directus/visualEditing.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/app/%5B%5B...permalink%5D%5D/PageClient.tsx
 - https://github.com/directus-labs/starters/tree/main/cms/nuxt/app/utils/visualEditing.ts

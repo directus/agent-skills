@@ -29,30 +29,30 @@ recipe, not in another file.
 
 Each topic has one home skill. Others get one line and a pointer. Current owners:
 
-| Topic | Owner |
-| --- | --- |
-| REST/GraphQL query syntax, filters, error codes, versions API | `directus` |
-| Insights dashboards and panels (add `references/mcp.md` when the MCP Insights tool ships) | `directus-insights` |
-| Flows: triggers, operations, utility flows, loops, flow vs hook | `directus-flows` |
-| Roles, policies, permissions, license keys and core-tier limits | `directus-access-control` |
-| CORS and cookie env vars (server side) | `directus-self-hosting`; `directus-sdk` owns the client side |
-| Schema design, naming, relationships, seeding | `directus-content-modeling` |
-| Schema snapshot/apply and Environment Sync (`d6s`) | `directus-environment-sync` |
-| `@directus/sdk` usage | `directus-sdk` |
-| Live Preview, Visual Editor, reading drafts in a frontend | `directus-visual-editing` |
-| Extensions | `directus-extensions` |
-| Deploying, configuring, scaling, and backing up an instance | `directus-self-hosting` |
-| Version-to-version changes | `directus-upgrade` |
+| Topic                                                                                     | Owner                                                        |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| REST/GraphQL query syntax, filters, error codes, versions API                             | `directus`                                                   |
+| Insights dashboards and panels (add `references/mcp.md` when the MCP Insights tool ships) | `directus-insights`                                          |
+| Flows: triggers, operations, utility flows, loops, flow vs hook                           | `directus-flows`                                             |
+| Roles, policies, permissions, license keys and core-tier limits                           | `directus-access-control`                                    |
+| CORS and cookie env vars (server side)                                                    | `directus-self-hosting`; `directus-sdk` owns the client side |
+| Schema design, naming, relationships, seeding                                             | `directus-content-modeling`                                  |
+| Schema snapshot/apply and Environment Sync (`d6s`)                                        | `directus-environment-sync`                                  |
+| `@directus/sdk` usage                                                                     | `directus-sdk`                                               |
+| Live Preview, Visual Editor, reading drafts in a frontend                                 | `directus-visual-editing`                                    |
+| Extensions                                                                                | `directus-extensions`                                        |
+| Deploying, configuring, scaling, and backing up an instance                               | `directus-self-hosting`                                      |
+| Version-to-version changes                                                                | `directus-upgrade`                                           |
 
 ## Frontmatter
 
 ```yaml
 ---
 name: directus-sdk # must match the folder name, lowercase + hyphens
-description: "Use when ... Not for ..." # third person, trigger words, <= 450 chars
+description: 'Use when ... Not for ...' # third person, trigger words, <= 450 chars
 metadata:
   author: directus
-  directus-version: "12.5.1"
+  directus-version: '12.6.0'
 ---
 ```
 
@@ -68,16 +68,38 @@ three.
 
 ## Grounding
 
-- Verified against **Directus v12.5.1**. Every claim must come from the source at that tag, the current docs, or a
+- Verified against **Directus v12.6.0**. Every claim must come from the source at that tag, the current docs, or a
   starter/template. Not from memory. If you can't verify something, leave `<!-- TODO(verify): ... -->` instead of
   guessing.
 - End each reference with a `## Sources` list. Use:
   - Docs pages: `https://directus.com/docs/<path>` (strip numeric prefixes from the docs repo path, e.g.
     `content/guides/12.ai/2.mcp/3.tools.md` → `https://directus.com/docs/guides/ai/mcp/tools`).
-  - Source files pinned to the tag: `https://github.com/directus/directus/blob/v12.5.1/<path>`.
+  - Source files pinned to the tag: `https://github.com/directus/directus/blob/v12.6.0/<path>`.
   - Starters: `https://github.com/directus-labs/starters/tree/main/<path>`.
 - Facts vs opinions: house conventions (choices Directus would recommend but the product doesn't enforce) are marked
   `**House rule:**` so an agent can tell them from hard product behavior.
+
+## What to pin
+
+Skills go stale in three different ways. Treat each differently:
+
+| Kind of fact                                  | Example                                                      | How to write it                                                                                                                                    |
+| --------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Product behavior                              | `withOptions` drops auth, filter flows cancel on reject      | State it. It's covered by `directus-version` in the frontmatter and re-checked each release.                                                       |
+| Version gate                                  | MCP needs 11.12+, `draft`/`published` keys need v12          | Name the first version that has it. Gates never go stale. Don't write "latest" or "same as npm latest".                                            |
+| Values that change outside a Directus release | core-tier limits, starter file layouts, npm package versions | Don't repeat them. Give one owner the value "as of" a version, and tell agents how to read it live (`GET /license`, `npm view`, the starter repo). |
+
+Pin the Directus version once per skill (`directus-version`), not per claim. Write "Verified against" in prose only in
+the router. Upgrade hop files are the exception: they're about specific versions by design.
+
+## Releases of Directus
+
+The weekly `directus-release-check` workflow opens an issue when Directus ships a newer release. To close it:
+
+1. Read the release notes and breaking changes. Add the hop to `directus-upgrade` and update its version map.
+2. Diff the source between the two tags for the areas the skills cover and fix any claim that changed.
+3. Run the behavior evals on the new image: `node behavior-evals/run.mjs --clean --image directus/directus:<tag>`.
+4. Bump `directus-version` in every `SKILL.md` and the source links' tag, add a changeset, release.
 
 ## Pointing agents at more help
 

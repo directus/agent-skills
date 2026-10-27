@@ -160,8 +160,8 @@ pricing cards).
 ## Sources
 
 - https://directus.com/docs/guides/data-model/relationships
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/relations/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/fields/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/settings/routes/data-model/utils/get-junction-collection-name.ts
-- https://github.com/directus/directus/tree/v12.5.1/app/src/modules/settings/routes/data-model/field-detail/store/alterations
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/relations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/fields/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/settings/routes/data-model/utils/get-junction-collection-name.ts
+- https://github.com/directus/directus/tree/v12.6.0/app/src/modules/settings/routes/data-model/field-detail/store/alterations
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/relations.json

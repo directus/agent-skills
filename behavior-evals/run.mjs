@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Behavior evals: give a fresh headless Claude a Directus task, then check the instance over the API.
-// Each run gets a new Directus 12.5.1 container. Arms: `with` loads this repo as a plugin, `without` doesn't.
+// Each run gets a new Directus container (--image, default the version the skills are verified against). Arms: `with` loads this repo as a plugin, `without` doesn't.
 //
 //   node behavior-evals/run.mjs [--case <name,...>] [--arms with,without] [--runs 1] [--model sonnet] [--lanes 2]
+//     [--image directus/directus:<tag>] [--clean]
 
 import { spawn, execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -23,6 +24,7 @@ const { values: args } = parseArgs({
 		lanes: { type: 'string', default: '2' },
 		'max-turns': { type: 'string', default: '40' },
 		clean: { type: 'boolean', default: false },
+		image: { type: 'string', default: 'directus/directus:12.6.0' },
 	},
 });
 
@@ -37,7 +39,7 @@ if (args.clean && !oauthToken) {
 	process.exit(1);
 }
 
-const IMAGE = 'directus/directus:12.5.1';
+const IMAGE = args.image;
 const TOKEN = 'skills-evals-admin-token';
 const SEEDS = {
 	translations: ['posts'],
@@ -255,7 +257,7 @@ const cost = results.reduce((s, r) => s + (r.costUsd ?? 0), 0);
 const report = [
 	`# Behavior evals ${stamp}`,
 	'',
-	`Model: ${args.model}. Runs per arm: ${args.runs}. Cost: $${cost.toFixed(2)}.`,
+	`Image: ${IMAGE}. Model: ${args.model}. Runs per arm: ${args.runs}. Cost: $${cost.toFixed(2)}.`,
 	'',
 	`| Case | ${arms.join(' | ')} |`,
 	`| --- | ${arms.map(() => '---').join(' | ')} |`,

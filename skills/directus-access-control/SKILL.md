@@ -3,7 +3,7 @@ name: directus-access-control
 description: "Use when deciding who can do what in Directus or debugging access: roles, policies, permissions, the public policy, item and field rules, an unexpected 403 or missing field, editors who can't publish, multi-tenant setups, and licensing: license keys, core-tier limits, RESOURCE_RESTRICTED, lockdown. Not for login and tokens (directus) or promoting permissions (directus-environment-sync)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus access control
@@ -11,7 +11,7 @@ metadata:
 Design access as small, focused policies stacked on roles and users. Permissions live on policies, never on roles. Lines
 marked **House rule** are Directus's recommended approach; the rest is product behavior.
 
-_Verified against Directus v12.5.1 source (`api/src/permissions`, `api/src/services/permissions.ts`) and the docs._
+_Verified against Directus v12.6.0 source (`api/src/permissions`, `api/src/services/permissions.ts`) and the docs._
 
 ## First checks
 
@@ -28,7 +28,7 @@ _Verified against Directus v12.5.1 source (`api/src/permissions`, `api/src/servi
 
 - **Unlicensed custom rules deny, not widen.** On the core tier a row with any rule is hidden from `/permissions` and
   dropped at evaluation: the whole collection + action is denied. Saving one returns 403 `RESOURCE_RESTRICTED`.
-- **`fields` must be `["*"]` on core, on every write.** Omitted or `null` fields count as a custom rule, and a `PATCH`
+- **`fields` must be `["*"]` on core, on every row and every write (delete and share rows too).** Omitted or `null` fields count as a custom rule, and a `PATCH`
   without `"fields": ["*"]` is refused even when you change something else.
 - **Policies only add, except validation.** Item rules and fields union (OR) across policies. Validation rules from
   every policy must all pass (AND). IP allowlists drop the whole policy for other IPs; behind a proxy set

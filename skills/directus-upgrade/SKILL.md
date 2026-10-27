@@ -3,7 +3,7 @@ name: directus-upgrade
 description: "Use when upgrading Directus (v9, v10, v11, or 12.x) or the code that calls it: picking the path, backups, bumping the Docker tag or package, migrations, and fixing what breaks in frontends, SDK clients, extensions, and flows. Also errors and licensing lockdown after an upgrade, and matching @directus/sdk or extensions-sdk versions. Not for moving schema between instances (directus-environment-sync)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus upgrade
@@ -11,13 +11,13 @@ metadata:
 Move a Directus instance and its callers (frontends, SDK clients, extensions, flows, infra) to the version the user
 asked for. Pin both ends, back up, read every breaking change you cross, upgrade the server, then fix the callers.
 
-_Verified against Directus v12.5.1 source, release notes, and breaking-changes docs. If the instance disagrees, trust
+_Verified against Directus v12.6.0 source, release notes, and breaking-changes docs. If the instance disagrees, trust
 the instance._
 
 ## Procedure
 
 0. **Pin the target.** Use what the user asked for. For "latest", resolve with `gh release list -R directus/directus`
-   and say which version you chose. Verified up to 12.5.1; past that, read the newer release notes. Don't cross a major
+   and say which version you chose. Verified up to 12.6.0; past that, read the newer release notes. Don't cross a major
    nobody asked for: 12 brings license enforcement.
 1. **Find the current version.**
    - `GET /server/info` with a token: `data.version` on 10.8.3+. On v9 and 10.0 to 10.1, `data.directus.version` (admin
@@ -57,7 +57,8 @@ the instance._
   (how-it-works.md, "Schema snapshot and apply").
 - **Docker 12.1+ images have no `npm` or `npx`.** Use `docker compose exec directus node /directus/cli.js <command>`
   (every image) and install extensions at build time.
-- **Node 22 from 11.4.0.** `@directus/sdk` at 12.5.1 also declares `node >=22`.
+- **Node 26 from 12.6.0** (Node 22 from 11.4.0). `node:26` build stages have no Corepack. `@directus/sdk` 27.1 still
+  accepts `node >=22`.
 - **12.5.0 rejects malformed policy `ip_access` at request time** (500 for that user, including login). Clean
   `directus_policies.ip_access` first.
 
@@ -73,7 +74,7 @@ current version.
 | 10.13                        | [11.0](references/11.0.md), [11.x-minors](references/11.x-minors.md), then the 11.17 row             |
 | 11.0 to 11.16                | [11.x-minors](references/11.x-minors.md), then the 11.17 row                                         |
 | 11.17                        | [12.0](references/12.0.md), [12.x-minors](references/12.x-minors.md)                                 |
-| 12.0 to 12.4                 | [12.x-minors](references/12.x-minors.md)                                                             |
+| 12.0 to 12.5                 | [12.x-minors](references/12.x-minors.md)                                                             |
 | Patch bump within a minor    | That major's minors file; search it for the target patch (10.6.3, 10.13.2, 11.1.2, 11.14.1 break)    |
 | Any, plus SDK/extension work | [sdk-and-extensions](references/sdk-and-extensions.md) (version map, `host`, extension API changes)  |
 | Running the upgrade          | [checklist](references/checklist.md) (copyable checklist, commands, env grep, rollback)              |
@@ -85,4 +86,4 @@ current version.
 2. Raw markdown for any docs page: `https://directus.com/docs/raw/<path>.md`, for example
    `https://directus.com/docs/raw/releases/breaking-changes/version-12.md`. Index: `https://directus.com/docs/llms.txt`.
 3. The instance itself: its error messages, `GET /server/info`, `GET /server/specs/oas`, the schema, and the
-   `directus_migrations` table. Release notes per tag: `gh release view v12.5.0 -R directus/directus`.
+   `directus_migrations` table. Release notes per tag: `gh release view v12.6.0 -R directus/directus`.

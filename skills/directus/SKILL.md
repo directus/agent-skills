@@ -3,7 +3,7 @@ name: directus
 description: "Use when calling a running Directus instance over REST, GraphQL, WebSockets, or its /mcp server: reading and writing items, filters and relational queries, auth and tokens, error codes, files and assets, content versions, import and export, revisions, and user signup. Not for SDK code, schema, permissions, Flows, Insights, preview, extensions, hosting, sync, or upgrades; use the matching directus-* skill."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus
@@ -11,7 +11,7 @@ metadata:
 Work with a running Directus instance over REST, GraphQL, WebSockets, or the built-in MCP server. Read the traps, then
 load the reference that matches the task.
 
-_Verified against Directus v12.5.1. If the instance behaves differently, trust the instance and its error messages._
+_Verified against Directus v12.6.0. If the instance behaves differently, trust the instance and its error messages._
 
 ## First checks
 
@@ -79,9 +79,9 @@ _Verified against Directus v12.5.1. If the instance behaves differently, trust t
 | Activity log, revisions, who changed what, reverting, recovering deleted items, retention    | [references/audit-and-restore.md](references/audit-and-restore.md)   |
 | AI Assistant, AI Translations, provider keys, which AI features need a license               | [references/ai-settings.md](references/ai-settings.md)               |
 
-**Related skills:** `directus-flows`, `directus-access-control`, `directus-content-modeling`, `directus-sdk`,
+**Related skills:** `directus-flows`, `directus-insights`, `directus-access-control`, `directus-content-modeling`, `directus-sdk`,
 `directus-visual-editing`, `directus-extensions`, `directus-environment-sync` (promoting schema and config with `d6s`),
-`directus-upgrade`.
+`directus-self-hosting`, `directus-upgrade`.
 
 ## Go deeper
 

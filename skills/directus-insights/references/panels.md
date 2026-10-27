@@ -178,8 +178,8 @@ that is exactly `"{{ key }}"` keeps its type, so an array of ids stays an array.
 ## Sources
 
 - https://directus.com/docs/guides/insights/panels
-- https://github.com/directus/directus/tree/v12.5.1/app/src/panels
-- https://github.com/directus/directus/blob/v12.5.1/app/src/stores/insights.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/utils/query-to-gql-string.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/apply-options-data.ts
+- https://github.com/directus/directus/tree/v12.6.0/app/src/panels
+- https://github.com/directus/directus/blob/v12.6.0/app/src/stores/insights.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/utils/query-to-gql-string.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/apply-options-data.ts
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/panels.json

@@ -86,8 +86,8 @@ email or call webhooks), and settings such as `project_url`. Disable or edit tho
 - https://directus.com/docs/self-hosting/deploying
 - https://directus.com/docs/self-hosting/requirements
 - https://directus.com/docs/configuration/files
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/snapshot.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/database/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/payload.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/files.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/snapshot.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/database/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/payload.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/files.ts
 - Live 12.5.1 + Postgres 17 compose stack (`pg_dump -Fc` / `pg_restore --clean --if-exists --no-owner` round trip)

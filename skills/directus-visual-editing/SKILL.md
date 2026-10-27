@@ -3,7 +3,7 @@ name: directus-visual-editing
 description: "Use when a website shows Directus drafts or in-Studio edits: Live Preview, the Visual Editor, @directus/visual-editing, reading content versions (?version=draft) in a frontend, preview URLs and tokens, CSP framing, and draft mode in Next.js, Nuxt, Astro, or SvelteKit. Also debugging a blocked iframe, nothing highlighting, or stale data after save. Not for SDK setup (directus-sdk) or page builder schema (directus-content-modeling)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
   visual-editing-version: '2.1.0'
 ---
 
@@ -13,8 +13,8 @@ Connect a frontend to the Studio's Live Preview pane, the Visual Editor module, 
 `published`, custom keys). Directus only loads your URL in an iframe and talks to it over `postMessage`; reading the
 version, auth, and refreshing are frontend code.
 
-_Verified against Directus v12.5.1 (`packages/visual-editing`, `app/src/modules/visual`), `@directus/visual-editing`
-2.1.0 (same as npm latest), and the CMS starters. The standalone `directus/visual-editing` repo is stale (1.1.0); use
+_Verified against Directus v12.6.0 (`packages/visual-editing`, `app/src/modules/visual`), `@directus/visual-editing`
+2.1.0, and the CMS starters. The standalone `directus/visual-editing` repo is stale (1.1.0); use
 the monorepo package._
 
 ## First checks

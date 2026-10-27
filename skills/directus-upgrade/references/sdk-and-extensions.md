@@ -37,9 +37,11 @@ and bump both together.
 | 12.2             | 24.x                                          | 18.0.2                     | `>=22`                    |
 | 12.3             | 25.x                                          | 18.0.3                     | `>=22`                    |
 | 12.4             | 26.x                                          | 18.0.5                     | `>=22`                    |
-| 12.5             | 27.x                                          | 18.0.6                     | `>=22`                    |
+| 12.5             | 27.0.x                                        | 18.0.6                     | `>=22`                    |
+| 12.6             | 27.1.x                                        | 18.1.0                     | `>=26`                    |
 
-At 12.5.1, `@directus/sdk` declares `engines.node: ">=22"` and `@directus/extensions-sdk` declares `>=20.19.0`.
+At 12.6.0, `@directus/sdk` still declares `engines.node: ">=22"` and `@directus/extensions-sdk` `>=20.19.0`, while
+the server needs Node 26. `@directus/cli` (`d6s`) is 12.4.0 at 12.6.0.
 
 ## Upgrading `@directus/sdk`
 
@@ -61,6 +63,7 @@ At 12.5.1, `@directus/sdk` declares `engines.node: ">=22"` and `@directus/extens
 | 23 (12.1)                 | `generateHash`, `verifyHash` removed                                                                | `rg -n "generateHash\|verifyHash"`      | custom endpoint                            |
 | 24 (12.2)                 | `schemaDiff(snapshot, { force, mode })`                                                             | `rg -n "schemaDiff\("`                  | options object                             |
 | 25, 26, 27 (12.3 to 12.5) | system type corrections (nullable fields, `string[]` ip_access, `number` notification id)           | `tsc --noEmit`                          | handle nulls; see `12.x-minors.md`         |
+| 27.1 (12.6)               | not breaking: `DirectusSettings.default_exports_folder`; `customEndpoint` `FormData` upload fix     | none                                    | nothing required                           |
 
 4. Type check (`tsc --noEmit`, `vue-tsc --noEmit`, `nuxi typecheck`) and fix. Regenerate generated schema types.
 5. Content versions: send `version: 'published'` (or `'draft'`), not `'main'`, in new code.
@@ -81,8 +84,8 @@ At 12.5.1, `@directus/sdk` declares `engines.node: ">=22"` and `@directus/extens
   to show compatibility with the running server.
 - At 12.5.1 the API does not check `host` when loading local extensions: a wrong range won't stop a local extension
   loading, but Marketplace listings show it as incompatible.
-- `create-directus-extension` at 12.5.1 still writes `host: "^10.10.0"` (`LAST_BREAKING_RELEASE`), which doesn't match
-  11.x or 12.x. When publishing, widen it to the majors you've tested, e.g. `">=10.10.0 <13.0.0"` or `"^12.0.0"`.
+- `create-directus-extension` at 12.6.0 still writes `host: "^10.10.0"` (`LAST_BREAKING_RELEASE`), which doesn't match
+  11.x or 12.x. `richtext` extensions get `^12.6.0`, and a bundle takes the highest entry minimum. When publishing, widen it to the majors you've tested, e.g. `">=10.10.0 <13.0.0"` or `"^12.0.0"`.
 - Detect: `rg -n '"host"' -g 'package.json' -g '!node_modules' extensions/`.
 
 ## Extension API changes
@@ -90,7 +93,8 @@ At 12.5.1, `@directus/sdk` declares `engines.node: ">=22"` and `@directus/extens
 Each hop file covers the extension-facing changes for its releases, with detect patterns. The big ones:
 10.4.0 (`exceptions` → `@directus/errors`), 10.10.0 (folder layout, `AuthenticationService.login`), 11.0.0
 (`usersStore` role flags, `preRegisterCheck`), 11.10.1 (typed services), 11.13.0 (`<scope>.delete` hook timing),
-12.0.0 (theme tokens), 12.3.0 (storage `exists()` throws), 12.5.0 (license error classes).
+12.0.0 (theme tokens), 12.3.0 (storage `exists()` throws), 12.5.0 (license error classes), 12.6.0 (Node 26 for native
+modules, `PUBLIC_POLICY_ID` removed, `richtext` type added).
 
 ## Sources
 
@@ -99,9 +103,13 @@ Each hop file covers the extension-facing changes for its releases, with detect 
 - https://directus.com/docs/releases/breaking-changes/version-12
 - https://directus.com/docs/self-hosting/including-extensions
 - https://directus.com/docs/self-hosting/hardened-images
-- https://github.com/directus/directus/blob/v12.5.1/sdk/package.json
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/utils/error.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/package.json
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/constants/last-breaking.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/settings/routes/marketplace/routes/extension/components/extension-metadata-compatibility.vue
+- https://github.com/directus/directus/blob/v12.6.0/sdk/package.json
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/utils/error.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/package.json
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/constants/last-breaking.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/settings/routes/marketplace/routes/extension/components/extension-metadata-compatibility.vue
 - https://github.com/directus/directus/releases/tag/v12.0.0
+- https://github.com/directus/directus/blob/v12.6.0/sdk/package.json
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/package.json
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/package.json
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/commands/helpers/get-default-host.ts

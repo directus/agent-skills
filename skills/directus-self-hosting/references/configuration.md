@@ -145,6 +145,10 @@ STORAGE_S3_SECRET=...
   shipper, `LOG_HTTP_IGNORE_PATHS=/server/ping` to keep probe noise out.
 - `TELEMETRY=false` stops the usage report only if your license allows it (some require it; check **Settings →
   License**). `PROJECT_OWNER_ENABLED=false` stops the one-time owner registration.
+- From 12.6.0 telemetry and compliance reports go to `https://telemetry.directus.com` (`TELEMETRY_URL`,
+  `COMPLIANCE_URL`). A failed report logs nothing, so a firewall that blocks it fails silently. Allow that egress when
+  your license requires reporting.
+- npm installs (not Docker) need Node 26 from 12.6.0 (`engines.node >=26`).
 
 ## Sources
 
@@ -156,11 +160,11 @@ STORAGE_S3_SECRET=...
 - https://directus.com/docs/configuration/files
 - https://directus.com/docs/configuration/logging
 - https://directus.com/docs/licensing/telemetry
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/app.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/get-secret.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/payload.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/get-ip-from-req.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/rate-limiter.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/constants.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/storage-driver-s3/src/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/app.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/get-secret.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/payload.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/get-ip-from-req.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/rate-limiter.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/constants.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/storage-driver-s3/src/index.ts

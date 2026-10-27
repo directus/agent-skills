@@ -30,7 +30,7 @@ Admin-only fields on `/settings` (the **Settings → AI** form):
 | Field                                                                                   | Notes                                                                                                          |
 | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `ai_openai_api_key`, `ai_anthropic_api_key`, `ai_google_api_key`                        | Encrypted at rest; reads return `**********`. One key per project, shared by every user                        |
-| `ai_openai_allowed_models`, `ai_anthropic_allowed_models`, `ai_google_allowed_models`   | Array of model ids. Seeded with defaults; an empty list means no models from that provider. Custom ids allowed |
+| `ai_openai_allowed_models`, `ai_anthropic_allowed_models`, `ai_google_allowed_models`   | Array of model ids. `null` (12.6.0+) means the recommended defaults, which change between releases; `[]` means none. Chat rejects models not in the list. Custom ids allowed |
 | `ai_system_prompt`                                                                      | Extra instructions for the assistant                                                                           |
 | `ai_openai_compatible_name`, `_base_url`, `_api_key`, `_headers`, `_models`             | Any OpenAI-compatible endpoint (Ollama, LM Studio, Azure OpenAI, ...). **Licensed**                            |
 | `ai_translation_default_model`, `ai_translation_glossary`, `ai_translation_style_guide` | Translations only. Glossary is a list of term + note pairs                                                     |
@@ -78,12 +78,12 @@ when the instance is locked. Other licensing effects: `directus-access-control` 
 - https://directus.com/docs/guides/ai/assistant/tools
 - https://directus.com/docs/guides/ai/translations
 - https://directus.com/docs/licensing/overview
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/fields/settings.yaml
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/settings.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/constants.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/server.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/chat/controllers/chat.post.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/chat/controllers/object.post.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/custom-llms-enabled.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/interfaces/translations/translations.vue
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/settings/routes/ai/overview.vue
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/fields/settings.yaml
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/settings.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/constants.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/server.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/chat/controllers/chat.post.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/chat/controllers/object.post.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/custom-llms-enabled.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/interfaces/translations/translations.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/settings/routes/ai/overview.vue

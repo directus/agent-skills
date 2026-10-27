@@ -21,7 +21,7 @@
 
 The official [Agent Skills](https://agentskills.io) bundle for [Directus](https://directus.com). Each skill is a short
 router that loads only the reference an agent needs for the task, plus the traps it would otherwise get wrong. Verified
-against **Directus 12.5.1**.
+against **Directus 12.6.0**.
 
 ## Skills
 
@@ -135,7 +135,7 @@ claude plugin eval . --case 'access-*' --runs 1 --ablation none --no-publish   #
 
 ## Behavior evals
 
-`behavior-evals/` checks what an agent actually builds. Each case starts a fresh Directus 12.5.1 container (Docker),
+`behavior-evals/` checks what an agent actually builds. Each case starts a fresh Directus container (12.6.0 by default, `--image` for another) (Docker),
 seeds it, gives a headless `claude -p` the task with and without this plugin, then checks the instance over the API
 (naming, `on_delete`, keys, and that nested writes, flows, and permissions really work).
 

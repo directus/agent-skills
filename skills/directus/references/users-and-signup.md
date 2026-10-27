@@ -13,7 +13,7 @@ in from a frontend. Permissions for members belong to `directus-access-control`;
 
 ## Members cost no seats, unless they get App Access
 
-On the core tier (3 seats), a seat is an **active** user with at least one policy granting App Access or Admin Access.
+On the core tier (seat limit in `GET /license`), a seat is an **active** user with at least one policy granting App Access or Admin Access.
 A member role whose policies have `app_access: false` and `admin_access: false` takes no seat, however many members
 register. Checked on 12.5.1: four registrations into such a role left seat usage at 1.
 
@@ -106,12 +106,12 @@ read on their own user (fields they need) to show a profile.
 - https://directus.com/docs/configuration/security-limits
 - https://directus.com/docs/configuration/email
 - https://directus.com/docs/licensing/overview
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/users.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/users.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/auth.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/middleware/rate-limiter-registration.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/seats.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/validate-user-count-integrity.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/telemetry/utils/check-user-limits.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/database/migrations/20240422A-public-registration.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/users.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/users.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/auth.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/middleware/rate-limiter-registration.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/seats.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/validate-user-count-integrity.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/telemetry/utils/check-user-limits.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/database/migrations/20240422A-public-registration.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts

@@ -61,8 +61,8 @@ instance and reference it as `{{$env.MY_API_KEY}}`, so the sync file holds the r
 - https://directus.com/docs/guides/environment-sync/common-workflows
 - https://directus.com/docs/configuration/flows
 - https://directus.com/docs/guides/flows/data-chain
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/push.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/pull.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/utils/preflight.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/utils/resources.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/push.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/pull.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/utils/preflight.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/utils/resources.ts

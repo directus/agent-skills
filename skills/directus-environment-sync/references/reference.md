@@ -51,8 +51,8 @@ Symptoms and fixes: [troubleshooting.md](troubleshooting.md).
 ## Sources
 
 - https://directus.com/docs/guides/environment-sync/reference
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/kernel/run.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/pull.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/diff.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/push.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/cli/src/commands/sync/utils/resources.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/kernel/run.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/pull.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/diff.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/push.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/cli/src/commands/sync/utils/resources.ts

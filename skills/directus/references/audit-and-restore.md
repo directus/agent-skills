@@ -80,7 +80,7 @@ Children removed by the delete (cascade or `one_deselect_action: delete`) need t
   deletes activity older than `ACTIVITY_RETENTION` (90d), flow logs older than `FLOW_LOGS_RETENTION` (90d), and
   revisions older than `REVISIONS_RETENTION` (90d). Revisions are deleted with their activity row (foreign key
   cascade), so they never outlive it.
-- **Core tier reads only 30 days.** `/activity` and `/revisions` filter out rows older than 30 days for every caller,
+- **Core tier reads only recent history** (`entitlements.activity_historical_timeframe`, 30 days at 12.5.1). `/activity` and `/revisions` filter out older rows for every caller,
   admins included. Older rows stay in the database and come back with a license. Details: `directus-access-control`
   (`references/licensing.md`).
 - So on core, "restore last quarter's version" fails through the API even when the row exists. Say so instead of
@@ -92,12 +92,12 @@ Children removed by the delete (cascade or `one_deselect_action: delete`) need t
 - https://directus.com/docs/guides/content/editor
 - https://directus.com/docs/configuration/logging
 - https://directus.com/docs/licensing/overview
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/revisions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/activity.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/utils.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/schedules/retention.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/get-history-filter-query.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/database/migrations/20210519A-add-system-fk-triggers.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/constants/src/activity.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/content/routes/item.vue
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/revisions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/activity.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/utils.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/schedules/retention.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/get-history-filter-query.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/database/migrations/20210519A-add-system-fk-triggers.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/constants/src/activity.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/content/routes/item.vue

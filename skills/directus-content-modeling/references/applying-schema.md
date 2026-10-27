@@ -82,6 +82,6 @@ and wants PostgreSQL (don't extract from SQLite and apply to Postgres). v0.5.0+ 
 
 - https://directus.com/docs/guides/environment-sync
 - https://directus.com/docs/guides/ai/mcp/tools
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/schema.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/collections/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/schema.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/collections/prompt.md
 - https://github.com/directus-labs/directus-template-cli/blob/main/README.md

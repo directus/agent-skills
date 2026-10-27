@@ -92,7 +92,7 @@ Item operations with `permissions: "$trigger"` use this. `null` means no permiss
 - https://directus.com/docs/guides/flows/triggers
 - https://directus.com/docs/guides/flows/data-chain
 - https://directus.com/docs/configuration/flows
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/emitter.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/flows/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/emitter.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/flows/prompt.md

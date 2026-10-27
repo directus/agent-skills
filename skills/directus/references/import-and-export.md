@@ -87,7 +87,7 @@ Neither `/items` nor the import endpoints match on anything but the primary key.
   (`csv`, `csv_utf8`, `json`, `xml`, `yaml`). Normal permissions and query limits apply.
 - `POST /utils/export/<collection>` with `{"query": {...}, "format": "csv", "file": {"folder": "<uuid>"}}` returns 204
   at once, writes the file to the File Library in batches of `EXPORT_BATCH_SIZE` (5000), and notifies the caller.
-  Exported files are ordinary files: anyone with read access to them in `directus_files` can download them
+  Without `file.folder`, 12.6.0+ uses `directus_settings.default_exports_folder` if set. Exported files are ordinary files: anyone with read access to them in `directus_files` can download them
   (folder access is a separate permission and doesn't grant it).
 
 ## Moving in from another CMS
@@ -95,7 +95,7 @@ Neither `/items` nor the import endpoints match on anything but the primary key.
 Same steps for WordPress, Contentful, Strapi, or anything else with an export or API:
 
 1. **Model first.** Design collections in Directus (`directus-content-modeling`); don't mirror the old CMS's quirks.
-   Check the core-tier collection limit (25, junctions count) before creating.
+   Check the collection limit before creating (`GET /license`: `usage.collections` vs `entitlements.collections.limit`; junctions count).
 2. **Map fields.** One table per collection: source field → Directus field, type change, transform (HTML cleanup,
    date format, status values). Get the user to confirm it.
 3. **Files first.** `POST /files/import` each media URL, record `source id → file id`. Rewrite image URLs inside rich
@@ -112,11 +112,11 @@ Same steps for WordPress, Contentful, Strapi, or anything else with an export or
 - https://directus.com/docs/configuration/security-limits
 - https://directus.com/docs/releases/changelog
 - https://directus.com/docs/releases/breaking-changes/version-12
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/utils.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/import/import.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/import/remap-foreign-keys.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/import/validate-flat-data.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/middleware/read-file-upload-body.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/export.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/utils.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/import/import.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/import/remap-foreign-keys.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/import/validate-flat-data.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/middleware/read-file-upload-body.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/export.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts

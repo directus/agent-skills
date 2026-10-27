@@ -96,7 +96,8 @@ There is no official type generator in the Directus monorepo at v12.5.1. Options
 
 - **Hand-write** the Schema for the collections the app uses. Fine for small apps.
 - **Generate from the instance:** read `GET /fields` and `GET /relations` with an admin token and write a `Schema`. Check the project for an existing generated file (`directus-schema.ts` or similar) and its script first.
-- **OpenAPI:** `GET /server/specs/oas` (SDK `readOpenApiSpec()`) works with any OpenAPI type tool, but is not shaped like the SDK Schema.
+- **OpenAPI:** `GET /server/specs/oas` (SDK `readOpenApiSpec()`) works with any OpenAPI type tool, but is not shaped like the SDK Schema. From 12.6.0 list metadata is `#/components/schemas/Metadata` (was `x-metadata`).
+- `@directus/schema-builder` 2.0 has `types()`, but its readme marks it internal. Don't depend on it.
 
 **House rule:** regenerate types after every schema change and commit the output. Use the admin token only for generation, never at runtime.
 
@@ -115,15 +116,15 @@ There is no official type generator in the Directus monorepo at v12.5.1. Options
 
 - https://directus.com/docs/tutorials/tips-and-tricks/advanced-types-with-the-directus-sdk
 - https://directus.com/docs/guides/connect/sdk
-- https://github.com/directus/directus/blob/v12.5.1/sdk/readme.md
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/types/schema.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/types/fields.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/types/output.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/types/functions.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/schema/core.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/schema/user.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/utils/throw-core-collection.ts
-- https://github.com/directus/directus/blob/v12.5.1/sdk/tests/schema.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/readme.md
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/types/schema.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/types/fields.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/types/output.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/types/functions.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/schema/core.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/schema/user.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/utils/throw-core-collection.ts
+- https://github.com/directus/directus/blob/v12.6.0/sdk/tests/schema.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/lib/directus/generateDirectusTypes.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/types/directus-schema.ts
 - Type behavior above (missing `directus_files`, `string[]` fields, unexpanded relations, singleton `readItems`) was checked with `tsc --strict` against `@directus/sdk@27.0.0`.

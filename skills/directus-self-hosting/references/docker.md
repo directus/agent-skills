@@ -128,10 +128,10 @@ logs `Database already initialized, skipping install` and runs pending migration
 No `npm` or `npx` in the image, so only the Marketplace installs at runtime. For npm packages, build an image:
 
 ```dockerfile
-FROM node:22-alpine AS build
-RUN corepack enable
+# Match the image's Node major (26 from 12.6.0) so native modules load. node:26 images have no Corepack.
+FROM node:26-alpine AS build
 WORKDIR /extension-build
-RUN pnpm init && pnpm add @directus-labs/spreadsheet-layout
+RUN npm init -y && npm install @directus-labs/spreadsheet-layout
 
 FROM directus/directus:12.5.1
 COPY --from=build --chown=node:node /extension-build/node_modules/@directus-labs/spreadsheet-layout /directus/extensions/spreadsheet-layout
@@ -163,9 +163,9 @@ Railway, Fly, Render, DigitalOcean, Coolify, Northflank, ECS, Kubernetes all run
 - https://directus.com/docs/self-hosting/hardened-images
 - https://directus.com/docs/self-hosting/requirements
 - https://directus.com/docs/configuration/pm2
-- https://github.com/directus/directus/blob/v12.5.1/Dockerfile
-- https://github.com/directus/directus/blob/v12.5.1/docker-entrypoint.cjs
-- https://github.com/directus/directus/blob/v12.5.1/ecosystem.config.cjs
-- https://github.com/directus/directus/blob/v12.5.1/api/src/cli/commands/bootstrap/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/extensions/lib/installation/manager.ts
+- https://github.com/directus/directus/blob/v12.6.0/Dockerfile
+- https://github.com/directus/directus/blob/v12.6.0/docker-entrypoint.cjs
+- https://github.com/directus/directus/blob/v12.6.0/ecosystem.config.cjs
+- https://github.com/directus/directus/blob/v12.6.0/api/src/cli/commands/bootstrap/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/lib/installation/manager.ts
 - Live `directus/directus:12.5.1` and `12.5.1-dhi` containers (user, paths, health check commands)

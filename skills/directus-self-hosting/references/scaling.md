@@ -43,6 +43,9 @@ Plus: the same `SECRET` everywhere; uploads on S3 or another driver (or one shar
 image or loaded from storage with `EXTENSIONS_LOCATION`. A Marketplace install writes files only on the replica that
 handled it, unless `EXTENSIONS_LOCATION` is set.
 
+`REDIS_ENABLED=false` turns Redis off even when `REDIS` is set (handy for one-off CLI runs). Unset, Redis is on when
+`REDIS` or `REDIS_HOST` is present.
+
 Sharing one Redis between several Directus projects: give each project its own namespaces (`CACHE_NAMESPACE`,
 `SYNCHRONIZATION_NAMESPACE`, `REDIS_BUS_NAMESPACE`, `REDIS_LOCK_NAMESPACE`, and the rest listed in the synchronization
 docs). **House rule:** one Redis database per project is simpler.
@@ -59,6 +62,9 @@ docs). **House rule:** one Redis database per project is simpler.
 - The proxy must pass `Upgrade` / `Connection` headers on `/websocket` and `/graphql`, and its idle timeout must be
   longer than `WEBSOCKETS_HEARTBEAT_PERIOD` (default 30 seconds), or sockets drop.
 - Set `IP_TRUST_PROXY` to the hop count in front of Directus ([configuration.md](configuration.md#proxies-cors-cookies)).
+- **Kubernetes:** liveness and readiness probes on `GET /server/ping` (`initialDelaySeconds` 60, since the first boot
+  runs migrations). There's no migration lock, so run migrations once per release in a Job (or `initContainer` on a
+  single-replica rollout) with `node /directus/cli.js bootstrap`, then roll the Deployment.
 
 ## Cache in operations
 
@@ -106,14 +112,14 @@ database's `max_connections` (managed Postgres plans are often low), or put a po
 - https://directus.com/docs/configuration/database
 - https://directus.com/docs/configuration/pm2
 - https://directus.com/docs/configuration/healthcheck
-- https://github.com/directus/directus/blob/v12.5.1/api/src/redis/utils/redis-config-available.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/bus/lib/use-bus.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/lock/lib/use-lock.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/synchronization.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/schedule.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/cache.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/cli/commands/cache/clear.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/rate-limiter.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/websocket/handlers/subscribe.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/database/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/app.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/redis/utils/redis-config-available.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/bus/lib/use-bus.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/lock/lib/use-lock.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/synchronization.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/schedule.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/cache.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/cli/commands/cache/clear.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/rate-limiter.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/websocket/handlers/subscribe.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/database/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/app.ts

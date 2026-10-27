@@ -86,7 +86,7 @@ array of the children's return values, in input order.
 
 ## Licensing
 
-On the core tier, five **active** flows is the limit, and every utility counts. Creating or activating a flow past the
+On the core tier, **active** flows are capped (`GET /license` → `entitlements.flows.limit`), and every utility counts. Creating or activating a flow past the
 limit fails with `LIMIT_EXCEEDED`; inactive flows are free but a parent can't call them. On a core-tier project:
 
 - Inline steps that only one flow uses. A utility earns its slot when two or more flows call it, or when it's a loop body.
@@ -100,12 +100,12 @@ then delete the wrapper (it uses a license slot).
 
 ## Sources
 
-- https://github.com/directus/directus/blob/v12.5.1/api/src/operations/trigger/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/license/entitlements/lib/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/flows/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/trigger-flow/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/operations/trigger/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/license/entitlements/lib/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/flows/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/trigger-flow/index.ts
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/flows.json
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/operations.json
 - https://github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation

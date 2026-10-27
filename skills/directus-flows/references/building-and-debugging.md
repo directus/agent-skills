@@ -33,8 +33,9 @@ curl -s -X POST "$URL/flows" -H "Authorization: Bearer $TOKEN" -H 'Content-Type:
 Read the result back with
 `GET /flows/<id>?fields=*,operations.*` and check every link. Deleting a flow deletes its operations. Deleting an operation that another one points to
 fails (500 on 12.5.1: `resolve`/`reject` are foreign keys with no delete rule). PATCH the previous operation's
-`resolve` or `reject` to the next one (or `null`) first, then delete. `resolve` and `reject` are unique, so
-two operations can't point at the same next one: branches don't merge. Duplicate the shared tail or call a utility.
+`resolve` or `reject` to the next one (or `null`) first, then delete. `resolve` is unique across operations, and so
+is `reject`: two operations can't both `resolve` to the same next step (one `resolve` and another's `reject` can).
+Duplicate a shared tail or call a utility.
 
 ## With MCP
 
@@ -101,10 +102,10 @@ so you're not writing a revision with the full payload on every save.
 ## Sources
 
 - https://directus.com/docs/guides/flows
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/flows/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/operations/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/operations/position.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/trigger-flow/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/flows/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/operations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/operations/position.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/trigger-flow/index.ts

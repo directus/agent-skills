@@ -69,7 +69,7 @@ query {
 - https://directus.com/docs/configuration/general
 - https://directus.com/docs/configuration/security-limits
 - https://directus.com/docs/licensing/overview
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/graphql.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/graphql/schema/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/server.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/graphql.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/graphql/schema/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/server.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts
