@@ -1,6 +1,6 @@
 ---
 name: directus-insights
-description: 'Use when building or changing Directus Insights dashboards and panels: metrics, lists, time series, bar, line, and pie charts, meters, labels, global and relational variables, panel options and layout, dashboard permissions, or creating dashboards through the API. Not for querying items or aggregates from code (directus), automating summary data with Flows (directus-flows), writing custom panel extensions (directus-extensions), or who can see which data (directus-access-control).'
+description: "Use when building Directus Insights dashboards and panels: metrics, lists, time series, bar, line, and pie charts, meters, labels, variables, layout, and dashboard access, including creating them over the API. Not for aggregate queries from code (directus) or custom panel extensions (directus-extensions)."
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -9,8 +9,8 @@ metadata:
 # Directus Insights
 
 Build dashboards (`directus_dashboards`) made of panels (`directus_panels`). Each panel is a `type` plus an `options`
-object. The Studio turns every panel's options into one GraphQL request and runs it **as the person viewing the
-dashboard**. Nothing is precomputed or cached server-side.
+object. The Studio turns the options of every data panel (not labels or variables) into one batched GraphQL request and
+runs it **as the person viewing the dashboard**. Nothing is precomputed.
 
 ## First checks
 
@@ -21,22 +21,23 @@ dashboard**. Nothing is precomputed or cached server-side.
    <!-- When the MCP Insights tool ships: add references/mcp.md and route to it here. -->
 3. **Check who will view it.** Viewers need read on the charted collections and on `directus_dashboards` /
    `directus_panels`, which app access doesn't include by default.
-4. **Copy before inventing.** If the instance already has a dashboard, read its panels
-   (`GET /panels?filter[dashboard][_eq]=<id>`) and reuse their `options` shapes, especially for chart types.
+4. **Use the known payloads.** [references/panels.md](references/panels.md) has the required `options` keys for every
+   type. The API saves any `options` unchecked, so a wrong key only shows up as an empty or failing panel.
 
 ## Critical traps
 
-- **Set the layout yourself.** The grid starts at `position_x: 1`, `position_y: 1`. Always send `position_x`,
-  `position_y`, `width`, and `height`. The API checks neither overlaps nor minimum sizes; the Studio does.
+- **Set the layout yourself.** The grid starts at `position_x: 1`, `position_y: 1`. The API requires `position_x`,
+  `position_y`, `width`, and `height`, but checks neither overlaps nor minimum sizes; the Studio does.
 - **Panels run as the viewer.** A panel over a collection the viewer can't read shows an error or nothing, and
   aggregates only count rows the viewer can see.
-- **`time-series` filters to `range` on `dateField`** (`$NOW(-<range>)` to `$NOW`, default `1 week`). Use `auto` for
-  all data. It needs a datetime field.
-- **Singletons can't be charted** by `metric` or `time-series`.
-- **Variables are typed.** A variable used in a datetime filter must be a datetime. Values live in the browser
-  session, not per user.
-- **Every panel queries on load and on each auto-refresh.** Filter large collections, or chart a summary collection
-  a scheduled flow keeps up to date.
+- **`time-series` filters to `range` on `dateField`** (`$NOW(-<range>)` to `$NOW`, default `1 week`). Use `auto` for all
+  data. It needs a datetime field.
+- **Singletons can't be charted** by `metric`, `metric-list`, `list`, or `time-series`. They render empty.
+- **Variables are typed.** A variable used in a datetime filter must be a datetime. Values live in the open Studio tab,
+  not per user.
+- **Data panels query on load and on each auto-refresh.** Filter large collections, or chart a summary collection a
+  scheduled flow keeps up to date. With `CACHE_ENABLED`, `/graphql` responses use the normal cache, but Studio requests
+  skip it unless `CACHE_AUTO_PURGE` is on.
 
 ## Routing
 

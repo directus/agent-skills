@@ -37,8 +37,11 @@ collection limit (junctions and translations count too) and multiply every polic
 - Singletons hold one item per project. Per-site settings (`globals`, header, footer) become a normal collection with a
   unique `site` M2O.
 - **Unique is global, not per tenant.** A field's unique setting is a single-column index, so a unique `slug` or
-  `permalink` collides across sites. Leave it off and enforce `site` + `slug` uniqueness with a blocking filter Flow
-  (`directus-flows`). Frontends must filter by `site` and `slug`, or one site serves another's page.
+  `permalink` collides across sites. Leave it off and add a composite unique index on (`site`, `slug`) with a
+  migration (`directus-content-modeling` indexes reference); a duplicate then fails with `RECORD_NOT_UNIQUE`. A filter
+  Flow that reads before the write can only add a friendlier error: two saves at once both pass it. Snapshots and
+  `d6s` don't carry composite indexes, so ship the migration with each environment. Frontends must filter by `site`
+  and `slug`, or one site serves another's page.
 - Files: one folder per site (add a `folder` M2O to `directus_folders` on `sites`), rules on `directus_files.folder`.
   Rules match the direct folder only; subfolders need `folder.parent` too.
 
@@ -61,8 +64,11 @@ A tenant editor policy (**licensed**), several-tenants form. Swap in the one-ten
 | `pages`, `posts`      | create               | -                                                                                                 | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}` |
 | `page_blocks`         | read, update, delete | `{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}`                                          | -                                               |
 | each block collection | read, update, delete | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}}` | -                                               |
-| `directus_files`      | read, update, delete | `{"folder":{"_in":["$CURRENT_USER.sites.site.folder"]}}`                                          | create: `{"folder":{"_in":[...same...]}}`       |
+| `directus_files`      | read, update, delete | `{"folder":{"_in":["$CURRENT_USER.sites.site.folder"]}}`                                          | create and update: `{"folder":{"_in":[...same...]}}` |
 
+- **File moves need update validation too.** The item rule checks the file's current folder, not the new one. Without
+  the update validation (or with `folder` writable and no validation), an editor can move a file into another tenant's
+  folder. Keep `folder` out of the update `fields` if editors never need to move files.
 - **Item rules don't cover create.** Validation is what stops a writer creating a row for another tenant. It only sees
   the payload, so it can't check a parent's tenant: a `page_blocks` create (or an update of `page`) can point at another
   tenant's page. Block that with a filter Flow on the child collections that reads the parent's `site`.

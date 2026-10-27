@@ -57,7 +57,7 @@ export default defineHook(({ filter, action, init, schedule, embed }, { services
 	});
 
 	init('routes.custom.before', ({ app }) => {}); // app is the Express app
-	schedule('*/15 * * * *', async () => {}); // runs on one instance at a time
+	schedule('*/15 * * * *', async () => {}); // once across instances only with SYNCHRONIZATION_STORE=redis
 	embed('head', '<script>/* injected into the Studio */</script>');
 });
 ```
@@ -86,7 +86,7 @@ Facts that bite (beyond the router traps):
 - Filters on `read`/`query` run on every read, including the Studio's own system reads. Keep them cheap.
 - A thrown action error is logged as `An error was thrown while executing action`; the client never sees it.
 - `{ emitEvents: false }` goes in the mutation options: `service.updateOne(key, data, { emitEvents: false })`.
-- `schedule` takes 5 or 6 field cron (optional seconds first). Invalid cron logs `Couldn't register cron hook`. Jobs are synchronized across instances. CLI commands load extensions with schedules off.
+- `schedule` takes 5 or 6 field cron (optional seconds first). Invalid cron logs `Couldn't register cron hook`. Jobs run once across instances only with `SYNCHRONIZATION_STORE=redis`; the default (memory) runs them on every instance. CLI commands load extensions with schedules off.
 - `embed(position, code)`: `position` is `head` or `body`; `code` is a string or a function returning one. Empty strings are rejected.
 
 ## Endpoints

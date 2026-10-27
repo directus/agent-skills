@@ -93,8 +93,9 @@ Each hop file lists its env changes. Combined sweep:
   (decimals as strings, strict charset comparison; match `DB_CHARSET`).
 - Docker: pin a version tag. Images run `bootstrap` (migrations) on every start.
 - Redis: required for multiple replicas.
-- **House rule:** clear caches after each upgrade stop: `npx directus cache clear` (exists in 11.17.4 and 12.x, not in
-  10.13.4; there, flush the Redis cache or restart, which resets a memory cache).
+- **House rule:** clear caches after each upgrade stop. With `CACHE_STORE=redis`: `node /directus/cli.js cache clear`
+  in the container (the 12.5.1 image has no `npx`; the command doesn't exist in 10.13.4). With a memory cache the
+  command refuses; restart instead.
 
 ## Rollback
 

@@ -21,7 +21,7 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 | `type`                                                      | Does                 | Notes                                                                                                                  |
 | ----------------------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `condition`                                                 | Branch on a filter   | Resolves with `null` when the filter passes, rejects when it fails. See below.                                         |
-| `item-create` / `item-read` / `item-update` / `item-delete` | CRUD                 | `collection`, `key` or `query` (not both), `payload`, `permissions`, `emitEvents`. See below.                          |
+| `item-create` / `item-read` / `item-update` / `item-delete` | CRUD                 | `collection`, `key` or `query` (not both for update and delete; read takes both), `payload`, `permissions`, `emitEvents`. See below.                          |
 | `exec`                                                      | Run Script           | Sandboxed JS. See below.                                                                                               |
 | `request`                                                   | HTTP call            | Rejects on non-2xx. See below.                                                                                         |
 | `mail`                                                      | Send email           | Fire and forget. See below.                                                                                            |
@@ -51,7 +51,7 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 
 | Option        | Meaning                                                                                                                                              |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `key`         | One key or an array. Use it or `query`, not both.                                                                                                    |
+| `key`         | One key or an array. Update and delete reject `key` with `query`; read applies `query` to the keyed items.                                                                                                    |
 | `query`       | A normal query (`filter`, `fields`, `limit`, `sort`). For update and delete, no `key` and no `query` returns `null` instead of touching every item; to hit all, use `{"limit": -1}`. A read with neither returns the first page.    |
 | `payload`     | Object, or an **array** for `item-create` (creates many) and `item-update` (batch update; each object carries its primary key, no `key` or `query`). |
 | `permissions` | `$trigger` (default), `$public`, `$full`, or a role UUID                                                                                             |

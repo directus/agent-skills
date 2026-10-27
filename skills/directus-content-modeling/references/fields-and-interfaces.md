@@ -88,8 +88,10 @@ and the field list.
   `hidden` / `readonly` / `required` / `options`). Classic use: a link `type` select shows only `page`, `post`, or `url`.
 - `meta.validation` is a filter rule the value must pass. Add `meta.validation_message`. Example:
   [routing-and-seo.md](routing-and-seo.md#urls-permalink-slug-or-nested-pages) (`pages.permalink`).
-- The API enforces on every write (admins included) only `meta.validation` and `schema.is_nullable: false` (on create
-  the field must be submitted unless it has a default). `meta.required` is enforced only by the Studio form, so for a
+- The API enforces `meta.validation` on every write by a user or token (admins included), and the database enforces
+  `schema.is_nullable: false` (on create the field must be submitted unless it has a default). Writes with no
+  accountability skip `meta.validation`: a schedule Flow's item operations with `$trigger` permissions, and extension
+  code that builds a service without `accountability`. (`$full` runs as admin, so it is validated.) `meta.required` is enforced only by the Studio form, so for a
   field that must always have a value, set `is_nullable: false` too. `schema.is_unique: true` adds a unique index
   (slugs, permalinks).
 

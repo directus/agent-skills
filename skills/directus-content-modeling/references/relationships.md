@@ -130,11 +130,14 @@ frontend.
 
 | Relation                                                                                                              | `on_delete` (both sides of a junction) |
 | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| M2M, M2A, files (many), translations                                                                                  | `CASCADE`                              |
+| M2M, files (many), translations; the parent FK of an M2A junction                                                     | `CASCADE`                              |
 | M2O / O2M, including single files and `user_created` / `user_updated` → `directus_users` (else deleting a user fails) | `SET NULL`                             |
 
 - Junction rows mean nothing without either side, so they go with it. That includes the `languages` side of
   translations: deleting a language deletes its translations.
+- An M2A junction's `item` column has no database FK (`schema: null`), so nothing cascades from the block side.
+  Deleting a block item leaves a junction row pointing at nothing. Delete the junction row first, or clean up with a
+  Flow on `<block>.items.delete`.
 - M2O and O2M children survive losing their parent with a null FK. Clean up orphans deliberately, not by cascade.
 - The Studio's defaults don't follow this (several junction relations default to `SET NULL` / `NO ACTION`, which leaves
   orphan junction rows). Set `on_delete` explicitly on every relation.

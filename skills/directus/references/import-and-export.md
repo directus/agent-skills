@@ -87,7 +87,8 @@ Neither `/items` nor the import endpoints match on anything but the primary key.
   (`csv`, `csv_utf8`, `json`, `xml`, `yaml`). Normal permissions and query limits apply.
 - `POST /utils/export/<collection>` with `{"query": {...}, "format": "csv", "file": {"folder": "<uuid>"}}` returns 204
   at once, writes the file to the File Library in batches of `EXPORT_BATCH_SIZE` (5000), and notifies the caller.
-  Exported files are ordinary files: anyone who can read that folder can download them.
+  Exported files are ordinary files: anyone with read access to them in `directus_files` can download them
+  (folder access is a separate permission and doesn't grant it).
 
 ## Moving in from another CMS
 

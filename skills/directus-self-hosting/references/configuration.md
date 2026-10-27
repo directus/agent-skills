@@ -66,6 +66,22 @@ use the Studio onboarding screen. Lost password: `node /directus/cli.js users pa
   comma-separated list of proxy IPs or CIDRs. With `false`, rate limits, policy `ip_access` allowlists, and activity
   logs see the proxy's IP. **House rule:** use a hop count or the proxy's CIDR, not `true`; `true` trusts any
   client-sent `X-Forwarded-For`, so a client can pick its own IP and dodge rate limits or allowlists.
+- A reverse proxy in front (nginx shown; Caddy and Traefik pass these by default) needs the forwarded headers,
+  WebSocket upgrades if `WEBSOCKETS_ENABLED=true`, and a body limit at least as big as your largest upload:
+
+  ```nginx
+  location / {
+    proxy_pass http://directus:8055;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;     # WebSockets
+    proxy_set_header Connection "upgrade";
+    proxy_http_version 1.1;
+    client_max_body_size 100m;                  # default 1m caps uploads
+  }
+  ```
+
 - `IP_CUSTOM_HEADER` reads the client IP from one header instead (for example `CF-Connecting-IP` behind Cloudflare).
 - **CORS is off by default** (`CORS_ENABLED=false`). Only browsers calling Directus from another origin need it. Set
   `CORS_ENABLED=true` and list origins: `CORS_ORIGIN=array:https://www.example.com,https://preview.example.com`.

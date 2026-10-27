@@ -1,6 +1,6 @@
 ---
 name: directus-environment-sync
-description: 'Use when promoting Directus schema and configuration between instances (dev to staging to production) with Environment Sync, the `@directus/cli` 12.x CLI (`d6s`): `d6s sync pull`, `diff`, `push`, profiles, `directus.config.json`, sync files in git, `id_map.json`, push modes (merge, add, mirror), deletion consent, scoped pulls, rollback, drift, and CI or GitHub Actions. Also the home for `directus schema snapshot` / `schema apply` and the `/schema/diff` and `/schema/apply` endpoints. Covers roles, policies, permissions, flows, dashboards, settings, folders, translations, and opt-in users. Not for designing the schema (use directus-content-modeling), upgrading Directus versions (use directus-upgrade), or moving content items (not synced).'
+description: "Use when moving Directus schema and config between instances (dev, staging, production): Environment Sync and the d6s CLI (pull, diff, push), directus.config.json, id_map.json, push modes, CI pipelines, drift, rollback, and schema snapshot/apply. Not for designing schema (directus-content-modeling), version upgrades (directus-upgrade), or moving content items."
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -19,8 +19,8 @@ _Verified against Directus v12.5.1 (CLI source `packages/cli`, `@directus/cli` 1
 1. **Versions and vendor.** `GET /server/info` on source and target: same exact version (patch included), same DB
    vendor, both 12.2.0+.
 2. **Admin tokens.** One per instance. `d6s profile test-connection <name>` prints who the token is.
-3. **Installed CLI.** `npm i -g @directus/cli@12` (9.x is the deprecated old client CLI), then `d6s --version`.
-   Node 22+. Pin an exact version in CI.
+3. **Installed CLI.** `npm i -g @directus/cli@12` (9.x is the deprecated old client CLI), then `d6s --version`. Node
+   22+. Pin an exact version in CI.
 4. **Sync files present?** If the repo has `directus.config.json` and `directus/<project>/`, pull from the agreed
    source, not whatever instance is handy.
 
@@ -31,9 +31,9 @@ _Verified against Directus v12.5.1 (CLI source `packages/cli`, `@directus/cli` 1
 - **Admin token only.** Non-admin reads are silently permission-filtered and would write sync files that look complete
   but aren't, so the CLI refuses them. **House rule (strong):** a dedicated sync admin user per instance with its own
   static token, never a person's account (separate in the logs, revocable alone).
-- **Deletions only in `mirror`, behind their own consent, from freshly pulled files.** `merge` (default) and `add`
-  never delete. `--yes` **never** authorizes a deletion (CI needs `--dangerously-allow-delete`). Stale or partially
-  scoped files delete things that only look obsolete: `d6s sync diff --mode mirror` and read every delete.
+- **Deletions only in `mirror`, behind their own consent, from freshly pulled files.** `merge` (default) and `add` never
+  delete. `--yes` **never** authorizes a deletion (CI needs `--dangerously-allow-delete`). Stale or partially scoped
+  files delete things that only look obsolete: `d6s sync diff --mode mirror` and read every delete.
 - **Content is not synced.** Items in your own collections, files, presets, comments, revisions, and extensions stay
   behind. Deploy extensions to the target before pushing fields or flows that use them; nothing warns.
 - **Secrets are stripped.** Built-in secrets and fields marked concealed, hashed, or encrypted never reach the files.
@@ -43,8 +43,8 @@ _Verified against Directus v12.5.1 (CLI source `packages/cli`, `@directus/cli` 1
 - **Core-tier targets reject what they aren't licensed for.** Custom permission rules and custom LLM settings fail
   `RESOURCE_RESTRICTED`; too many collections or flows fail `LIMIT_EXCEEDED`. Check the target's license before the
   first push. Never strip a rule's filter to make it fit (that widens access); drop the whole row instead.
-- **Always `diff` before `push` to production.** `diff` applies nothing and exits `0` either way. Commit
-  `id_map.json` after every push that changes it, or later pushes can duplicate records.
+- **Always `diff` before `push` to production.** `diff` applies nothing and exits `0` either way. Commit `id_map.json`
+  after every push that changes it, or later pushes can duplicate records.
 
 ## Which tool
 

@@ -11,8 +11,8 @@
 | `manual`    | Studio button, or `POST /flows/trigger/<flow-id>` | `collections`, `location` (`item`, `collection`, `both`, `hidden`), `requireSelection` (default `true`), `requireConfirmation`, `fields`, `async`     | `body.collection`, `body.keys`, and confirmation inputs in `body`               |
 
 - Only `active` flows run. Saving a flow reloads every flow on the instance.
-- Schedules run once across all instances (the job is synchronized), not once per container. An invalid cron registers
-  nothing and only logs a warning.
+- Schedules run once across instances only with `SYNCHRONIZATION_STORE=redis`. The default store is in memory, so
+  every container runs every schedule. An invalid cron registers nothing and only logs a warning.
 - Manual flows require an authenticated user with read access to the selected keys. A public caller gets a bare 403.
   Use a webhook trigger for public callers.
 
@@ -25,7 +25,12 @@
 - **`action`** runs after commit. It can't change or stop the write. Prefer it unless you must validate or transform.
 - `items.create` filters see no primary key yet. `items.update` payloads hold only the changed fields; read the item
   for the rest.
-- A request that writes several items runs the flow once per item.
+- **How many runs a bulk write gives:**
+  - Creating several items, or a batch update (an array of objects, each with its own key): once per item.
+  - One change applied to many items (`{ "keys": [...], "data": {...} }`, `{ "query": ..., "data": ... }`, or an
+    `item-update` with several keys) and deletes: **once**, with all of them in `$trigger.keys`.
+
+  Handle every key in `keys`, not just `keys[0]`.
 - System collections use their short name: `directus_users` becomes `users.create`.
 - Keep filter flows short. They hold the request (and its transaction) open.
 

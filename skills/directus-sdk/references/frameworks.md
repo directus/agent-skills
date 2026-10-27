@@ -69,7 +69,7 @@ Canonical files: [lib/directus/directus.ts](https://github.com/directus-labs/sta
   // or for every request: rest({ onRequest: (init) => ({ ...init, next: { revalidate: 60 } }) })
   ```
 
-  On-demand: call `revalidateTag('posts', 'max')` from a route handler that a Directus Flow (on item create/update) calls with a shared secret. The starters don't; they render dynamically because pages read `searchParams`.
+  On-demand: call `revalidateTag('posts', 'max')` (Next 16; on Next 15 it's `revalidateTag('posts')`) from a route handler that a Directus Flow (on item create/update) calls with a shared secret. The starters don't; they render dynamically because pages read `searchParams`.
 
 - **Draft mode.** The starter's `/api/draft` route takes the admin `DIRECTUS_SERVER_TOKEN` itself as the URL secret. Don't copy it. Never cache preview responses.
 - **Images.** `next/image` needs `images.remotePatterns` for the Directus host and `/assets/**`.

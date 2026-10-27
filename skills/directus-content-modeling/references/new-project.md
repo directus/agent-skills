@@ -62,7 +62,9 @@ npx directus-template-cli@latest apply -p \
   `_scripts/`).
 - **A `custom_permission_rules_enabled` 403 during a core apply is expected.** The CLI probes licensed features.
 
-<!-- DECISION: house rule for bootstrapping from a starter (template CLI vs Environment Sync + seed script) pending owner review -->
+**House rule:** start from a starter with the template CLI, once, on dev. Then the dev instance is the source of truth:
+track schema and config with `d6s sync pull` and promote with `d6s sync push`. Don't re-apply the template to staging
+or production.
 
 At v12.5.1 the template CLI is the only tool that loads a starter: the starters ship template files, not Environment
 Sync files, and `d6s` doesn't move content. Once the starter is applied to your dev instance, track schema and config

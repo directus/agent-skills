@@ -1,6 +1,6 @@
 ---
 name: directus-self-hosting
-description: 'Use when deploying or running a Directus server: Docker and docker-compose setup, Postgres and Redis, deploying to a host (Railway, Fly, Render, DigitalOcean, Coolify, Kubernetes), env vars (SECRET, PUBLIC_URL, DB_*, ADMIN_*, CORS, IP_TRUST_PROXY), email (SMTP, SES), file storage (local volume, S3), health checks, running several instances behind a load balancer, cache and stale data, rate limiting, slow or overloaded instances, backups and restores, and what differs on Directus Cloud. Not for version upgrades and migrations across versions (directus-upgrade), moving schema or config between instances (directus-environment-sync), or licensing and core-tier limits (directus-access-control).'
+description: "Use when deploying or running a Directus server: Docker Compose, Postgres and Redis, hosting platforms, env vars, email, file storage, reverse proxies, health checks, running several instances, caching and stale data, rate limits, backups and restores, and Directus Cloud differences. Not for version upgrades (directus-upgrade), moving config between instances (directus-environment-sync), or licensing (directus-access-control)."
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -19,13 +19,17 @@ _Verified against Directus v12.5.1 source (`Dockerfile`, `docker-entrypoint.cjs`
 1. **Where does it run?** Self-hosted Docker (or a platform running the image) vs Directus Cloud. On Cloud there is no
    shell or raw env access: load [directus-cloud.md](references/directus-cloud.md) and stop there.
 2. **One instance or several?** Several containers, or `PM2_INSTANCES` > 1 in one container, means Redis is required.
-3. **Which database and version?** `DB_CLIENT`, and whether it's managed. SQLite is a file in one container's volume: one instance only.
+3. **Which database and version?** `DB_CLIENT`, and whether it's managed. SQLite is a file in one container's volume:
+   one instance only.
 4. **Where do files live?** Local volume (`/directus/uploads`) or a storage driver (`STORAGE_LOCATIONS`). Check
    `directus_files.storage` before changing anything.
 5. **What version?** `GET /server/info` or the image tag. Pin a version tag, never `latest`.
 
 ## Critical traps
 
+- **The image defaults to SQLite.** It ships `DB_CLIENT=sqlite3` and `DB_FILENAME=/directus/database/database.sqlite`,
+  with no volume. A missing or misspelled `DB_*` var boots a working, empty instance whose data is gone on the next
+  redeploy. After first boot, check the logs or the database for the tables before adding content.
 - **`SECRET` is permanent.** It signs tokens and encrypts stored secrets (AI provider keys, `license_key`,
   `license_token`, deployment credentials). Change it and every session ends and those values decrypt to `null`. Unset,
   each process picks a random one: logins break across restarts and replicas.

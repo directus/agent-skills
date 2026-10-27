@@ -1,6 +1,6 @@
 ---
 name: directus-content-modeling
-description: 'Use when designing or changing a Directus data model: adding collections or fields, choosing between M2O, O2M, M2M, M2A, files and translations relations, naming junctions and keys, picking field types and interfaces, building a block-based page builder, multilingual content, URL and SEO fields, or seeding content. Applies Directus house conventions. Not for querying data (directus), permissions (directus-access-control), or promoting schema between instances (directus-environment-sync).'
+description: "Use when designing or changing a Directus data model or starting a new project from a starter: collections, fields, relations (M2O, O2M, M2M, M2A, translations), field types and interfaces, page builders, multilingual content, slugs and SEO fields, indexes, schema changes on live data, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -8,9 +8,9 @@ metadata:
 
 # Directus content modeling
 
-Design schemas that hold up: predictable names, the right relationship type, and a Studio that editors like using.
-Facts are product behavior. Lines marked **House rule** are Directus's recommended conventions; follow them unless the
-user or the existing schema says otherwise.
+Design schemas that hold up: predictable names, the right relationship type, and a Studio that editors like using. Facts
+are product behavior. Lines marked **House rule** are Directus's recommended conventions; follow them unless the user or
+the existing schema says otherwise.
 
 ## First checks
 
@@ -20,10 +20,11 @@ user or the existing schema says otherwise.
 2. **Collections and collection folders share a namespace.** A `website` folder blocks a `website` collection.
 3. **Check the license tier.** Junction and `*_translations` collections count toward the collection limit. Plan the
    total before you build. See [conventions.md](references/conventions.md#plan-limits).
-4. **Show the plan, then build.** List the collections, fields, and relations you'll create. If the user asked for
-   them, proceed. Get explicit approval before anything destructive: deleting fields or collections, changing a
-   field's type, or bulk-editing data. Deleting drops the column and its data. There is no rename: PATCHing a new name
-   returns 200 and changes nothing. Renames are add, copy, drop ([schema-changes.md](references/schema-changes.md)).
+4. **Show the plan, then build.** List the collections, fields, and relations you'll create. If the user asked for them,
+   proceed. Get explicit approval before anything destructive: deleting fields or collections, changing a field's type,
+   or bulk-editing data. Deleting drops the column and its data. There is no rename. Never send `field` in a field
+   PATCH: it returns 200 and the old field, but with `meta` in the body it also writes a stray `directus_fields` row
+   under the new name. Renames are add, copy, drop ([schema-changes.md](references/schema-changes.md)).
 
 ## Critical traps
 
@@ -34,16 +35,17 @@ user or the existing schema says otherwise.
 - **FK column type must match the target PK type.** M2O to a UUID-keyed collection is `type: "uuid"`; to `languages`
   it's `type: "string"`.
 - **O2M fields are aliases.** No column. The O2M field is the `meta.one_field` of the M2O relation on the other side.
-- **Set `on_delete` on every relation; the Studio defaults leave orphans.** **House rule:** M2M, M2A, files, and
-  translations `CASCADE` on both junction FKs. M2O and O2M `SET NULL`. See
+- **Set `on_delete` on every relation; the Studio defaults leave orphans.** **House rule:** M2M, files, and translations
+  `CASCADE` on both junction FKs. M2A `CASCADE` on the parent FK only: the `item` side is not a real FK
+  (`schema: null`), so deleting a block leaves its junction row behind. M2O and O2M `SET NULL`. See
   [relationships.md](references/relationships.md#on_delete).
 - **Name FKs after what they point to, singular, no `_id`:** `page_blocks.page`, `post_tags.tag`. Junctions are
   `<singular parent>_<alias field>`: `posts.tags` → `post_tags`, `pages.blocks` → `page_blocks` (not the Studio's
   `posts_tags` / `posts_id`). Translations are the exception: `posts_translations` with `posts` and `languages_code`.
 - **Archived and `hidden: true` only affect the Studio.** The API still returns archived items unless the caller
   filters, and hidden fields unless permissions restrict them.
-- **M2A junction `item` is a string column** so it can hold keys from any collection. Keep every block collection on
-  the same PK type.
+- **M2A junction `item` is a string column** so it can hold keys from any collection. Keep every block collection on the
+  same PK type.
 
 ## Routing
 

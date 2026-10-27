@@ -50,7 +50,7 @@ IP-filtered policy list.
 - `enforce_tfa` is set at login only. No API middleware checks it (only the Studio router does), and static tokens
   never go through login. It doesn't protect API access.
 - `ip_access` matches the IP Directus sees. Behind a proxy or load balancer that's the proxy's IP unless
-  `IP_TRUST_PROXY` is set (default `false` on v12). Set it to your proxy setup (`true` or a specific trust value) or
+  `IP_TRUST_PROXY` is set (default `false` on v12). Set it to the hop count or the proxy's CIDR (not `true`, which lets clients spoof their IP) or
   policies with `ip_access` drop for real clients (and match anyone, if you allowlisted the proxy).
 - Changing `admin_access` or `app_access` runs user-integrity checks (seat limits, at least one remaining admin).
 

@@ -148,7 +148,15 @@ async function runJob(job, lane) {
 		args['max-turns'],
 		'--permission-mode',
 		'acceptEdits',
-		'--allowedTools', 'Bash(curl:*)', 'Bash(jq:*)', 'Read', 'Write', 'Edit', 'Glob', 'Grep', 'Skill',
+		'--allowedTools',
+		'Bash(curl:*)',
+		'Bash(jq:*)',
+		'Read',
+		'Write',
+		'Edit',
+		'Glob',
+		'Grep',
+		'Skill',
 		'--strict-mcp-config',
 		'--mcp-config',
 		'{"mcpServers":{}}',
@@ -157,7 +165,12 @@ async function runJob(job, lane) {
 	];
 	const started = Date.now();
 	const agentEnv = args.clean
-		? { ...env, CLAUDE_CODE_PLUGIN_DIRS: '', CLAUDE_CONFIG_DIR: mkdtempSync(join(tmpdir(), 'skills-eval-config-')), CLAUDE_CODE_OAUTH_TOKEN: oauthToken }
+		? {
+				...env,
+				CLAUDE_CODE_PLUGIN_DIRS: '',
+				CLAUDE_CONFIG_DIR: mkdtempSync(join(tmpdir(), 'skills-eval-config-')),
+				CLAUDE_CODE_OAUTH_TOKEN: oauthToken,
+			}
 		: env;
 	const res = await runProcess('claude', claudeArgs, { cwd: work, env: agentEnv });
 	const events = res.out
@@ -191,7 +204,13 @@ async function runJob(job, lane) {
 		costUsd: final.total_cost_usd,
 		seconds: Math.round((Date.now() - started) / 1000),
 		summary: final.result,
-		error: res.code !== 0 ? res.err.slice(-2000) : null,
+		// Checks exit 1 on a FAIL; a crash shows up as stderr or no FAIL line to explain the exit.
+		error:
+			res.code !== 0
+				? res.err.slice(-2000)
+				: check.err.trim() || !lines.length || (check.code !== 0 && passed === lines.length)
+					? `checker crashed (exit ${check.code}, ${lines.length} checks): ${check.err.slice(-1000)}`
+					: null,
 	};
 	writeFileSync(
 		join(outDir, `${job.case}.${job.arm}.${job.run}.json`),
@@ -228,7 +247,7 @@ const rows = cases.map((c) => {
 		if (!rs.length) return '';
 		const p = rs.reduce((s, r) => s + r.passed, 0);
 		const t = rs.reduce((s, r) => s + r.total, 0);
-		return `${p}/${t}`;
+		return `${p}/${t}${rs.some((r) => r.error) ? " (error)" : ""}`;
 	};
 	return `| ${c} | ${arms.map(cell).join(' | ')} |`;
 });

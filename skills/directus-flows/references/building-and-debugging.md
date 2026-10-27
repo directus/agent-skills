@@ -37,8 +37,9 @@ Read the result back with
 
 - `flows` and `operations` are admin-only tools. Same build order as above, but leave out positions: the tool lays
   out the graph from the links.
-- `trigger-flow` (active manual flows only): read the flow with `flows` first and pass the full definition. Its `data`
-  is merged into `$trigger.body` with `collection` and `keys`.
+- `trigger-flow` (active manual flows only) takes `id`, `collection` (required), and optional `keys`, `data`, `query`,
+  `headers`. Nothing else: extra keys fail validation. `data` is merged into `$trigger.body` with `collection` and
+  `keys`, and the flow's required confirmation fields must be in `data`.
 - Flow folders are `folders` with `type: "flows"`.
 
 ## Running a flow

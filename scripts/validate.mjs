@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Checks every skill against the Agent Skills spec and AUTHORING.md. No dependencies.
-// Usage: node scripts/validate.mjs [--strict]   (--strict also fails on TODO(verify) markers)
+// Usage: node scripts/validate.mjs [--strict]   (--strict also fails on TODO(verify) and DECISION markers)
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -13,7 +13,7 @@ const warnings = [];
 
 const NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const SKILL_MAX_LINES = 100;
-const DESCRIPTION_SOFT_MAX = 800;
+const DESCRIPTION_SOFT_MAX = 450;
 const REFERENCE_TOC_THRESHOLD = 100;
 
 function parseFrontmatter(text) {
@@ -40,8 +40,8 @@ function checkLinks(file, text) {
 }
 
 function checkTodos(file, text) {
-	const count = (text.match(/TODO\(verify\)/g) ?? []).length;
-	if (count) (strict ? errors : warnings).push(`${rel(file)}: ${count} TODO(verify)`);
+	const count = (text.match(/TODO\(verify\)|<!-- DECISION/g) ?? []).length;
+	if (count) (strict ? errors : warnings).push(`${rel(file)}: ${count} TODO(verify) or DECISION marker(s)`);
 }
 
 // Codex reads agents/openai.yaml for the skill picker. Limits from codex-rs/skills (short_description 25-64 chars).

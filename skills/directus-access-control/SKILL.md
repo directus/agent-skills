@@ -1,6 +1,6 @@
 ---
 name: directus-access-control
-description: "Use when deciding who can do what in Directus (v11+ roles, policies, permissions) or debugging access: an unexpected 403, a field missing from a response, an editor who can't publish or save drafts, drafts or blocks visible to the public. Covers the public policy, item rules ($CURRENT_USER), field, validation, and preset rules, how stacked policies combine, core-tier licensing (RESOURCE_RESTRICTED, limits, lockdown), the CMS starter layout, service and MCP agent users, and testing as the user. Not for login, tokens, or SSO setup (directus), promoting access with d6s (directus-environment-sync), or collection design (directus-content-modeling)."
+description: "Use when deciding who can do what in Directus or debugging access: roles, policies, permissions, the public policy, item and field rules, an unexpected 403 or missing field, editors who can't publish, multi-tenant setups, and core-tier licensing limits (RESOURCE_RESTRICTED). Not for login and tokens (directus) or promoting permissions (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -8,8 +8,8 @@ metadata:
 
 # Directus access control
 
-Design access as small, focused policies stacked on roles and users. Permissions live on policies, never on roles.
-Lines marked **House rule** are Directus's recommended approach; the rest is product behavior.
+Design access as small, focused policies stacked on roles and users. Permissions live on policies, never on roles. Lines
+marked **House rule** are Directus's recommended approach; the rest is product behavior.
 
 _Verified against Directus v12.5.1 source (`api/src/permissions`, `api/src/services/permissions.ts`) and the docs._
 
@@ -63,13 +63,13 @@ _Verified against Directus v12.5.1 source (`api/src/permissions`, `api/src/servi
 | Laying out policies and roles for a project, the CMS starter's policies explained                        | [references/cms-starter-blueprint.md](references/cms-starter-blueprint.md) |
 | Public published content, own items, editors, live preview, forms, service users, MCP agents, invites    | [references/recipes.md](references/recipes.md)                             |
 | Creating via REST, promoting with Environment Sync, testing as a user, 403 vs filtered results, failures | [references/applying-and-testing.md](references/applying-and-testing.md)   |
-| One Directus for several sites, brands, or clients: tenant field and policies vs separate projects | [references/multi-tenancy.md](references/multi-tenancy.md) |
+| One Directus for several sites, brands, or clients: tenant field and policies vs separate projects       | [references/multi-tenancy.md](references/multi-tenancy.md)                 |
 
 ## Related skills
 
 `directus` (login, tokens, SSO, querying as a user, error codes) · `directus-environment-sync` (promote access with
-`d6s`) · `directus-content-modeling` (owner and status fields your rules depend on) · `directus-visual-editing`
-(reading drafts in a frontend) · `directus-sdk` (frontend tokens)
+`d6s`) · `directus-content-modeling` (owner and status fields your rules depend on) · `directus-visual-editing` (reading
+drafts in a frontend) · `directus-sdk` (frontend tokens)
 
 ## Go deeper
 

@@ -63,7 +63,7 @@ Put `filter`/`search` **inside `query`**. A top-level `filter` compiles without 
 const [{ count }] = await directus.request(
 	aggregate('posts', { aggregate: { count: '*' }, query: { filter: { status: { _eq: 'published' } } } }),
 );
-const total = Number(count); // count, sum, avg come back as strings
+const total = Number(count); // typed as strings; strings at runtime on Postgres
 ```
 
 `groupBy` returns one row per group: `aggregate('posts', { aggregate: { count: '*' }, groupBy: ['status'] })`.

@@ -48,7 +48,7 @@ Each topic has one home skill. Others get one line and a pointer. Current owners
 ```yaml
 ---
 name: directus-sdk # must match the folder name, lowercase + hyphens
-description: "Use when ... Not for ..." # third person, trigger words, <= 1024 chars
+description: "Use when ... Not for ..." # third person, trigger words, <= 450 chars
 metadata:
   author: directus
   directus-version: "12.5.1"
@@ -57,6 +57,7 @@ metadata:
 
 The description is the only thing an agent sees before deciding to load the skill. Lead with the tasks and the words
 a user would type (package names, feature names). Add a "Not for" clause when a sibling skill owns the neighbor topic.
+Keep it under 450 characters: name tasks, not every option or env var (the router and references carry those).
 
 ## Codex metadata
 

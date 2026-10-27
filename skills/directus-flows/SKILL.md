@@ -1,6 +1,6 @@
 ---
 name: directus-flows
-description: 'Use when automating Directus with Flows: event, webhook, schedule, manual, or operation triggers, the data chain and `{{ }}` templating, operations (condition, item CRUD, Run Script, request, mail, notification, trigger), reusable utility flows, looping over items, sending email or rendering templates from a flow, building or debugging flows through the API or MCP `flows` / `operations` / `trigger-flow` tools, and deciding between a flow and a hook. Not for writing hook, endpoint, or operation extensions (directus-extensions) or promoting flows between instances (directus-environment-sync).'
+description: "Use when automating Directus with Flows: event, webhook, schedule, and manual triggers, the data chain and {{ }} templates, operations (condition, item CRUD, Run Script, request, mail), reusable utility flows and loops, and building or debugging flows over the API or MCP. Not for hook or operation extensions (directus-extensions) or promoting flows (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -16,7 +16,8 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 1. **Read what exists.** `GET /flows?fields=id,name,status,trigger,options,operation&limit=-1`. Reuse or extend an
    existing utility flow before building a new one.
 2. **Check the license.** Active flows count toward the limit (5 on the unlicensed core tier), and that includes every
-   utility flow. Inactive flows don't count. See [utility-flows-and-loops.md](references/utility-flows-and-loops.md#licensing).
+   utility flow. Inactive flows don't count. See
+   [utility-flows-and-loops.md](references/utility-flows-and-loops.md#licensing).
 3. **Ask where it's hosted** before suggesting a hook instead. Directus Cloud runs custom extensions only on Enterprise.
 4. **Confirm before changing a flow that's already active.** Event flows fire on real writes as soon as they're saved.
 
@@ -41,8 +42,8 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 - **To block a save with a clear error, end the branch with `throw-error`** (`status: "400"`, your `code` and
   `message`). A throw in Run Script reaches the caller as a 500; a failed `condition` as a generic 400.
 - **Event scopes need `collections`.** `items.create` with no `collections` registers nothing, silently.
-- **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow through
-  a parent flow or a temporary manual wrapper.
+- **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow
+  through a parent flow or a temporary manual wrapper.
 
 ## Routing
 

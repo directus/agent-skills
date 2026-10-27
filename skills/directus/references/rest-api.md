@@ -89,7 +89,13 @@ relation's `one_deselect_action`). For partial changes use the detailed form:
 ```
 
 Many-to-many writes go through the junction: `id` is the junction row, `tags_id` (or your junction field name) is the
-related item. Check the junction field names with the schema first.
+related item. Check the junction field names with the schema first. Traps (12.5.1):
+
+- Bare ids are junction ids. `"tags": [4, 5]` keeps junction rows 4 and 5, not tags 4 and 5.
+- Every `{ "tags_id": 12 }` without an `id` creates a new junction row, even if tag 12 is already linked. Re-sending the
+  full list as `tags_id` objects duplicates the links and unlinks the old rows.
+- Unlinked junction rows follow `one_deselect_action`. The default `nullify` leaves rows with `posts_id: null`. Use the
+  detailed form (`create` new links, `delete` junction ids) to change a few links.
 
 ## Errors
 

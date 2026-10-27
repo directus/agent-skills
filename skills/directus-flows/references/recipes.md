@@ -40,9 +40,14 @@ Studio.
 Event `action`, scope `items.update`, collections `["posts"]`:
 
 1. `condition` key `became_published`: `{"$trigger": {"payload": {"status": {"_eq": "published"}}}}`. Passes only when
-   this update set `status`.
-2. `item-read` key `post`: `collection: "posts"`, `key: "{{ $trigger.keys[0] }}"`, `query: {"fields": ["title", "author.email"]}`, `permissions: "$full"`.
-3. `mail`: `to: ["{{ post.author.email }}"]`, subject and body from `post`.
+   this update set `status` to `published`. Re-saving an already published post with `status` in the payload passes
+   again; if one email per post matters, add a `published_notified_at` field, filter on it being null below, and set
+   it after the mail.
+2. `item-read` key `posts`: `collection: "posts"`, `key: "{{ $trigger.keys }}"` (a bulk publish sends several keys),
+   `query: {"fields": ["id", "title", "author.email"]}`, `permissions: "$full"`.
+3. Mail each author: for one key, `mail` with `to: ["{{ posts[0].author.email }}"]`. For several, pass `{{ posts }}`
+   to a `Utils → Send Email` utility as an array payload
+   ([utility-flows-and-loops.md](utility-flows-and-loops.md#loops)).
 
 ## Form submission emails
 

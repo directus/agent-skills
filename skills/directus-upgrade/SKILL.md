@@ -1,6 +1,6 @@
 ---
 name: directus-upgrade
-description: 'Use when upgrading a Directus instance or the code that calls it to a newer version (v9, v10, v11, or 12.x through 12.5.1): picking the path, backing up, bumping the Docker tag or `directus` package, running migrations, and fixing what breaks in frontends, SDK clients, extensions, flows, and infra. Also for upgrade errors, Directus 12 licensing and lockdown after an upgrade, and matching `@directus/sdk` or `@directus/extensions-sdk` majors to a server version. Not for general querying or SDK usage (use directus-sdk), building extensions (use directus-extensions), schema design (use directus-content-modeling), or schema snapshot/apply between instances (use directus-environment-sync).'
+description: "Use when upgrading Directus (v9, v10, v11, or 12.x) or the code that calls it: picking the path, backups, bumping the Docker tag or package, migrations, and fixing what breaks in frontends, SDK clients, extensions, and flows. Also errors and licensing lockdown after an upgrade, and matching @directus/sdk or extensions-sdk versions. Not for moving schema between instances (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.5.1'
@@ -20,8 +20,8 @@ the instance._
    and say which version you chose. Verified up to 12.5.1; past that, read the newer release notes. Don't cross a major
    nobody asked for: 12 brings license enforcement.
 1. **Find the current version.**
-   - `GET /server/info` with a token: `data.version` on 10.8.3+. On v9 and 10.0 to 10.1, `data.directus.version`
-     (admin only). **10.2.0 to 10.8.2 omit it;** `GET /server/health` with an admin token returns it as `releaseId`.
+   - `GET /server/info` with a token: `data.version` on 10.8.3+. On v9 and 10.0 to 10.1, `data.directus.version` (admin
+     only). **10.2.0 to 10.8.2 omit it;** `GET /server/health` with an admin token returns it as `releaseId`.
    - `npx directus --version` (npm installs), or `directus` in `package.json`.
    - Docker tag. If `latest`, ask the container: `docker compose exec directus node /directus/cli.js --version` (every
      10.x to 12.x image).
@@ -33,8 +33,8 @@ the instance._
 3. **Load the hop files** from the routing table and read each release you cross. Patches break too (10.6.3, 10.13.2,
    11.1.2, 11.14.1).
 4. **Grep the callers** with each file's patterns. Fix code before or alongside the server bump.
-5. **Upgrade the server.** **House rule:** one major at a time, stopping on the last release of each (9.26.0 → 10.13.4
-   → 11.17.4 → 12.x target), booting each stop once so its migrations run. Skip 12.4.0 (use 12.4.1).
+5. **Upgrade the server.** **House rule:** one major at a time, stopping on the last release of each (9.26.0 → 10.13.4 →
+   11.17.4 → 12.x target), booting each stop once so its migrations run. Skip 12.4.0 (use 12.4.1).
 6. **Run migrations.** Docker runs `directus bootstrap` on start. npm installs don't (`directus start` only logs
    `Database migrations have not all been run`): run `npx directus database migrate:latest` or `npx directus bootstrap`.
 7. **Update callers:** SDK, extensions-sdk, extension `host` ranges, frontends, flows, health checks, monitoring.
@@ -49,8 +49,8 @@ the instance._
   `/graphql`, `/mcp`, `/flows/trigger/:id`; WebSockets refused; non-admin login fails). Check before upgrading.
 - **v11 moved permissions from roles to policies.** `admin_access`, `app_access`, `enforce_tfa`, `ip_access` left
   `directus_roles`; `directus_permissions.role` became `policy`.
-- **`/server/health` needs a token on 12.x** (403). Point probes at `/server/ping` before deploying, or an
-  orchestrator may roll you back.
+- **`/server/health` needs a token on 12.x** (403). Point probes at `/server/ping` before deploying, or an orchestrator
+  may roll you back.
 - **`IP_TRUST_PROXY` defaults to `false` on 12.x.** Behind a proxy, rate limits, IP access, and logs see the proxy IP.
 - **Only REST checks snapshot versions.** `POST /schema/diff` refuses another version or vendor unless `force`; CLI
   `directus schema apply` applies silently. Fresh snapshot after each stop. Details: `directus-environment-sync`
@@ -63,8 +63,8 @@ the instance._
 
 ## Routing
 
-Load only the hop files you cross, in order, stopping at the target. In a minors file, read only the sections after
-your current version.
+Load only the hop files you cross, in order, stopping at the target. In a minors file, read only the sections after your
+current version.
 
 | Current version              | Load, in order                                                                                       |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------- |

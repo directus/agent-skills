@@ -110,6 +110,8 @@ jobs:
         with:
           node-version: 22
       - run: npm install -g @directus/cli@12.3.1
+      - name: Load the latest ID map (before the URL check, so it checks what gets pushed)
+        run: git pull --ff-only origin "$GITHUB_REF_NAME"
       - name: Verify the production profile URL
         env:
           EXPECTED_URL: ${{ vars.DIRECTUS_PRODUCTION_URL }}
@@ -119,8 +121,6 @@ jobs:
             echo "Unexpected production profile URL: $actual"
             exit 1
           fi
-      - name: Load the latest ID map
-        run: git pull --ff-only origin "$GITHUB_REF_NAME"
       - name: Push to production
         shell: bash
         run: d6s sync push --to production --yes --json | tee push-report.json
@@ -165,8 +165,8 @@ jobs:
 
 The ID map is the one thing CI can lose: a push that created records (even one that failed partway) wrote real
 mappings to the runner's disk. The push job checks out the branch head (not the triggering SHA) after the
-`concurrency` queue lets it run and pulls `--ff-only` again right before `d6s sync push`, so a queued run sees the map
-the previous run committed. It uploads the map as an artifact on every run (`always()`), and the commit-back rebases
+`concurrency` queue lets it run and pulls `--ff-only` again before the URL check and `d6s sync push`, so a queued run sees the map the
+previous run committed and the check covers the config that gets pushed. It uploads the map as an artifact on every run (`always()`), and the commit-back rebases
 and retries if `main` moved. If the commit still fails, it opens an `env-sync-recovery` issue and goes red; every later
 push job refuses while that issue is open. Commit the artifact's `id_map.json`, close the issue, then re-run any push
 job it blocked.
