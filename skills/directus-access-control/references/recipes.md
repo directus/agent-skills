@@ -17,14 +17,16 @@ Rows marked **licensed** need a license on v12; on the core tier, see
 
 ## Public read of published content
 
-**House rule: keep the content API private.** For a content site, the frontend's server talks to Directus with a
-server token (the backend-for-frontend pattern: Next.js route handlers, Nuxt server routes, Astro endpoints, SvelteKit
-`+server` files), and the browser never calls Directus for data. Then the public policy needs no content collections
-at all, only assets. Use the rows below only when browsers must call Directus directly, and even then expose the
-fewest collections and fields that page needs.
+Two valid setups. Ask which one the project uses, or pick with the user:
 
-**Assets are the exception:** serve them straight from Directus `/assets` so image bytes don't flow through (and get
-billed on) the frontend server. That needs public read on `directus_files`, scoped to the `public` folder below.
+| Setup | How | Good for | Cost |
+| --- | --- | --- | --- |
+| **Public API** | Browsers call Directus with no token; the public policy grants read with the rules below | Static or client-rendered sites, simple stacks, the SDK in the browser | Every exposed collection and field is open to anyone, so rules and field lists must be right |
+| **Server-side only** (backend-for-frontend) | The frontend's server routes (Next.js route handlers, Nuxt server routes, Astro endpoints, SvelteKit `+server`) call Directus with a server token | Sites that want the content API unreachable, or need rules core can't express | Every data request goes through your server |
+
+Either way, expose the fewest collections and fields the site needs. **Assets usually stay direct** in both setups:
+serve them from Directus `/assets` so image bytes don't flow through (and get billed on) the frontend server. That
+needs public read on `directus_files`, scoped to the `public` folder below.
 
 Attach to the public policy. **Licensed** for the filters.
 
