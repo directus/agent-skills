@@ -37,7 +37,8 @@ _Verified against Directus v12.5.1 source (`api/src/permissions`, `api/src/servi
 - **Users with no role get the public policy too.** An API-only user without a role reads everything the public can.
 - **Public read with no item rule exposes every row**, drafts included. That includes block collections behind a
   filtered junction: rule them with `$FOLLOW` ([recipes.md](references/recipes.md)). Public read on `directus_files`
-  opens `/assets` for every file. Never grant public writes on `directus_*`.
+  opens `/assets` for every file: scope it to the `public` folder (licensed; on core it's all files or none).
+  **House rule:** keep content behind a server-side frontend route and expose only assets publicly. Never grant public writes on `directus_*`.
 - **Write on `directus_users`, `directus_roles`, `directus_policies`, `directus_access`, or `directus_permissions` is
   admin.** Unscoped update on users lets the holder set anyone's `role` to Administrator.
 - **MCP can't manage access.** `items` refuses `directus_*`; schema tools (`collections`, `fields`, `relations`,
