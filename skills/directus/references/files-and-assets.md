@@ -13,7 +13,8 @@ curl -X POST "$DIRECTUS_URL/files" -H "Authorization: Bearer $TOKEN" \
   -F "title=Hero image" -F "folder=$FOLDER_ID" -F "file=@./hero.jpg"
 ```
 
-- You can set any file field except `filename_disk` and `filename_download`. Replace the binary of an existing file
+- Send other file fields before the `file` part. `filename_download` and `filename_disk` are accepted too (the docs
+  say otherwise; 12.5.1 keeps both). Replace the binary of an existing file
   with a multipart `PATCH /files/<id>`.
 - `storage` defaults to the first entry in `STORAGE_LOCATIONS` (default `local`). Any other value must match a
   configured location exactly or the upload fails with `INVALID_PAYLOAD`.

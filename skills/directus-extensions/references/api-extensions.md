@@ -46,6 +46,8 @@ export default defineHook(({ filter, action, init, schedule, embed }, { services
 	// Before write, inside the transaction. Return the (modified) payload.
 	filter('articles.items.create', async (payload: any, meta, { database, schema, accountability }) => {
 		if (!payload.slug && payload.title) payload.slug = slugify(payload.title);
+		if (!payload.slug) return payload;
+		// A friendly error only; two creates at once can both pass. Keep slug `is_unique` for the real guarantee.
 		const exists = await database('articles').where({ slug: payload.slug }).first();
 		if (exists) throw new SlugTaken();
 		return payload;

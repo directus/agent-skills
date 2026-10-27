@@ -17,6 +17,8 @@
 import { isDirectusError, readItem, withToken } from '@directus/sdk';
 import type { PreviewContext } from './preview'; // lib/preview.ts in nextjs-example.md
 
+const fields = ['id', 'title', 'slug', 'content'] as const;
+
 // directus = createDirectus<Schema>(url).with(rest()), no token composable
 export async function readPost(id: string, ctx: PreviewContext) {
 	const token = ctx.token ?? ''; // same credentials for both reads; '' sends no header (Public)

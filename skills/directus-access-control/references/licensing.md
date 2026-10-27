@@ -20,12 +20,15 @@ From `DIRECTUS_CORE_LICENSE` in `@directus/license` 0.6.1 (the version v12.5.1 p
 | ----------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
 | Seats                         | 3         | Adding one more throws `LIMIT_EXCEEDED` (403, `extensions.category: "seats"`)                                        |
 | Collections                   | 25        | Same, category `collections`. Junction and translation collections count                                             |
-| Flows                         | 5         | Same, category `flows`                                                                                               |
+| Flows                         | 5         | Same, category `flows`. Only active flows count, see below                                                           |
 | SSO                           | off       | `/auth/login/<provider>` returns 404 `ROUTE_NOT_FOUND`. Any active user with a non-default `provider` is a violation |
 | Custom permission rules       | off       | See [What happens without a license](#what-happens-without-a-license)                                                |
 | Custom or self-hosted LLMs    | off       | Saving one in settings returns 403 `RESOURCE_RESTRICTED`                                                             |
 | Activity and revision history | 30 days   | Reads of `/activity` and `/revisions` only return the last 30 days. Older rows are filtered out, not deleted         |
 
+- Flows: a create with no `status` counts as active (the default). A PATCH that sends `status: "active"` is counted
+  as adding a flow even if it's already active, so re-sending a full flow object at 5/5 fails. Leave `status` out of
+  updates that don't change it.
 - Seats count **active** users with at least one policy granting App or Admin Access, whether or not they log in.
   API-only, suspended, and invited users are free.
 - **Lockdown.** The instance locks only when its license status is `locked`:
@@ -58,7 +61,8 @@ built-in system row and any of these is true:
 | `presets` has any key                                                 | `{ "author": "$CURRENT_USER" }`          |
 
 **Exception:** rows that exactly match one of the Studio's recommended app permissions (same collection, action, item
-rule, and fields, with no validation or presets) are allowed. Examples: `directus_files` update with
+rule, and fields, with `validation` and `presets` null) are allowed. Even `validation: {}` or `presets: {}` disqualifies
+the match. Examples: `directus_files` update with
 `uploaded_by = $CURRENT_USER` and the default field list, `directus_users` update on `id = $CURRENT_USER`, manual-flow
 read on `directus_flows`. Change anything about them and they become custom.
 

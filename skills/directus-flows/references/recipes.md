@@ -43,11 +43,12 @@ Event `action`, scope `items.update`, collections `["posts"]`:
    this update set `status` to `published`. Re-saving an already published post with `status` in the payload passes
    again; if one email per post matters, add a `published_notified_at` field, filter on it being null below, and set
    it after the mail.
-2. `item-read` key `posts`: `collection: "posts"`, `key: "{{ $trigger.keys }}"` (a bulk publish sends several keys),
-   `query: {"fields": ["id", "title", "author.email"]}`, `permissions: "$full"`.
-3. Mail each author: for one key, `mail` with `to: ["{{ posts[0].author.email }}"]`. For several, pass `{{ posts }}`
-   to a `Utils → Send Email` utility as an array payload
-   ([utility-flows-and-loops.md](utility-flows-and-loops.md#loops)).
+2. `item-read` key `posts` with no `key` and
+   `query: {"filter": {"id": {"_in": "{{ $trigger.keys }}"}}, "fields": ["id", "title", "author.email"]}`,
+   `permissions: "$full"`. A query read always returns an array, whether the update touched one post or many
+   (a `key` read returns an object for one key).
+3. `trigger` a `Utils → Send Email` utility with `payload: "{{ posts }}"`: one run per post
+   ([utility-flows-and-loops.md](utility-flows-and-loops.md#loops)). Inside it, `to: ["{{ $trigger.author.email }}"]`.
 
 ## Form submission emails
 

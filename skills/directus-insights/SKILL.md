@@ -18,7 +18,6 @@ runs it **as the person viewing the dashboard**. Nothing is precomputed.
    the numeric fields, and the status values to filter on.
 2. **Pick the path.** At 12.5.1 the Directus MCP server has no Insights tool, and its `items` tool refuses `directus_*`
    collections. Use REST (`/dashboards`, `/panels`) or the SDK (`createDashboard`, `createPanel`).
-   <!-- When the MCP Insights tool ships: add references/mcp.md and route to it here. -->
 3. **Check who will view it.** Viewers need read on the charted collections and on `directus_dashboards` /
    `directus_panels`, which app access doesn't include by default.
 4. **Use the known payloads.** [references/panels.md](references/panels.md) has the required `options` keys for every
@@ -27,7 +26,7 @@ runs it **as the person viewing the dashboard**. Nothing is precomputed.
 ## Critical traps
 
 - **Set the layout yourself.** The grid starts at `position_x: 1`, `position_y: 1`. The API requires `position_x`,
-  `position_y`, `width`, and `height`, but checks neither overlaps nor minimum sizes; the Studio does.
+  `position_y`, `width`, and `height`, but checks neither overlaps nor minimum sizes. The Studio enforces minimum sizes; nothing checks overlaps.
 - **Panels run as the viewer.** A panel over a collection the viewer can't read shows an error or nothing, and
   aggregates only count rows the viewer can see.
 - **`time-series` filters to `range` on `dateField`** (`$NOW(-<range>)` to `$NOW`, default `1 week`). Use `auto` for all

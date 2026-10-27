@@ -49,7 +49,9 @@ module.exports = async function (data) {
 | `Utils → Post to Slack`   | `{ text }`              | `request` to an incoming webhook URL from `$env`, reject branch returns `{ ok: false }`                                                         | `{ ok, status }`   |
 
 Chain them: a form-notification flow reads the form, calls Render Template, then calls Send Email with the result.
-`mail` returns before delivery, so `Send Email` can only report that the send was queued.
+`mail` returns before delivery, so `Send Email` can only report that the send was queued. With
+`RATE_LIMITER_EMAIL_FLOWS_ENABLED=true`, every child shares the calling flow's mail budget (default 1 per 60 seconds),
+so a send loop stops after the first email ([operations.md](operations.md#mail)).
 
 ## Loops
 

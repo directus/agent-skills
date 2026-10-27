@@ -33,7 +33,7 @@ Redis holds caches, locks, counters, and messages that Directus rebuilds. It isn
 Add to every replica, on top of the [docker.md](docker.md#production-compose) env (which already has them):
 
 ```bash
-REDIS=redis://redis:6379          # or REDIS_HOST, REDIS_PORT, REDIS_USERNAME, REDIS_PASSWORD
+REDIS=redis://cache:6379          # the compose service name; or REDIS_HOST, REDIS_PORT, REDIS_USERNAME, REDIS_PASSWORD
 CACHE_STORE=redis
 RATE_LIMITER_STORE=redis
 SYNCHRONIZATION_STORE=redis

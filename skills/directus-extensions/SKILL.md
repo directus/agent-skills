@@ -27,7 +27,8 @@ the current docs. If the instance or its logs disagree, trust the instance._
 ## Critical traps
 
 - **Wrong CLI for the job.** `npx create-directus-extension@latest <type> <name>` only scaffolds. `validate`, `link`,
-  and `add` are `directus-extension` commands (`npm run validate`, `npm run link -- <extensions-dir>`, `npm run add`).
+  and `add` are `directus-extension` commands (`npm run validate`, `npm run link -- <extensions-dir>`, and in bundles
+  `npm run add`; elsewhere `npx directus-extension add`).
   `add` always prompts; without a TTY, edit bundle `entries` by hand.
 - **Services without accountability are admin.** `new ItemsService('articles', { schema })` bypasses permissions. Pass
   `req.accountability` (endpoints) or `context.accountability` (hooks, operations). That context value is `null` for

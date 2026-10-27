@@ -99,7 +99,8 @@ permission it guards (for example, "can't publish" lives in the Writer's own pol
 ## Automatic Studio permissions
 
 Users with `app_access` get a fixed set of system permissions added at request time (not rows you manage), for example:
-read and edit their own user profile fields, presets, notifications, and comments; read of roles in `$CURRENT_ROLES`;
+read of a few of their own user fields (no edit: editing your profile needs the recommended `directus_users`
+row); their own presets and comments; reading notifications and changing their `status`; read of roles in `$CURRENT_ROLES`;
 read of a safe subset of `directus_settings` fields; and read of `directus_translations`. API-only users get none of these.
 
 The Studio's **recommended** permissions (comments, files, dashboards, panels, folders, users, roles, shares, manual

@@ -31,7 +31,10 @@ curl -s -X POST "$URL/flows" -H "Authorization: Bearer $TOKEN" -H 'Content-Type:
 ```
 
 Read the result back with
-`GET /flows/<id>?fields=*,operations.*` and check every link. Deleting a flow deletes its operations. Deleting one operation leaves a gap: relink its neighbors first.
+`GET /flows/<id>?fields=*,operations.*` and check every link. Deleting a flow deletes its operations. Deleting an operation that another one points to
+fails (500 on 12.5.1: `resolve`/`reject` are foreign keys with no delete rule). PATCH the previous operation's
+`resolve` or `reject` to the next one (or `null`) first, then delete. `resolve` and `reject` are unique, so
+two operations can't point at the same next one: branches don't merge. Duplicate the shared tail or call a utility.
 
 ## With MCP
 

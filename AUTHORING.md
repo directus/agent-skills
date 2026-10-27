@@ -32,9 +32,10 @@ Each topic has one home skill. Others get one line and a pointer. Current owners
 | Topic | Owner |
 | --- | --- |
 | REST/GraphQL query syntax, filters, error codes, versions API | `directus` |
-| Insights dashboards and panels | `directus-insights` |
+| Insights dashboards and panels (add `references/mcp.md` when the MCP Insights tool ships) | `directus-insights` |
 | Flows: triggers, operations, utility flows, loops, flow vs hook | `directus-flows` |
-| Roles, policies, permissions, licensing effects on access | `directus-access-control` |
+| Roles, policies, permissions, license keys and core-tier limits | `directus-access-control` |
+| CORS and cookie env vars (server side) | `directus-self-hosting`; `directus-sdk` owns the client side |
 | Schema design, naming, relationships, seeding | `directus-content-modeling` |
 | Schema snapshot/apply and Environment Sync (`d6s`) | `directus-environment-sync` |
 | `@directus/sdk` usage | `directus-sdk` |

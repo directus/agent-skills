@@ -48,7 +48,7 @@ frontend references by a stable handle (the starter's `navigation.id` = `main`, 
 	"field": "id",
 	"type": "uuid",
 	"meta": { "hidden": true, "readonly": true, "interface": "input", "special": ["uuid"] },
-	"schema": { "is_primary_key": true, "length": 36, "has_auto_increment": false }
+	"schema": { "is_primary_key": true, "has_auto_increment": false }
 }
 ```
 

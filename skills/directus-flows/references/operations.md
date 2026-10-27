@@ -105,7 +105,10 @@ Shape: `module.exports = async function (data) { ... }`, returning the result. F
   `template` and `data`). Templates on disk aren't an option on Directus Cloud; render the HTML in the flow instead.
 - It resolves before the email is sent. Check SMTP config with a test run, not by branching on the result.
 - For one email per person instead of one shared email, loop (see [utility-flows-and-loops.md](utility-flows-and-loops.md#loops)).
-- `RATE_LIMITER_EMAIL_FLOWS_ENABLED` (default `false`) caps mail per flow. When it trips, the operation rejects.
+- `RATE_LIMITER_EMAIL_FLOWS_ENABLED` (default `false`) caps mail per flow: `RATE_LIMITER_EMAIL_FLOWS_POINTS` (`1`) per
+  `RATE_LIMITER_EMAIL_FLOWS_DURATION` (`60` seconds). The key is the **outermost** flow, so every `mail` in its
+  utility children shares one budget: with the defaults, a loop sends one email and the rest reject. Raise the points
+  or send a single email with all recipients when the limiter is on.
 
 ## Marketplace operations
 

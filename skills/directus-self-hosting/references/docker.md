@@ -80,6 +80,8 @@ services:
       RATE_LIMITER_STORE: redis
       SYNCHRONIZATION_STORE: redis
       IP_TRUST_PROXY: '1' # one proxy hop in front; see configuration.md
+      SESSION_COOKIE_SECURE: 'true' # PUBLIC_URL is HTTPS
+      REFRESH_TOKEN_COOKIE_SECURE: 'true'
       ADMIN_EMAIL: ${ADMIN_EMAIL:-} # first boot only
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
 

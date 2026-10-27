@@ -42,7 +42,8 @@ flat core rules.
 | `Team - App Access`      | app        | Studio access for staff. Dashboards and panels CRUD, `ai_prompts` CRUD, shares, read roles, users, files, folders, flows, update users                                                                                                                                   | Users update only own profile fields; shares read by role, update/delete own; flows read only `trigger = manual` with limited fields; `ai_prompts` read own or published, update/delete own                                                                                                                                                                                                  |
 
 The cms-i18n variant adds public read on `languages` and every `*_translations` collection, and `translations` to the
-public `globals` field list.
+public `globals` field list. It has 37 collections, over the core tier's 25, so it needs a license
+(`directus-content-modeling` new-project reference).
 
 ## Roles and attachments
 

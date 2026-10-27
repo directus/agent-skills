@@ -31,7 +31,7 @@ shows a query error. Keys are case-sensitive and differ between types: `meter` u
 | `meter`               | `collection`, `field`, `fn`                                         | `max` `100`, `size` `full` (`half`), `strokeWidth` `20`, `showPercentage` `true`, `filter`                                                                                            |
 | `label`               | `text`                                                              | `textAlign` `center`, `fontWeight` `800`, `fontSize` `auto`, `whiteSpace` `normal`, `color`, `font` `sans-serif`                                                                      |
 | `variable`            | `field`, `type`, `inter`                                            | `defaultValue` (typed to `type`), `options` (the interface's options)                                                                                                                 |
-| `relational-variable` | `field`, `collection`                                               | `multiple` `false`, `limit` (caps picks when `multiple`; no cap if omitted, the Studio form sets `5`), `displayTemplate`, `filter`                                                    |
+| `relational-variable` | `field`, `collection`                                               | `multiple` `false`, `limit` (caps picks when `multiple`; `5` if omitted), `displayTemplate`, `filter`                                                    |
 
 Notes:
 
@@ -47,7 +47,7 @@ Notes:
 ## Minimal options per type
 
 Each entry saved over `POST /panels` on 12.5.1 (add `dashboard` and the layout fields). Collection `orders` has
-`category` (string), `total` (decimal), `date_created` (timestamp), and `author` (m2o to `authors`).
+`status` (string), `category` (string), `total` (decimal), `date_created` (timestamp), and `author` (m2o to `authors`).
 
 ```json
 [

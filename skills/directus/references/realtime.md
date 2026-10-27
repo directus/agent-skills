@@ -44,7 +44,8 @@ or the socket closes.
 - Optional `event`: `create`, `update`, or `delete` to receive only one kind. Without `event`, the `init` message also
   carries the current matching items in `data`, so you can skip a separate initial fetch.
 - Optional `item`: a primary key to watch a single item. Optional `query` with normal query params (`fields`, `filter`).
-- `uid` labels responses (generated if omitted). Subscribing again with the same `uid` replaces the earlier
+- `uid` labels responses. The server doesn't make one up (the SDK does): without it, responses carry no `uid` and
+  you can't unsubscribe from just that subscription. Subscribing again with the same `uid` replaces the earlier
   subscription. Unsubscribe with `{ "type": "unsubscribe", "uid": "chat" }`; omit `uid` to drop all.
 - Subscriptions only send what the caller can read. A missing event usually means a permission or `fields` problem.
 - **Heartbeat:** reply to `{ "type": "ping" }` with `{ "type": "pong" }` to keep the connection alive.
@@ -63,10 +64,11 @@ or the socket closes.
 { "type": "items", "action": "delete", "collection": "messages", "ids": ["1", "2"] }
 ```
 
-- Use `id` for one item or `ids` for several. `read` with neither returns the whole collection, so set `limit`.
-- `update` with no `id`/`ids` (and object `data`) runs by `query`, and `delete` with a `query` deletes what matches.
-  **An empty or missing query hits the first 100 readable items** (`QUERY_LIMIT_DEFAULT`), or all of them with
-  `limit: -1`. Always send `id` or `ids`.
+- Use `id` for one item or `ids` for several. `read` with neither runs the `query`, which returns the first 100
+  items (`QUERY_LIMIT_DEFAULT`) unless you set `limit`.
+- `update` with no `id`/`ids` (and object `data`) runs by `query`; a missing or empty query **updates the first 100
+  items**. `delete` with no `id`, `ids`, or `query` fails with `INVALID_PAYLOAD`, but `"query": {}` deletes the first
+  100, and `limit: -1` deletes all. Always send `id` or `ids`.
 - `uid` is echoed back so you can match responses to requests.
 
 ## GraphQL subscriptions

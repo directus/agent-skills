@@ -265,3 +265,7 @@ const report = [
 writeFileSync(join(outDir, 'summary.md'), report);
 writeFileSync(join(outDir, 'results.json'), JSON.stringify(results, null, 2));
 console.log(`\n${report}\nResults: ${outDir}`);
+
+// Fail when the plugin arm misses a check or any run errored. The `without` arm is a baseline and may fail.
+const failed = results.some((r) => r.error || (r.arm === 'with' && r.passed < r.total));
+process.exit(failed ? 1 : 0);

@@ -76,7 +76,7 @@ docker compose exec directus node /directus/cli.js schema snapshot --yes /direct
 # Migrations
 npx directus database migrate:latest
 docker compose exec directus node /directus/cli.js database migrate:latest
-npx directus bootstrap            # install or migrate, then ensure an admin exists
+npx directus bootstrap            # install or migrate; creates an admin only on an empty database with ADMIN_* set
 
 # Which migrations ran
 SELECT version, name, timestamp FROM directus_migrations ORDER BY version DESC LIMIT 10;

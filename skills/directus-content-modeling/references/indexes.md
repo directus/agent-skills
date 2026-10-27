@@ -88,6 +88,10 @@ export async function down(knex) {
 }
 ```
 
+- **A fresh environment won't boot with it.** Custom migrations run at `bootstrap`, before `d6s push` has created
+  `posts`, so the container exits with `no such table` on every start (12.5.1). Don't guard with
+  `hasTable` and return: the migration is then recorded as done and the index never appears. For a new environment,
+  start without the migration, push the schema, then add the migration and restart.
 - Directus can't see it. `GET /fields` reports `is_indexed: false` for columns covered only by a composite index (on
   Postgres the flag reflects single-column, non-unique indexes only), and snapshots and `d6s` don't carry it. Commit
   the migration and run it in every environment.

@@ -96,7 +96,8 @@ Production with npm packages: Directus images don't include npm. Install in a bu
 
 - **Add an entry without a TTY** (`npm run add` always prompts): scaffold it standalone with `npx create-directus-extension@latest <type> <name> --language typescript --no-install` in a scratch folder, move its `src/` to `src/<name>/` in the bundle (and its `tsconfig.json` to the bundle root if there is none), delete the scratch folder, and append an entry (`index.ts`, or `app.ts` + `api.ts` for operations). Add the dev deps `add` would install (see [Scaffold](#scaffold)). Entry `name` must be unique in the bundle.
 - **Remove an entry:** delete its folder and its `entries` item.
-- Running `add` in a non-bundle extension offers to **convert** it into a bundle.
+- Running `npx directus-extension add` in a non-bundle extension (which has no `add` script) offers to **convert** it
+  into a bundle.
 - `partial` (default enabled) lets users disable individual entries in Settings → Extensions. Only the whole bundle can be uninstalled.
 - Bundle entries have no `sandbox` option.
 
