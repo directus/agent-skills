@@ -16,12 +16,13 @@ the current docs. If the instance or its logs disagree, trust the instance._
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
 2. **Is an extension needed?** Flows, validation rules, display templates, and theme settings cover a lot. See
    [choosing-a-type.md](references/choosing-a-type.md).
-3. **Directus version and how it runs:** `GET /server/info` (`data.version`), Docker tag, or `directus` in
-   `package.json`. Docker needs `./extensions` mounted to `/directus/extensions`.
+3. **How it runs:** Docker needs `./extensions` mounted to `/directus/extensions`.
 4. **Existing extensions:** look in `EXTENSIONS_PATH` (default `./extensions`) and root `package.json` deps. Extend an
    existing bundle before creating a new package.
 5. **Where secrets live:** server env or operation options. Never in app extension code.

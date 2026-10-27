@@ -19,9 +19,11 @@ the monorepo package._
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
-2. **Versions:** `GET /server/info` for Directus, `npm ls @directus/visual-editing` for the library. Library 2.x waits
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
+2. **Library version:** `npm ls @directus/visual-editing`. Library 2.x waits
    for a field access reply that only Directus 11.16+ sends; on older instances nothing activates.
 3. **Studio config:** the collection's **Preview URL** (`meta.preview_url`), **Settings > Project > Visual Editor URLs**
    (`visual_editor_urls`), and which collections have **Enable Versions** (`meta.versioning`). MCP: `collections` and

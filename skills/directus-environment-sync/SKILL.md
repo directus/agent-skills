@@ -16,8 +16,10 @@ _Verified against Directus v12.6.0 (CLI source `packages/cli`, `@directus/cli` 1
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
 2. **Versions and vendor.** `GET /server/info` on source and target: same exact version (patch included), same DB
    vendor, both 12.2.0+.
 3. **Admin tokens.** One per instance. `d6s profile test-connection <name>` prints who the token is.

@@ -9,13 +9,16 @@ metadata:
 # Directus Insights
 
 Build dashboards (`directus_dashboards`) made of panels (`directus_panels`). Each panel is a `type` plus an `options`
-object. The Studio turns the options of every data panel (not labels or variables) into batched GraphQL requests
+object. The Studio turns the options of every data panel into batched GraphQL requests (labels and `variable` don't
+query; `relational-variable` reads its picked items over REST)
 (`/graphql`, plus `/graphql/system` for `directus_*` collections) and runs them **as the person viewing the dashboard**. Nothing is precomputed.
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
 2. **Read the data first.** `GET /fields/<collection>` for the collections you'll chart: you need the exact date field,
    the numeric fields, and the status values to filter on.
 3. **Pick the path.** The Directus MCP server has no Insights tool (12.6), and its `items` tool refuses `directus_*`

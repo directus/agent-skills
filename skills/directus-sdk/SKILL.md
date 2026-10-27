@@ -18,15 +18,17 @@ SDK 22.0.0. If the instance disagrees, trust the instance._
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
 2. **Where does this code run?** Server (SSR, route handler, script) or browser. That decides the auth strategy and
    whether a token is allowed at all.
 3. **Installed versions:** `npm ls @directus/sdk`. Older than above? Check `directus-upgrade` before copying examples.
-4. **Is there a Schema type?** Reuse an existing `directus-schema.ts` or `Schema`; don't write a second one.
+4. **Reuse what exists:** the project's `Schema` type (`directus-schema.ts`) and fetch patterns, or a
+   [CMS starter](https://github.com/directus-labs/starters/tree/main/cms)'s.
 5. **Is the data public?** Check the Public policy before reaching for a token. Browser calls to another origin need
    `CORS_ENABLED=true` and `CORS_ORIGIN` on Directus.
-6. **Copy an existing pattern** from the project or a [CMS starter](https://github.com/directus-labs/starters/tree/main/cms).
 
 ## Critical traps
 
@@ -94,5 +96,4 @@ const posts = await directus.request(
    `search-directus-code`, `get-directus-file`). Use `search-directus-code` / `get-directus-file` on `sdk/src` for exact
    signatures.
 2. Raw markdown for any docs page: `https://directus.com/docs/raw/<path>.md`. Index: `https://directus.com/docs/llms.txt`.
-3. The instance itself: its error messages (`error.errors[0].extensions.code`), `GET /server/info` (SDK `serverInfo()`),
-   `GET /server/specs/oas` (SDK `readOpenApiSpec()`), and the schema.
+3. The instance: `error.errors[0].extensions.code`, `serverInfo()`, `readOpenApiSpec()`, and the schema.

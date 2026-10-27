@@ -1,6 +1,6 @@
 ---
 name: directus
-description: "Use when calling a running Directus instance over REST, GraphQL, WebSockets, or its /mcp server: reading and writing items, filters and relational queries, auth and tokens, error codes, files and assets, content versions, import and export, revisions, and user signup. Also for a Directus 403 or 400 you can't explain, or calling Directus from Python or PHP. Other directus-* skills own SDK code, schema, permissions, Flows, and hosting."
+description: "Use when calling a running Directus instance over REST, GraphQL, WebSockets, or /mcp: reading and writing items, filters and relations, auth, error codes, slow queries and caching, files, content versions, import and export, revisions, signup, AI settings, and older Directus versions. Also for an unexplained 403 or 400, or calling Directus from Python or PHP. Other directus-* skills own SDK code, schema, permissions, Flows, and hosting."
 metadata:
   author: directus
   directus-version: '12.6.0'
@@ -15,9 +15,10 @@ _Verified against Directus v12.6.0. If the instance behaves differently, trust t
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the notes for its major first: [v9](references/versions-v9.md), [v10](references/versions-v10.md),
-   [v11](references/versions-v11.md), [12.0 to 12.5](references/versions-v12.md).
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the notes for its major first: [v9](references/versions-v9.md), [v10](references/versions-v10.md),
+   [v11](references/versions-v11.md), [12.0 to 12.5](references/versions-v12.md). Newer: read the release notes since
+   12.6.0 first.
 2. **Which instance, which credential.** `GET /users/me?fields=id,email,role` proves the token works. `GET /server/info`
    with a token also returns the version, query limits, and WebSocket and upload settings.
 3. **Discover the schema before touching data.** MCP: `schema` with no args, then `schema` with `keys` for the
@@ -37,7 +38,8 @@ _Verified against Directus v12.6.0. If the instance behaves differently, trust t
   explicitly requested forbidden or misspelled field returns **403 FORBIDDEN** ("...or it does not exist"). A missing
   item also returns 403, never 404.
 - **Top-level `filter` narrows parents; `deep[rel][_filter]` narrows nested rows.** Use both when you need both.
-  `_some`/`_none` only work on one-to-many and many-to-many fields.
+  `_some`/`_none` work on one-to-many, many-to-many, and many-to-any fields, as the top-level key on the alias
+  field.
 - **Array writes to to-many fields replace the set, and many-to-many arrays hold junction rows.** In `{"tags": [1, 2]}`
   the ids are junction row ids (`post_tags`), not tag ids. Re-sending `[{"tag": 12}]` for a tag that's already linked
   adds a second junction row and orphans the old one. To add or remove a few, use

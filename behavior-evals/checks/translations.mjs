@@ -18,8 +18,20 @@ check(toPosts?.schema?.on_delete === 'CASCADE' && toLang?.schema?.on_delete === 
 const jf = (await fields(junction ?? 'x')).map((f) => f.field);
 check(jf.includes('title') && jf.includes('content'), 'title and content live on the translations collection', jf.join(','));
 
-const post = ((await api('/items/posts?limit=1')).data ?? [])[0];
 const alias = toPosts?.meta?.one_field;
+const existing = alias
+	? ((await api(`/items/posts?limit=-1&fields=id,${alias}.title,${alias}.${toLang?.field}`)).data ?? [])
+	: [];
+const migrated = existing.filter((p) =>
+	(p[alias] ?? []).some((t) => /^en/.test(t?.[toLang.field] ?? '') && t?.title),
+);
+check(
+	existing.length > 0 && migrated.length === existing.length,
+	'existing posts keep their content as English translations',
+	`${migrated.length}/${existing.length}`,
+);
+
+const post = existing[0];
 const de = codes.find((c) => /^de/.test(c));
 if (post && alias && de) {
 	const w = await api(`/items/posts/${post.id}`, { method: 'PATCH', body: { [alias]: { create: [{ [toLang.field]: de, title: 'Hallo Welt' }] } } });

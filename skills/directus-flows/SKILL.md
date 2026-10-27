@@ -13,8 +13,10 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
 2. **Read what exists.** `GET /flows?fields=id,name,status,trigger,options,operation&limit=-1`. Reuse or extend an
    existing utility flow before building a new one.
 3. **Check the license.** Active flows count toward the core-tier limit (`GET /license`), and that includes every
@@ -44,9 +46,9 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 - **In a filter event flow, a final reject cancels the save.** A `condition` that doesn't match is a reject. Link every
   "nothing to do" branch to a `log` operation so the write still goes through.
 - **To block a save with a clear error, end the branch with `throw-error`** (`status: "400"`, your `code` and
-  `message`). A throw in Run Script reaches the caller as a 500; a failed `condition` as a generic 400.
-  `throw-error` needs 11.10.1+. Older versions: compute the check in Run Script and return a flag (`{ ok: false }`),
-  then end on a `condition` over that flag. It fails with a 400. Don't throw from Run Script: that's a 500.
+  `message`). A failed `condition` gives a 400 `FAILED_VALIDATION` with field details but no message of yours; a
+  throw in Run Script gives a 500. `throw-error` needs 11.10.1+. Older versions: Run Script returns a flag
+  (`{ ok: false }`), then end on a `condition` over that flag.
 - **Event scopes need `collections`.** `items.create` with no `collections` registers nothing, silently.
 - **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow
   through a parent flow or a temporary manual wrapper.

@@ -14,8 +14,8 @@ The skills are written for 12.6. Upgrading: `directus-upgrade` `references/10.x-
   `"role": "<role id>"`; copy shared access into each role. Admin reads `GET /permissions?filter[role][_eq]=<id>`.
 - **No MCP server, AI Assistant, licensing, Environment Sync, or Visual Editor.** Use REST or GraphQL. Skip license
   checks. The published version key is `main`; `draft` is an ordinary key.
-- **Reads differ.** A typo in `fields` is silently dropped, not a 403. Many-to-any nested fields are
-  `blocks.item.title`, not `blocks.item:<collection>.title`. A missing version key returns the published item.
+- **Reads differ.** A typo in `fields` is silently dropped, not a 403. A missing version key returns the
+  published item.
 
 ## API gates
 

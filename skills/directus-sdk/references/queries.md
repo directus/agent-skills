@@ -46,7 +46,7 @@ await directus.request(updateItems('posts', { filter: { status: { _eq: 'draft' }
 | `deep` | Sent as JSON; keys prefixed with `_` (`{ blocks: { _sort: ['sort'], _filter: {...} } }`). |
 | `alias` | Sent as JSON. Not reflected in output types. |
 | `version` / `versionRaw` | Content version key. `versionRaw` is `readItem`/`readSingleton` only. Drafts in a frontend: `directus-visual-editing`. |
-| `backlink` | **Not sent.** Typed on `Query` but `queryToParams` never serializes it in v27.0.0. Use `withOptions` or a custom param. |
+| `backlink` | **Not sent.** Typed on `Query` but `queryToParams` never serializes it (27.1.0), and skips a custom param named `backlink` too. Use `withOptions` to add it to the URL. |
 | any other key | Passed through as a query parameter (string or JSON string), for example `meta`, `export`. |
 
 ## What comes back

@@ -15,8 +15,10 @@ _Verified against Directus v12.6.0 source (`api/src/permissions`, `api/src/servi
 
 ## First checks
 
-1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
-   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
 2. **Read what exists.** As admin: `GET /roles?fields=id,name,parent,policies.policy.name`,
    `GET /policies?fields=id,name,admin_access,app_access,ip_access`, then
    `GET /permissions?filter[policy][_eq]=<id>&limit=-1` per policy. Extend the existing layout before inventing one.

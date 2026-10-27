@@ -39,7 +39,8 @@ Notes:
   which GraphQL rejects, and the panel shows an error.
 - `metric`, `metric-list`, `list`, and `time-series` render empty for a singleton collection.
 - `bar-chart` defaults to `max`, not `count`. Always send `function`.
-- `line-chart` groups by the raw `xAxis` value. For values over time, use `time-series`.
+- `line-chart` groups by the raw `xAxis` value (an undocumented `datePrecision` option groups dates; the Studio form
+  doesn't show it). For values over time, use `time-series`.
 - `pie-chart` groups by `column` and aggregates `column` itself. `avg`, `sum`, `min`, `max` need a numeric column.
 - `meter` shows `fn(field) / max` as a percentage.
 - `label` and `variable` run no query. `relational-variable` only reads its picked items, over REST.

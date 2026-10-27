@@ -44,7 +44,7 @@ curl -X POST "$DIRECTUS_URL/users/register" -H 'Content-Type: application/json' 
 
 - Accepts only `email`, `password`, `first_name`, `last_name`, `verification_url`. Any other key (`role`, custom
   fields) fails with 400. Set extra profile fields after login.
-- Success is 204 with no body. An already-registered email also gets 204, and nothing changes. The docs say it always
+- Success is 204 with no body. An already-registered email also gets 204, and nothing changes (unless that user is still `unverified` with verification on: the verification email is sent again). The docs say it always
   returns 204; it doesn't: registration off, an email filter miss, or a seat limit returns 403.
 - Rate limited per IP: 5 requests per 60 s by default (`RATE_LIMITER_REGISTRATION_*`), failed attempts included. Over
   it: 429 `REQUESTS_EXCEEDED`. Plan for this in tests.
