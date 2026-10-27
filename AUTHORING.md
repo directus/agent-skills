@@ -57,6 +57,12 @@ metadata:
 The description is the only thing an agent sees before deciding to load the skill. Lead with the tasks and the words
 a user would type (package names, feature names). Add a "Not for" clause when a sibling skill owns the neighbor topic.
 
+## Codex metadata
+
+Every skill has `agents/openai.yaml` for the Codex skill picker: `display_name`, a `short_description` of 25-64 chars,
+`brand_color: "#6644FF"`, and a `default_prompt` that names the skill as `$<skill-name>`. The validator checks all
+three.
+
 ## Grounding
 
 - Verified against **Directus v12.5.1**. Every claim must come from the source at that tag, the current docs, or a

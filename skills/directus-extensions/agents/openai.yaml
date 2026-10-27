@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Extensions"
+  short_description: "Build, debug, and publish Directus extensions"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-extensions to write a hook that runs when an order is created."

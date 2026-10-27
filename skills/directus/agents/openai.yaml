@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus API"
+  short_description: "Query and write Directus data over REST, GraphQL, or MCP"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus to fetch published posts with their author from my Directus instance."

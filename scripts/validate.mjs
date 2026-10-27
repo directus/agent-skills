@@ -44,6 +44,25 @@ function checkTodos(file, text) {
 	if (count) (strict ? errors : warnings).push(`${rel(file)}: ${count} TODO(verify)`);
 }
 
+// Codex reads agents/openai.yaml for the skill picker. Limits from codex-rs/skills (short_description 25-64 chars).
+function checkCodexMetadata(dir, name) {
+	const file = join(dir, 'agents', 'openai.yaml');
+
+	if (!existsSync(file)) {
+		errors.push(`${rel(dir)}: missing agents/openai.yaml (Codex metadata)`);
+		return;
+	}
+
+	const text = readFileSync(file, 'utf8');
+	const value = (key) => text.match(new RegExp(`^\\s+${key}:\\s*"(.*)"\\s*$`, 'm'))?.[1];
+	const short = value('short_description');
+
+	if (!value('display_name')) errors.push(`${rel(file)}: missing interface.display_name`);
+	if (!short || short.length < 25 || short.length > 64)
+		errors.push(`${rel(file)}: short_description must be 25-64 chars`);
+	if (!value('default_prompt')?.includes(`$${name}`)) errors.push(`${rel(file)}: default_prompt must mention $${name}`);
+}
+
 const rel = (file) => file.replace(root + '/', '');
 
 for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skillsDir, entry)).isDirectory())) {
@@ -69,13 +88,16 @@ for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skills
 	else if (fm.description.length > 1024)
 		errors.push(`${rel(skillFile)}: description is ${fm.description.length} chars (max 1024)`);
 	else if (fm.description.length > DESCRIPTION_SOFT_MAX)
-		warnings.push(`${rel(skillFile)}: description is ${fm.description.length} chars (aim for <= ${DESCRIPTION_SOFT_MAX})`);
+		warnings.push(
+			`${rel(skillFile)}: description is ${fm.description.length} chars (aim for <= ${DESCRIPTION_SOFT_MAX})`,
+		);
 
 	const lines = text.split('\n').length;
 	if (lines > SKILL_MAX_LINES) warnings.push(`${rel(skillFile)}: ${lines} lines (router target <= ${SKILL_MAX_LINES})`);
 
 	checkLinks(skillFile, text);
 	checkTodos(skillFile, text);
+	checkCodexMetadata(dir, name);
 
 	const refDir = join(dir, 'references');
 	if (!existsSync(refDir)) continue;

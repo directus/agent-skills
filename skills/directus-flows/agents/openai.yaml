@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Flows"
+  short_description: "Automate Directus with Flows, loops, and utility flows"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-flows to build a flow that notifies the admin when a post is published."

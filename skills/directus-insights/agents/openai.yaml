@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Insights"
+  short_description: "Build Directus Insights dashboards and panels"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-insights to build a dashboard of published posts per week."

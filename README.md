@@ -56,6 +56,16 @@ claude plugin marketplace add directus/agent-skills
 claude plugin install directus@directus-agent-skills
 ```
 
+### Codex (plugin)
+
+```bash
+codex plugin marketplace add directus/agent-skills
+codex plugin add directus@directus-agent-skills
+```
+
+Codex reads the same `.claude-plugin/` manifests. Each skill also has `agents/openai.yaml` with its name, blurb, and
+example prompt for the Codex skill picker.
+
 ### Manually
 
 Copy any folder under `skills/` into your agent's skills directory: `.claude/skills/` for Claude Code, `.agents/skills/`
