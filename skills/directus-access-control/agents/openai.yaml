@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Access Control"
+  short_description: "Design Directus roles, policies, and permissions"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-access-control to set up a role that can edit posts but not delete them."

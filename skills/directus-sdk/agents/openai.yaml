@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus SDK"
+  short_description: "Use @directus/sdk in frontends and Node apps"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-sdk to fetch Directus pages in my Next.js app."

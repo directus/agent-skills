@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Environment Sync"
+  short_description: "Promote Directus schema and config with d6s"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-environment-sync to promote schema changes from staging to production."

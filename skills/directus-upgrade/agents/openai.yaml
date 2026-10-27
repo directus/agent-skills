@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Upgrade"
+  short_description: "Upgrade Directus across versions and fix what breaks"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-upgrade to plan an upgrade from Directus 11 to 12."

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Content Modeling"
+  short_description: "Design Directus collections, fields, and relations"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-content-modeling to design a blog schema with posts, authors, and tags."

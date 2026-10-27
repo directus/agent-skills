@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Visual Editing"
+  short_description: "Wire Live Preview and the Visual Editor into a site"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-visual-editing to add Live Preview and the Visual Editor to my site."
