@@ -16,14 +16,16 @@ _Verified against Directus v12.6.0 source (`Dockerfile`, `docker-entrypoint.cjs`
 
 ## First checks
 
-1. **Where does it run?** Self-hosted Docker (or a platform running the image) vs Directus Cloud. On Cloud there is no
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Where does it run?** Self-hosted Docker (or a platform running the image) vs Directus Cloud. On Cloud there is no
    shell or raw env access: load [directus-cloud.md](references/directus-cloud.md) and stop there.
-2. **One instance or several?** Several containers, or `PM2_INSTANCES` > 1 in one container, means Redis is required.
-3. **Which database and version?** `DB_CLIENT`, and whether it's managed. SQLite is a file in one container's volume:
+3. **One instance or several?** Several containers, or `PM2_INSTANCES` > 1 in one container, means Redis is required.
+4. **Which database and version?** `DB_CLIENT`, and whether it's managed. SQLite is a file in one container's volume:
    one instance only.
-4. **Where do files live?** Local volume (`/directus/uploads`) or a storage driver (`STORAGE_LOCATIONS`). Check
+5. **Where do files live?** Local volume (`/directus/uploads`) or a storage driver (`STORAGE_LOCATIONS`). Check
    `directus_files.storage` before changing anything.
-5. **What version?** `GET /server/info` or the image tag. Pin a version tag, never `latest`.
+6. **What version?** `GET /server/info` or the image tag. Pin a version tag, never `latest`.
 
 ## Critical traps
 

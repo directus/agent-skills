@@ -13,13 +13,15 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 
 ## First checks
 
-1. **Read what exists.** `GET /flows?fields=id,name,status,trigger,options,operation&limit=-1`. Reuse or extend an
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Read what exists.** `GET /flows?fields=id,name,status,trigger,options,operation&limit=-1`. Reuse or extend an
    existing utility flow before building a new one.
-2. **Check the license.** Active flows count toward the core-tier limit (`GET /license`), and that includes every
+3. **Check the license.** Active flows count toward the core-tier limit (`GET /license`), and that includes every
    utility flow. Inactive flows don't count. See
    [utility-flows-and-loops.md](references/utility-flows-and-loops.md#licensing).
-3. **Ask where it's hosted** before suggesting a hook instead. Directus Cloud runs custom extensions only on Enterprise.
-4. **Confirm before changing a flow that's already active.** Event flows fire on real writes as soon as they're saved.
+4. **Ask where it's hosted** before suggesting a hook instead. Directus Cloud runs custom extensions only on Enterprise.
+5. **Confirm before changing a flow that's already active.** Event flows fire on real writes as soon as they're saved.
 
 ## Critical traps
 
@@ -29,7 +31,7 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 - **A child flow's `$trigger` is the payload itself**, not `$trigger.body`. Only webhook and manual flows wrap input in
   `body`.
 - **Child failures don't fail the parent.** The parent's `trigger` operation resolves with whatever the child returns
-  (`null` if the child is inactive or missing). Return a status from the child and check it with a `condition`.
+  (`null` if the child is inactive, missing, or has no `return` set). Return a status from the child and check it with a `condition`.
 - **`mail` doesn't fail on delivery.** It queues the send and resolves; SMTP errors only reach the server log (it
   rejects only when the flow mail rate limit is on and spent). `to` with
   several addresses sends one email everyone can see. Loop for one email per person.
@@ -43,6 +45,8 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
   "nothing to do" branch to a `log` operation so the write still goes through.
 - **To block a save with a clear error, end the branch with `throw-error`** (`status: "400"`, your `code` and
   `message`). A throw in Run Script reaches the caller as a 500; a failed `condition` as a generic 400.
+  `throw-error` needs 11.10.1+. Older versions: compute the check in Run Script and return a flag (`{ ok: false }`),
+  then end on a `condition` over that flag. It fails with a 400. Don't throw from Run Script: that's a 500.
 - **Event scopes need `collections`.** `items.create` with no `collections` registers nothing, silently.
 - **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow
   through a parent flow or a temporary manual wrapper.

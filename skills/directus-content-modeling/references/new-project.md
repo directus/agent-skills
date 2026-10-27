@@ -1,6 +1,6 @@
 # New project from a starter
 
-The path for "start a new Directus + <framework> site" at v12.5.1: pick a starter, run Directus, load the starter's
+The path for "start a new Directus + <framework> site" at 12.6.0: pick a starter, run Directus, load the starter's
 schema and content, wire the frontend, check it. How each schema tool works: [applying-schema.md](applying-schema.md).
 
 - [Pick a starter](#pick-a-starter)
@@ -66,7 +66,7 @@ npx directus-template-cli@latest apply -p \
 track schema and config with `d6s sync pull` and promote with `d6s sync push`. Don't re-apply the template to staging
 or production.
 
-At v12.5.1 the template CLI is the only tool that loads a starter: the starters ship template files, not Environment
+At 12.6.0 the template CLI is the only tool that loads a starter: the starters ship template files, not Environment
 Sync files, and `d6s` doesn't move content. Once the starter is applied to your dev instance, track schema and config
 from there with `d6s sync pull` (`directus-environment-sync`) and seed later content with a script
 ([applying-schema.md](applying-schema.md#seeding-content)).
@@ -103,7 +103,7 @@ Fix these before the project leaves your machine. Each is documented once:
 
 ## First checks after setup
 
-1. `GET /server/info` with the admin token: `data.version` matches the Compose image (`12.5.1`).
+1. `GET /server/info` with the admin token: `data.version` matches the Compose image tag.
 2. `GET /license` (admin): the tier you expected. Compare `usage.collections` with `entitlements.collections.limit`;
    the `cms` starter uses 22.
 3. Users: your admin, Frontend Bot, and Content Writer (`writer@example.com`).

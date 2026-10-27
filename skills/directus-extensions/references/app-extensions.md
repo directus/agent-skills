@@ -95,7 +95,7 @@ useNotificationsStore().add({ title: 'Saved', type: 'success' });
 
 ## CSP and external resources
 
-Studio CSP defaults at v12.5.1: `connect-src 'self' https://* wss://*`, `img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com`, `media-src 'self'`, `script-src 'self' 'unsafe-eval'`, and no `frame-src` (falls back to `child-src 'self' blob:`). So `fetch` to an https API works, but external images, video, iframes, and scripts are blocked unless the operator sets `CONTENT_SECURITY_POLICY_DIRECTIVES__<NAME>`:
+Studio CSP defaults (unchanged through 12.6.0): `connect-src 'self' https://* wss://*`, `img-src 'self' data: blob: https://raw.githubusercontent.com https://avatars.githubusercontent.com`, `media-src 'self'`, `script-src 'self' 'unsafe-eval'`, and no `frame-src` (falls back to `child-src 'self' blob:`). So `fetch` to an https API works, but external images, video, iframes, and scripts are blocked unless the operator sets `CONTENT_SECURITY_POLICY_DIRECTIVES__<NAME>`:
 
 ```env
 CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC="array:'self', data:, blob:, https://images.example.com"

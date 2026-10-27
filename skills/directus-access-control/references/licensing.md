@@ -16,7 +16,7 @@ Docs: https://directus.com/docs/licensing/overview.
 
 These limits ship in the `@directus/license` package and can change without a Directus release. Read the live values
 before relying on them: `GET /license` (admin) returns `entitlements` (limits) and `usage` (current counts). Other
-skills point here instead of repeating the numbers. As of `@directus/license` 0.6.1 (pinned by v12.5.1):
+skills point here instead of repeating the numbers. As of `@directus/license` 0.6.1 (pinned by 12.5.1 and 12.6.0):
 
 | Entitlement                   | Core tier | Over the limit or using it                                                                                           |
 | ----------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -70,7 +70,7 @@ read on `directus_flows`. Change anything about them and they become custom.
 
 ## What happens without a license
 
-Verified in `api/src/services/permissions.ts` at v12.5.1:
+Verified in `api/src/services/permissions.ts` (unchanged through 12.6.0):
 
 | Operation                                                    | Result                                                                                                                                                     |
 | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -14,21 +14,27 @@ object. The Studio turns the options of every data panel (not labels or variable
 
 ## First checks
 
-1. **Read the data first.** `GET /fields/<collection>` for the collections you'll chart: you need the exact date field,
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Read the data first.** `GET /fields/<collection>` for the collections you'll chart: you need the exact date field,
    the numeric fields, and the status values to filter on.
-2. **Pick the path.** At 12.5.1 the Directus MCP server has no Insights tool, and its `items` tool refuses `directus_*`
+3. **Pick the path.** The Directus MCP server has no Insights tool (12.6), and its `items` tool refuses `directus_*`
    collections. Use REST (`/dashboards`, `/panels`) or the SDK (`createDashboard`, `createPanel`).
-3. **Check who will view it.** Viewers need read on the charted collections and on `directus_dashboards` /
+4. **Check who will view it.** Viewers need read on the charted collections and on `directus_dashboards` /
    `directus_panels`, which app access doesn't include by default.
-4. **Use the known payloads.** [references/panels.md](references/panels.md) has the required `options` keys for every
+5. **Use the known payloads.** [references/panels.md](references/panels.md) has the required `options` keys for every
    type. The API saves any `options` unchecked, so a wrong key only shows up as an empty or failing panel.
 
 ## Critical traps
 
 - **Set the layout yourself.** The grid starts at `position_x: 1`, `position_y: 1`. The API requires `position_x`,
-  `position_y`, `width`, and `height`, but checks neither overlaps nor minimum sizes. The Studio enforces minimum sizes; nothing checks overlaps.
+  `position_y`, `width`, and `height`, but not minimum sizes (the Studio enforces those).
+  Nothing checks overlaps.
 - **Panels run as the viewer.** A panel over a collection the viewer can't read shows an error or nothing, and
   aggregates only count rows the viewer can see.
+- **Each type has its own keys; unknown ones save silently and render nothing.** `time-series` takes `function`,
+  `valueField`, `dateField` (not `xAxis`/`yAxis`, which are `bar-chart`/`line-chart`). Copy from
+  [panels.md](references/panels.md#minimal-options-per-type).
 - **`time-series` filters to `range` on `dateField`** (`$NOW(-<range>)` to `$NOW`, default `1 week`). Use `auto` for all
   data. It needs a datetime field.
 - **Singletons can't be charted** by `metric`, `metric-list`, `list`, or `time-series`. They render empty.

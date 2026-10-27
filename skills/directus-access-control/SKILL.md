@@ -15,21 +15,25 @@ _Verified against Directus v12.6.0 source (`api/src/permissions`, `api/src/servi
 
 ## First checks
 
-1. **Read what exists.** As admin: `GET /roles?fields=id,name,parent,policies.policy.name`,
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Read what exists.** As admin: `GET /roles?fields=id,name,parent,policies.policy.name`,
    `GET /policies?fields=id,name,admin_access,app_access,ip_access`, then
    `GET /permissions?filter[policy][_eq]=<id>&limit=-1` per policy. Extend the existing layout before inventing one.
-2. **Check the license.** `GET /license` (admin). Unlicensed v12 can't use item rules, field lists, validation, or
+3. **Check the license.** `GET /license` (admin). Unlicensed v12 can't use item rules, field lists, validation, or
    presets. That decides the whole design. See [licensing.md](references/licensing.md).
-3. **List the audiences.** Public visitors, Studio staff by job, API integrations, agents. Each job becomes a policy.
-4. **Confirm risky changes.** Show the planned rows before anything that widens public access, touches `directus_*`
+4. **List the audiences.** Public visitors, Studio staff by job, API integrations, agents. Each job becomes a policy.
+5. **Confirm risky changes.** Show the planned rows before anything that widens public access, touches `directus_*`
    write access, or removes access. Never touch the Administrator policy or the last admin.
 
 ## Critical traps
 
 - **Unlicensed custom rules deny, not widen.** On the core tier a row with any rule is hidden from `/permissions` and
   dropped at evaluation: the whole collection + action is denied. Saving one returns 403 `RESOURCE_RESTRICTED`.
-- **`fields` must be `["*"]` on core, on every row and every write (delete and share rows too).** Omitted or `null` fields count as a custom rule, and a `PATCH`
-  without `"fields": ["*"]` is refused even when you change something else.
+- **`fields` must be `["*"]` on core, on every row and every write (delete and share rows too).** Omitted or `null`
+  fields count as a custom rule, and a `PATCH` without `"fields": ["*"]` is refused even when you change something
+  else. The exception is a row that exactly matches a Studio recommended permission
+  ([licensing.md](references/licensing.md#what-counts-as-a-custom-rule)).
 - **Policies only add, except validation.** Item rules and fields union (OR) across policies. Validation rules from
   every policy must all pass (AND). IP allowlists drop the whole policy for other IPs; behind a proxy set
   `IP_TRUST_PROXY` (default `false`) or Directus sees the proxy's IP.

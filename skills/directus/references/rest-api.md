@@ -78,7 +78,7 @@ Query depth through relations is capped by `MAX_RELATIONAL_DEPTH` (default 10); 
 | ------------ | -------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------- |
 | Many-to-one  | `"author": 5`                                | `"author": { "name": "New" }`                                 | `"author": { "id": 5, "name": "Renamed" }`                    | `"author": null`          |
 | One-to-many  | `"comments": [1, 5]`                         | `"comments": [{ "text": "Hi" }]`                              | `"comments": [{ "id": 5, "text": "Edited" }]`                 | leave it out of the array |
-| Many-to-many | junction rows: `"tags": [{ "tags_id": 12 }]` | `"tags": [{ "tags_id": { "name": "New" } }]`                  | `"tags": [{ "id": 19, "tags_id": { "id": 7, "name": "x" } }]` | leave it out of the array |
+| Many-to-many | junction rows: `"tags": [{ "tag": 12 }]` | `"tags": [{ "tag": { "name": "New" } }]`                  | `"tags": [{ "id": 19, "tag": { "id": 7, "name": "x" } }]` | leave it out of the array |
 | Many-to-any  |                                              | `"blocks": [{ "collection": "block_hero", "item": { ... } }]` |                                                               |                           |
 
 **Arrays replace the whole set.** Anything not in the array is unlinked (and nulled or deleted depending on the
@@ -88,13 +88,16 @@ relation's `one_deselect_action`). For partial changes use the detailed form:
 { "comments": { "create": [{ "text": "New" }], "update": [{ "id": 5, "text": "Edited" }], "delete": [9] } }
 ```
 
-Many-to-many writes go through the junction: `id` is the junction row, `tags_id` (or your junction field name) is the
+Examples use the house junction names (`post_tags` with `post` and `tag`, see `directus-content-modeling`).
+Studio-built junctions default to `posts_tags` with `posts_id` and `tags_id`: use whatever the schema has.
+
+Many-to-many writes go through the junction: `id` is the junction row, `tag` (or your junction field name) is the
 related item. Check the junction field names with the schema first. Traps (12.5.1):
 
 - Bare ids are junction ids. `"tags": [4, 5]` keeps junction rows 4 and 5, not tags 4 and 5.
-- Every `{ "tags_id": 12 }` without an `id` creates a new junction row, even if tag 12 is already linked. Re-sending the
-  full list as `tags_id` objects duplicates the links and unlinks the old rows.
-- Unlinked junction rows follow `one_deselect_action`. The default `nullify` leaves rows with `posts_id: null`. Use the
+- Every `{ "tag": 12 }` without an `id` creates a new junction row, even if tag 12 is already linked. Re-sending the
+  full list as `tag` objects duplicates the links and unlinks the old rows.
+- Unlinked junction rows follow `one_deselect_action`. The default `nullify` leaves rows with `post: null`. Use the
   detailed form (`create` new links, `delete` junction ids) to change a few links.
 
 ## Errors

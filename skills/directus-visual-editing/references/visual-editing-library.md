@@ -1,6 +1,6 @@
 # @directus/visual-editing
 
-Install `@directus/visual-editing` (2.1.0 is `packages/visual-editing` at v12.5.1; check `npm view @directus/visual-editing version`). It is client-only: call `apply()` in an effect, `onMounted`, or `afterNavigate`, never during SSR. `setAttr` is a pure string builder and is safe on the server. Full API: https://directus.com/docs/guides/content/visual-editor/frontend-library
+Install `@directus/visual-editing` (2.1.0 is `packages/visual-editing` at 12.6.0; check `npm view @directus/visual-editing version`). It is client-only: call `apply()` in an effect, `onMounted`, or `afterNavigate`, never during SSR. `setAttr` is a pure string builder and is safe on the server. Full API: https://directus.com/docs/guides/content/visual-editor/frontend-library
 
 ## Exports
 

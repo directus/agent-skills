@@ -25,7 +25,7 @@ Normal filter syntax, including relational paths and `_and` / `_or`. Examples: [
 - Reads: rows that don't match are silently left out. Update, delete, share: the targeted keys must all match, or the
   request fails with 403.
 - Create has no item rule. Use `validation` to constrain what can be created.
-- Item rules on junction collections matter. Unfiltered create on `posts_tags` lets a user attach any tag to any post
+- Item rules on junction collections matter. Unfiltered create on `post_tags` lets a user attach any tag to any post
   even without update on `posts`.
 
 ## Dynamic variables

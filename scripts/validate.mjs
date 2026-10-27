@@ -99,6 +99,10 @@ for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skills
 	checkTodos(skillFile, text);
 	checkCodexMetadata(dir, name);
 
+	// Every router sends agents on older majors to the base skill's version notes (AUTHORING.md).
+	if (name !== 'directus-upgrade' && !/versions-v\d+\.md|version\s+notes/.test(text))
+		errors.push(`${rel(skillFile)}: first checks must point older versions to the directus version notes`);
+
 	const refDir = join(dir, 'references');
 	if (!existsSync(refDir)) continue;
 
@@ -118,6 +122,11 @@ for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skills
 		checkLinks(refFile, refText);
 		checkTodos(refFile, refText);
 	}
+}
+
+for (const major of [9, 10, 11, 12]) {
+	if (!existsSync(join(skillsDir, 'directus', 'references', `versions-v${major}.md`)))
+		errors.push(`skills/directus/references: missing versions-v${major}.md`);
 }
 
 for (const w of warnings) console.warn(`warn  ${w}`);

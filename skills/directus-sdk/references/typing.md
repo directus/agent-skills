@@ -17,7 +17,7 @@
 ```ts
 interface Schema {
 	posts: Post[]; // array = regular collection
-	posts_tags: PostTag[]; // M2M junction
+	post_tags: PostTag[]; // M2M junction
 	page_blocks: PageBlock[]; // M2A junction
 	globals: Globals; // not an array = singleton
 	directus_files: DirectusFile[]; // needed if any field relates to files
@@ -43,8 +43,8 @@ interface Post {
 }
 interface PostTag {
 	id: number;
-	posts_id: number | Post;
-	tags_id: number | Tag;
+	post: number | Post;
+	tag: number | Tag;
 }
 interface PageBlock {
 	id: string;
@@ -92,7 +92,7 @@ type PostCard = Awaited<typeof result>[number];
 
 ## Generating types
 
-There is no official type generator in the Directus monorepo at v12.5.1. Options:
+There is no official type generator in the Directus monorepo (12.6.0). Options:
 
 - **Hand-write** the Schema for the collections the app uses. Fine for small apps.
 - **Generate from the instance:** read `GET /fields` and `GET /relations` with an admin token and write a `Schema`. Check the project for an existing generated file (`directus-schema.ts` or similar) and its script first.

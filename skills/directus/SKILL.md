@@ -1,6 +1,6 @@
 ---
 name: directus
-description: "Use when calling a running Directus instance over REST, GraphQL, WebSockets, or its /mcp server: reading and writing items, filters and relational queries, auth and tokens, error codes, files and assets, content versions, import and export, revisions, and user signup. Not for SDK code, schema, permissions, Flows, Insights, preview, extensions, hosting, sync, or upgrades; use the matching directus-* skill."
+description: "Use when calling a running Directus instance over REST, GraphQL, WebSockets, or its /mcp server: reading and writing items, filters and relational queries, auth and tokens, error codes, files and assets, content versions, import and export, revisions, and user signup. Also for a Directus 403 or 400 you can't explain, or calling Directus from Python or PHP. Other directus-* skills own SDK code, schema, permissions, Flows, and hosting."
 metadata:
   author: directus
   directus-version: '12.6.0'
@@ -15,15 +15,17 @@ _Verified against Directus v12.6.0. If the instance behaves differently, trust t
 
 ## First checks
 
-1. **Which instance, which credential.** `GET /users/me?fields=id,email,role` proves the token works. `GET /server/info`
-   with a token also returns the version, query limits, and WebSocket and upload settings. Version gates: the MCP server
-   needs 11.12+, and the reserved `draft` and `published` version keys are v12 (v11 has `main` plus named versions).
-2. **Discover the schema before touching data.** MCP: `schema` with no args, then `schema` with `keys` for the
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the notes for its major first: [v9](references/versions-v9.md), [v10](references/versions-v10.md),
+   [v11](references/versions-v11.md), [12.0 to 12.5](references/versions-v12.md).
+2. **Which instance, which credential.** `GET /users/me?fields=id,email,role` proves the token works. `GET /server/info`
+   with a token also returns the version, query limits, and WebSocket and upload settings.
+3. **Discover the schema before touching data.** MCP: `schema` with no args, then `schema` with `keys` for the
    collections you need. REST: `GET /collections`, `GET /fields/<collection>`, `GET /relations/<collection>`. Never
    guess field names.
-3. **Check what the token can do.** `GET /permissions/me`. A 403 often means "missing permission or the field/collection
+4. **Check what the token can do.** `GET /permissions/me`. A 403 often means "missing permission or the field/collection
    doesn't exist", not a bug.
-4. **Changing access?** Use `directus-access-control`. On the unlicensed core tier, permission rows with custom rules
+5. **Changing access?** Use `directus-access-control`. On the unlicensed core tier, permission rows with custom rules
    are dropped, so the action is denied.
 
 ## Critical traps
@@ -37,9 +39,9 @@ _Verified against Directus v12.6.0. If the instance behaves differently, trust t
 - **Top-level `filter` narrows parents; `deep[rel][_filter]` narrows nested rows.** Use both when you need both.
   `_some`/`_none` only work on one-to-many and many-to-many fields.
 - **Array writes to to-many fields replace the set, and many-to-many arrays hold junction rows.** In `{"tags": [1, 2]}`
-  the ids are `posts_tags` row ids, not tag ids. Re-sending `[{"tags_id": 12}]` for a tag that's already linked adds a
-  second junction row and orphans the old one. To add or remove a few, use
-  `{"tags": {"create": [{"tags_id": 12}], "delete": [<junction-id>]}}`
+  the ids are junction row ids (`post_tags`), not tag ids. Re-sending `[{"tag": 12}]` for a tag that's already linked
+  adds a second junction row and orphans the old one. To add or remove a few, use
+  `{"tags": {"create": [{"tag": 12}], "delete": [<junction-id>]}}`. Junction field names vary: read them from the schema
   ([rest-api.md](references/rest-api.md#relational-writes)).
 - **`/items/directus_*` is refused**: 403 over REST, 400 `INVALID_PAYLOAD` from the MCP `items` tool. Use the system
   endpoints (`/users`, `/files`, `/roles`, `/policies`, `/permissions`, `/flows`).

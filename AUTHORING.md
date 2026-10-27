@@ -92,11 +92,23 @@ Skills go stale in three different ways. Treat each differently:
 Pin the Directus version once per skill (`directus-version`), not per claim. Write "Verified against" in prose only in
 the router. Upgrade hop files are the exception: they're about specific versions by design.
 
+## Version-specific advice
+
+Skills are written for the version in `directus-version`. For instances on an older major, the base `directus` skill
+has one reference per major: `references/versions-v9.md`, `versions-v10.md`, `versions-v11.md`, `versions-v12.md`.
+Each lists only what the skills would get wrong on that major and what to do instead, with minor-version gates inside
+it. Everything else is the changelog's job: agents read release notes and breaking changes through the docs MCP, and
+`directus-upgrade` covers moving between versions.
+
+Every router's first checks include one line: not on the current version, read the `directus` skill's version notes
+for your major first.
+
 ## Releases of Directus
 
 The weekly `directus-release-check` workflow opens an issue when Directus ships a newer release. To close it:
 
-1. Read the release notes and breaking changes. Add the hop to `directus-upgrade` and update its version map.
+1. Read the release notes and breaking changes. Add the hop to `directus-upgrade` and update its version map. Add
+   what the skills would now get wrong on the previous minor to `directus` `references/versions-v<major>.md`.
 2. Diff the source between the two tags for the areas the skills cover and fix any claim that changed.
 3. Run the behavior evals on the new image: `node behavior-evals/run.mjs --clean --image directus/directus:<tag>`.
 4. Bump `directus-version` in every `SKILL.md` and the source links' tag, add a changeset, release.
@@ -125,5 +137,5 @@ references, major for renamed or removed skills. Details in [.changeset/README.m
 ## Voice
 
 Plain, short, direct. Imperative ("Send `fields` on every read"). Tables for lookups, code blocks for anything an
-agent will copy. No em dashes. No marketing. No time-sensitive phrasing ("new in", "recently"); put version
-differences in `directus-upgrade` or a clearly labeled "Older versions" note.
+agent will copy. No em dashes. No marketing. No time-sensitive phrasing ("new in", "recently"); put what differs on
+older versions in the `directus` version notes (`references/versions-v<major>.md`).

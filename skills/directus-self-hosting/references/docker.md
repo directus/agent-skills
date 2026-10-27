@@ -40,7 +40,7 @@ services:
       retries: 5
 
   directus:
-    image: directus/directus:12.5.1 # pin; never latest
+    image: directus/directus:12.6.0 # pin; never latest
     restart: unless-stopped
     ports:
       - '127.0.0.1:8055:8055' # TLS reverse proxy in front
@@ -91,7 +91,7 @@ volumes:
 ```
 
 - **The health check uses `node`, not the docs' `wget --spider http://localhost:8055/server/ping`.** That fails in the
-  12.5.1 image: busybox `wget` resolves `localhost` to `::1` and Directus binds `0.0.0.0` (IPv4 only). The `-dhi`
+  12.5.1 and 12.6.0 images: busybox `wget` resolves `localhost` to `::1` and Directus binds `0.0.0.0` (IPv4 only). The `-dhi`
   image has no shell or `wget` at all; `node` works on both.
 - **`restart: unless-stopped` matters.** PM2 in the container doesn't restart a crashed process (`PM2_AUTO_RESTART`
   defaults to `false`).
@@ -133,7 +133,7 @@ FROM node:26-alpine AS build
 WORKDIR /extension-build
 RUN npm init -y && npm install @directus-labs/spreadsheet-layout
 
-FROM directus/directus:12.5.1
+FROM directus/directus:12.6.0
 COPY --from=build --chown=node:node /extension-build/node_modules/@directus-labs/spreadsheet-layout /directus/extensions/spreadsheet-layout
 ```
 
@@ -168,4 +168,4 @@ Railway, Fly, Render, DigitalOcean, Coolify, Northflank, ECS, Kubernetes all run
 - https://github.com/directus/directus/blob/v12.6.0/ecosystem.config.cjs
 - https://github.com/directus/directus/blob/v12.6.0/api/src/cli/commands/bootstrap/index.ts
 - https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/lib/installation/manager.ts
-- Live `directus/directus:12.5.1` and `12.5.1-dhi` containers (user, paths, health check commands)
+- Live `directus/directus:12.5.1`, `12.5.1-dhi`, and `12.6.0` containers (user, paths, health check commands)

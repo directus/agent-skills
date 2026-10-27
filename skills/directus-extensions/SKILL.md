@@ -16,13 +16,15 @@ the current docs. If the instance or its logs disagree, trust the instance._
 
 ## First checks
 
-1. **Is an extension needed?** Flows, validation rules, display templates, and theme settings cover a lot. See
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Is an extension needed?** Flows, validation rules, display templates, and theme settings cover a lot. See
    [choosing-a-type.md](references/choosing-a-type.md).
-2. **Directus version and how it runs:** `GET /server/info` (`data.version`), Docker tag, or `directus` in
+3. **Directus version and how it runs:** `GET /server/info` (`data.version`), Docker tag, or `directus` in
    `package.json`. Docker needs `./extensions` mounted to `/directus/extensions`.
-3. **Existing extensions:** look in `EXTENSIONS_PATH` (default `./extensions`) and root `package.json` deps. Extend an
+4. **Existing extensions:** look in `EXTENSIONS_PATH` (default `./extensions`) and root `package.json` deps. Extend an
    existing bundle before creating a new package.
-4. **Where secrets live:** server env or operation options. Never in app extension code.
+5. **Where secrets live:** server env or operation options. Never in app extension code.
 
 ## Critical traps
 
@@ -33,29 +35,21 @@ the current docs. If the instance or its logs disagree, trust the instance._
 - **Services without accountability are admin.** `new ItemsService('articles', { schema })` bypasses permissions. Pass
   `req.accountability` (endpoints) or `context.accountability` (hooks, operations). That context value is `null` for
   schedules and system events, which also means admin. Decide on purpose.
-- **Hook event names.** `items.create` fires for every user collection, never for `directus_*`. Scope it
-  (`articles.items.create`) or check `meta.collection`. System collections drop the prefix (`users.create`). Filters
-  return the modified payload (returning nothing keeps it), can throw to abort, and run inside the transaction (use
-  `context.database`); actions run after commit and their errors are only logged. Writing to the same collection from
-  its own hook loops unless you pass `{ emitEvents: false }`.
-- **Endpoints: Express 4, public, after core.** Async errors aren't caught: wrap in `try/catch` and `next(error)`, or
-  the request hangs. Every caller reaches the route, so check `req.accountability` yourself. An `id` matching a core
-  route (`items`, `files`, `users`) is shadowed. Function-form endpoints mount at the package name (bundle: entry name);
-  use `{ id, handler }` to choose the path.
-- **Nothing reloads by magic.** Rebuild (`npm run dev` watches). With `EXTENSIONS_AUTO_RELOAD=true`, API code reloads
-  and app code is re-bundled, then hard-refresh the browser. Without it, restart Directus. Auto reload does nothing with
-  `EXTENSIONS_LOCATION`. A new module also has to be enabled in the project's module bar setting before it shows.
-- **App runtime is shared.** `vue`, `vue-router`, `vue-i18n`, `pinia`, `@directus/extensions-sdk` (and Tiptap, 12.6+) come from the
-  Studio (Vue 3.5 at v12.5.1). Use the matching `defineX` (docs examples wrongly reuse `defineInterface`). Studio
+- **Hook scope.** `items.create` fires for every user collection, never `directus_*` (those are `users.create`). Scope
+  it (`articles.items.create`). Writing to the same collection from its own hook loops without `{ emitEvents: false }`.
+- **Endpoints: Express 4, public, after core.** Async errors hang the request unless you `try/catch` and
+  `next(error)`. Every caller reaches the route: check `req.accountability`. An `id` matching a core route is shadowed.
+- **Nothing reloads by magic.** Rebuild, then restart Directus or set `EXTENSIONS_AUTO_RELOAD=true` and hard-refresh.
+  New modules must also be enabled in the module bar setting.
+- **App runtime is shared.** `vue`, `vue-router`, `vue-i18n`, `pinia`, `@directus/extensions-sdk`, and Tiptap come
+  from the Studio (Vue 3.5 on 12.x). Use the matching `defineX` (docs examples wrongly reuse `defineInterface`). Studio
   components (`VButton`, `VInput`, `PrivateView`) are global, no imports. Style with `--theme--*` variables (v12
   removals: `directus-upgrade`). External images, media, and iframes need CSP env changes.
 - **`host` is not a load check.** Directus loads any version. The Marketplace only compares `host` to show
   "Compatibility not guaranteed". The scaffold writes `^10.10.0`, which doesn't match 12.x. Set it to what you tested
   (`^12.0.0`).
-- **Sandbox limits.** Sandboxed code imports only `directus:api` (`log`, `sleep`, `request` with scoped URLs and
-  methods). No services, env, DB, or accountability. Sandboxed endpoints are function-form only and return
-  `{ status, body }`. Bundles can't be sandboxed, so a bundle with API entries needs `MARKETPLACE_TRUST=all` to install
-  from the Marketplace.
+- **Sandbox limits.** Sandboxed code gets only `directus:api` (`log`, `sleep`, scoped `request`): no services, env, DB,
+  or accountability. Bundles can't be sandboxed, so Marketplace bundles with API entries need `MARKETPLACE_TRUST=all`.
 
 ## Quick start
 

@@ -14,19 +14,21 @@ Connect a frontend to the Studio's Live Preview pane, the Visual Editor module, 
 version, auth, and refreshing are frontend code.
 
 _Verified against Directus v12.6.0 (`packages/visual-editing`, `app/src/modules/visual`), `@directus/visual-editing`
-2.1.0, and the CMS starters. The standalone `directus/visual-editing` repo is stale (1.1.0); use
+2.1.0, and the CMS starters. The standalone `directus/visual-editing` repo is archived (last release 2.0.0); use
 the monorepo package._
 
 ## First checks
 
-1. **Versions:** `GET /server/info` for Directus, `npm ls @directus/visual-editing` for the library. Library 2.x waits
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Versions:** `GET /server/info` for Directus, `npm ls @directus/visual-editing` for the library. Library 2.x waits
    for a field access reply that only Directus 11.16+ sends; on older instances nothing activates.
-2. **Studio config:** the collection's **Preview URL** (`meta.preview_url`), **Settings > Project > Visual Editor URLs**
+3. **Studio config:** the collection's **Preview URL** (`meta.preview_url`), **Settings > Project > Visual Editor URLs**
    (`visual_editor_urls`), and which collections have **Enable Versions** (`meta.versioning`). MCP: `collections` and
    `schema`. REST: `GET /collections/<name>`, `GET /settings`.
-3. **Starter or custom?** Sites from `directus-labs/starters` (`cms` or `cms-i18n`) have the wiring. Fix their preview
+4. **Starter or custom?** Sites from `directus-labs/starters` (`cms` or `cms-i18n`) have the wiring. Fix their preview
    gating before shipping.
-4. **Where the site fetches:** server or browser. That decides the token and whether CORS matters.
+5. **Where the site fetches:** server or browser. That decides the token and whether CORS matters.
 
 ## Critical traps
 

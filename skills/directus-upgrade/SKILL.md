@@ -59,7 +59,7 @@ the instance._
   (every image) and install extensions at build time.
 - **Node 26 from 12.6.0** (Node 22 from 11.4.0). `node:26` build stages have no Corepack. `@directus/sdk` 27.1 still
   accepts `node >=22`.
-- **12.5.0 rejects malformed policy `ip_access` at request time** (500 for that user, including login). Clean
+- **12.5.0 rejects malformed policy `ip_access` at request time** (requests from that user fail; release notes give no status code). Clean
   `directus_policies.ip_access` first.
 
 ## Routing
@@ -74,7 +74,7 @@ current version.
 | 10.13                        | [11.0](references/11.0.md), [11.x-minors](references/11.x-minors.md), then the 11.17 row             |
 | 11.0 to 11.16                | [11.x-minors](references/11.x-minors.md), then the 11.17 row                                         |
 | 11.17                        | [12.0](references/12.0.md), [12.x-minors](references/12.x-minors.md)                                 |
-| 12.0 to 12.5                 | [12.x-minors](references/12.x-minors.md)                                                             |
+| 12.0 to 12.6                 | [12.x-minors](references/12.x-minors.md)                                                             |
 | Patch bump within a minor    | That major's minors file; search it for the target patch (10.6.3, 10.13.2, 11.1.2, 11.14.1 break)    |
 | Any, plus SDK/extension work | [sdk-and-extensions](references/sdk-and-extensions.md) (version map, `host`, extension API changes)  |
 | Running the upgrade          | [checklist](references/checklist.md) (copyable checklist, commands, env grep, rollback)              |

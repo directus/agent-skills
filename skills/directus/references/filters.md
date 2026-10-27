@@ -50,14 +50,14 @@ Resolved on the server for the current request.
 ```json
 { "author": { "name": { "_eq": "Rijk van Zanten" } } }
 { "comments": { "_none": { "status": { "_eq": "spam" } } } }
-{ "tags": { "tags_id": { "name": { "_eq": "News" } } } }
+{ "tags": { "tag": { "name": { "_eq": "News" } } } }
 { "blocks": { "item:block_hero": { "headline": { "_icontains": "launch" } } } }
 { "$FOLLOW(cities, country_id)": { "name": { "_eq": "Berlin" } } }
 ```
 
 - **Many-to-one:** nest the related field.
 - **One-to-many:** `_some` is the default when you nest without a quantifier.
-- **Many-to-many:** the filter walks through the junction, so include the junction's foreign key field (`tags_id`).
+- **Many-to-many:** the filter walks through the junction, so include the junction's foreign key field (`tag`).
 - **Many-to-any:** scope with `item:<collection>`. In GraphQL `:` becomes `__` (`item__block_hero`).
 - **Reverse relation with no alias field:** `$FOLLOW(<collection>, <fk_field>)`.
 - A relational `filter` selects parent items; it doesn't trim the nested array. Use `deep[<relation>][_filter]` for that

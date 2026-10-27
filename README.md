@@ -135,14 +135,18 @@ claude plugin eval . --case 'access-*' --runs 1 --ablation none --no-publish   #
 
 ## Behavior evals
 
-`behavior-evals/` checks what an agent actually builds. Each case starts a fresh Directus container (12.6.0 by default, `--image` for another) (Docker),
-seeds it, gives a headless `claude -p` the task with and without this plugin, then checks the instance over the API
+`behavior-evals/` checks what an agent actually builds. Each case starts a fresh Directus container in Docker (12.6.0
+by default), seeds it, gives a headless `claude -p` the task with and without this plugin, then checks the instance over the API
 (naming, `on_delete`, keys, and that nested writes, flows, and permissions really work).
 
 ```bash
 node behavior-evals/run.mjs                       # every case, both arms, Sonnet, 1 run
 node behavior-evals/run.mjs --case model-blog --runs 3 --model opus
+node behavior-evals/run.mjs --case flows-publish-guard --image directus/directus:11.9.3   # an older version
 ```
+
+Run a few cases on an older image too. That checks that agents read the version notes and adapt (on 11.9.3 there is
+no `throw-error` operation, so the publish guard has to use a different pattern).
 
 Add `--clean` to run each agent with an empty Claude config (no personal skills, `CLAUDE.md`, or plugins). It
 authenticates with a `claude setup-token` token from `CLAUDE_CODE_OAUTH_TOKEN` or

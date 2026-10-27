@@ -16,12 +16,14 @@ _Verified against Directus v12.6.0 (CLI source `packages/cli`, `@directus/cli` 1
 
 ## First checks
 
-1. **Versions and vendor.** `GET /server/info` on source and target: same exact version (patch included), same DB
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Versions and vendor.** `GET /server/info` on source and target: same exact version (patch included), same DB
    vendor, both 12.2.0+.
-2. **Admin tokens.** One per instance. `d6s profile test-connection <name>` prints who the token is.
-3. **Installed CLI.** `npm i -g @directus/cli@12` (9.x is the deprecated old client CLI), then `d6s --version`. Node
+3. **Admin tokens.** One per instance. `d6s profile test-connection <name>` prints who the token is.
+4. **Installed CLI.** `npm i -g @directus/cli@12` (9.x is the deprecated old client CLI), then `d6s --version`. Node
    22+. Pin an exact version in CI.
-4. **Sync files present?** If the repo has `directus.config.json` and `directus/<project>/`, pull from the agreed
+5. **Sync files present?** If the repo has `directus.config.json` and `directus/<project>/`, pull from the agreed
    source, not whatever instance is handy.
 
 ## Critical traps

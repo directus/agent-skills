@@ -18,15 +18,15 @@ SDK 22.0.0. If the instance disagrees, trust the instance._
 
 ## First checks
 
-1. **Where does this code run?** Server (SSR, route handler, script) or browser. That decides the auth strategy and
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Where does this code run?** Server (SSR, route handler, script) or browser. That decides the auth strategy and
    whether a token is allowed at all.
-2. **Installed versions:** `npm ls @directus/sdk @directus/visual-editing`. If older than the versions above, check
-   `directus-upgrade` before copying examples.
-3. **Is there a Schema type?** Look for a generated `directus-schema.ts` or hand-written `Schema`. Reuse it; don't write
-   a second one.
-4. **Is the data public?** Check the Public policy before reaching for a token. Browser calls to another origin need
+3. **Installed versions:** `npm ls @directus/sdk`. Older than above? Check `directus-upgrade` before copying examples.
+4. **Is there a Schema type?** Reuse an existing `directus-schema.ts` or `Schema`; don't write a second one.
+5. **Is the data public?** Check the Public policy before reaching for a token. Browser calls to another origin need
    `CORS_ENABLED=true` and `CORS_ORIGIN` on Directus.
-5. **Copy an existing pattern** from the project or a [CMS starter](https://github.com/directus-labs/starters/tree/main/cms).
+6. **Copy an existing pattern** from the project or a [CMS starter](https://github.com/directus-labs/starters/tree/main/cms).
 
 ## Critical traps
 
@@ -93,7 +93,6 @@ const posts = await directus.request(
 1. Directus docs MCP server: `https://directus.com/docs/mcp` (no auth; tools `search-docs`, `get-doc`, `list-docs`,
    `search-directus-code`, `get-directus-file`). Use `search-directus-code` / `get-directus-file` on `sdk/src` for exact
    signatures.
-2. Raw markdown for any docs page: `https://directus.com/docs/raw/<path>.md` (for example
-   `https://directus.com/docs/raw/guides/connect/sdk.md`). Index: `https://directus.com/docs/llms.txt`.
+2. Raw markdown for any docs page: `https://directus.com/docs/raw/<path>.md`. Index: `https://directus.com/docs/llms.txt`.
 3. The instance itself: its error messages (`error.errors[0].extensions.code`), `GET /server/info` (SDK `serverInfo()`),
    `GET /server/specs/oas` (SDK `readOpenApiSpec()`), and the schema.

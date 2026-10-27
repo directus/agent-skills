@@ -71,7 +71,8 @@ that bite (beyond the router traps):
 - The `items.update` filter payload is only the changed fields (the delta), not the whole item.
 - `collections` and `fields` don't emit `read`. `files` doesn't emit `create`/`update` on upload (use action
   `files.upload`). `relations` doesn't emit `delete`.
-- Filters run in order, awaited. Throwing aborts the whole request.
+- Filters run in order, awaited. Return the modified payload (returning nothing keeps it). Throwing aborts the whole
+  request.
 - In a filter, query through `context.database` (the transaction). The top-level `database`, or a service without
   `knex: context.database`, won't see uncommitted rows, and writes through it can block on SQLite (one writer at a time).
 - Filters on `read`/`query` run on every read, including the Studio's own system reads. Keep them cheap.

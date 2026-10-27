@@ -14,13 +14,15 @@ the existing schema says otherwise.
 
 ## First checks
 
-1. **Read the existing schema before proposing anything.** With MCP: `schema()` then `schema({ keys: [...] })`. Without
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Not 12.6? Read
+   the version notes for its major in the `directus` skill (`references/versions-v<major>.md`) first.
+2. **Read the existing schema before proposing anything.** With MCP: `schema()` then `schema({ keys: [...] })`. Without
    it: `GET /collections`, `GET /fields/:collection`, `GET /relations`. Match the conventions already in use, even when
    they differ from the house rules. Consistency inside a project beats our defaults.
-2. **Collections and collection folders share a namespace.** A `website` folder blocks a `website` collection.
-3. **Check the license tier.** Junction and `*_translations` collections count toward the collection limit. Plan the
+3. **Collections and collection folders share a namespace.** A `website` folder blocks a `website` collection.
+4. **Check the license tier.** Junction and `*_translations` collections count toward the collection limit. Plan the
    total before you build. See [conventions.md](references/conventions.md#plan-limits).
-4. **Show the plan, then build.** List the collections, fields, and relations you'll create. If the user asked for them,
+5. **Show the plan, then build.** List the collections, fields, and relations you'll create. If the user asked for them,
    proceed. Get explicit approval before anything destructive: deleting fields or collections, changing a field's type,
    or bulk-editing data. Deleting drops the column and its data. There is no rename. Never send `field` in a field
    PATCH: it returns 200 and the old field, but with `meta` in the body it also writes a stray `directus_fields` row

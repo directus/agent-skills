@@ -95,7 +95,7 @@ Each hop file lists its env changes. Combined sweep:
 - Docker: pin a version tag. Images run `bootstrap` (migrations) on every start.
 - Redis: required for multiple replicas.
 - **House rule:** clear caches after each upgrade stop. With `CACHE_STORE=redis`: `node /directus/cli.js cache clear`
-  in the container (the 12.5.1 image has no `npx`; the command doesn't exist in 10.13.4). With a memory cache the
+  in the container (12.1+ images have no `npx`; the command doesn't exist in 10.13.4). With a memory cache the
   command refuses; restart instead.
 
 ## Rollback
