@@ -1,4 +1,11 @@
-<h1 align="center">Directus Agent Skills</h1>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/directus-logotype-dark.svg">
+    <img alt="Directus" src=".github/assets/directus-logotype.svg" width="320">
+  </picture>
+</p>
+
+<h1 align="center">Agent Skills</h1>
 
 <p align="center">
   Teach your AI coding agent to work with Directus: the API and MCP server, Flows, Insights, access control, content modeling,
