@@ -1,0 +1,1 @@
+Editors want a button on the posts collection: they select one or more posts, click it, and each selected post is duplicated as a new draft titled "<original title> (copy)". Build it with a Directus Flow.

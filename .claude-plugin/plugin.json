@@ -1,0 +1,13 @@
+{
+	"name": "directus",
+	"description": "Official Directus skills: query the API and MCP, automate with Flows, build Insights dashboards, design access control and content models, promote schema with Environment Sync, build SDK frontends with visual editing, write extensions, and upgrade between versions. Bundles the Directus docs MCP server.",
+	"version": "0.1.0",
+	"author": {
+		"name": "Directus",
+		"email": "info@directus.io"
+	},
+	"homepage": "https://directus.com/docs",
+	"repository": "https://github.com/directus/agent-skills",
+	"license": "MIT",
+	"privacyPolicyUrl": "https://directus.com/privacy"
+}

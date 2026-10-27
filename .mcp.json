@@ -1,0 +1,8 @@
+{
+	"mcpServers": {
+		"directus-docs": {
+			"type": "http",
+			"url": "https://directus.com/docs/mcp"
+		}
+	}
+}

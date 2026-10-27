@@ -1,0 +1,67 @@
+---
+name: directus-flows
+description: 'Use when automating Directus with Flows: event, webhook, schedule, manual, or operation triggers, the data chain and `{{ }}` templating, operations (condition, item CRUD, Run Script, request, mail, notification, trigger), reusable utility flows, looping over items, sending email or rendering templates from a flow, building or debugging flows through the API or MCP `flows` / `operations` / `trigger-flow` tools, and deciding between a flow and a hook. Not for writing hook, endpoint, or operation extensions (directus-extensions) or promoting flows between instances (directus-environment-sync).'
+metadata:
+  author: directus
+  directus-version: '12.5.1'
+---
+
+# Directus Flows
+
+Flows are Directus's built-in automation: one trigger, then a chain of operations that share a data chain. Build them in
+the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `operations` tools (admin only).
+
+## First checks
+
+1. **Read what exists.** `GET /flows?fields=id,name,status,trigger,options,operation&limit=-1`. Reuse or extend an
+   existing utility flow before building a new one.
+2. **Check the license.** Active flows count toward the limit (5 on the unlicensed core tier), and that includes every
+   utility flow. Inactive flows don't count. See [utility-flows-and-loops.md](references/utility-flows-and-loops.md#licensing).
+3. **Ask where it's hosted** before suggesting a hook instead. Directus Cloud runs custom extensions only on Enterprise.
+4. **Confirm before changing a flow that's already active.** Event flows fire on real writes as soon as they're saved.
+
+## Critical traps
+
+- **There's no loop operation.** To run steps per item, put them in a child flow (`trigger: "operation"`) and call it
+  with a `trigger` operation whose `payload` is an array. Default `iterationMode` is `parallel`: use `batch` or `serial`
+  for mail or external APIs. Bulk writes don't need a loop: `item-create` and `item-update` take arrays.
+- **A child flow's `$trigger` is the payload itself**, not `$trigger.body`. Only webhook and manual flows wrap input in
+  `body`.
+- **Child failures don't fail the parent.** The parent's `trigger` operation resolves with whatever the child returns
+  (`null` if the child is inactive or missing). Return a status from the child and check it with a `condition`.
+- **`mail` never fails on delivery.** It queues the send and resolves; SMTP errors only reach the server log. `to` with
+  several addresses sends one email everyone can see. Loop for one email per person.
+- **`request` rejects on non-2xx.** The reject path gets `{ status, statusText, headers, data }`.
+- **Item operations default to `emitEvents: false`.** Writes from a flow don't fire other flows or hooks unless you turn
+  it on. Turning it on in a flow that listens to the same collection loops forever.
+- **Permissions follow the trigger.** `permissions: "$trigger"` (the default) uses the caller: public for an anonymous
+  webhook, nobody (no checks) for a schedule. Pick `$full` or a role on purpose.
+- **In a filter event flow, a final reject cancels the save.** A `condition` that doesn't match is a reject. Link every
+  "nothing to do" branch to a `log` operation so the write still goes through.
+- **Event scopes need `collections`.** `items.create` with no `collections` registers nothing, silently.
+- **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow through
+  a parent flow or a temporary manual wrapper.
+
+## Routing
+
+| Load when                                                                                               | Reference                                                                      |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Picking a trigger, event scopes, filter vs action, return values, `$trigger` shapes, the data chain     | [references/triggers-and-data-chain.md](references/triggers-and-data-chain.md) |
+| Configuring an operation: condition, item CRUD, Run Script, request, mail, trigger, errors              | [references/operations.md](references/operations.md)                           |
+| Reusable utility flows, loops, iteration modes, render and send patterns, flow limits                   | [references/utility-flows-and-loops.md](references/utility-flows-and-loops.md) |
+| Creating flows over REST or MCP, linking operations, running, reading flow logs, debugging              | [references/building-and-debugging.md](references/building-and-debugging.md)   |
+| Ready-made flows: slug on create, notify on publish, form emails, redirects, nightly jobs; flow vs hook | [references/recipes.md](references/recipes.md)                                 |
+
+## Related skills
+
+`directus` (REST, filters, MCP setup) · `directus-extensions` (hooks, endpoints, custom operations) ·
+`directus-access-control` (who can trigger a manual flow, licensing) · `directus-environment-sync` (move flows between
+instances)
+
+## Go deeper
+
+1. Directus docs MCP server: `https://directus.com/docs/mcp` (`search-docs`, `get-doc`, `search-directus-code`).
+2. Raw docs: https://directus.com/docs/raw/guides/flows.md (and `guides/flows/triggers.md`, `data-chain.md`,
+   `operations.md`). Index: https://directus.com/docs/llms.txt
+3. The instance: flow logs (`GET /revisions` on `directus_flows`), server logs for `log` and Run Script `console.log`,
+   and `GET /flows/<id>?fields=*,operations.*` for how a working flow is wired.

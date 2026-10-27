@@ -1,0 +1,31 @@
+{
+	"name": "directus-agent-skills",
+	"owner": {
+		"name": "Directus",
+		"email": "info@directus.io"
+	},
+	"metadata": {
+		"description": "Official Directus agent skills: API and MCP, Flows, Insights, access control, content modeling, Environment Sync, SDK frontends, visual editing, extensions, and upgrades.",
+		"version": "0.1.0"
+	},
+	"plugins": [
+		{
+			"name": "directus",
+			"description": "Official Directus skills: query the API and MCP, automate with Flows, build Insights dashboards, design access control and content models, promote schema with Environment Sync, build SDK frontends with visual editing, write extensions, and upgrade between versions. Bundles the Directus docs MCP server.",
+			"source": "./",
+			"strict": false,
+			"skills": [
+				"./skills/directus",
+				"./skills/directus-flows",
+				"./skills/directus-insights",
+				"./skills/directus-access-control",
+				"./skills/directus-content-modeling",
+				"./skills/directus-environment-sync",
+				"./skills/directus-sdk",
+				"./skills/directus-visual-editing",
+				"./skills/directus-extensions",
+				"./skills/directus-upgrade"
+			]
+		}
+	]
+}

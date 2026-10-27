@@ -1,0 +1,9 @@
+# Copy into your Codex config (~/.codex/config.toml) and fill in your instance URL.
+# MCP must be enabled in Directus: Settings > AI > Model Context Protocol.
+
+[mcp_servers.directus-docs]
+url = "https://directus.com/docs/mcp"
+
+# [mcp_servers.directus]
+# url = "https://YOUR_DIRECTUS_URL/mcp"
+# bearer_token_env_var = "DIRECTUS_TOKEN"
