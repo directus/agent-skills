@@ -2,14 +2,14 @@
 
 ## Pick the tool
 
-| Situation                                                                                                 | Use                                                                                            |
-| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| An agent building or changing a schema interactively on a dev instance                                    | Directus MCP tools                                                                             |
-| A script or app creating schema in code                                                                   | REST: `/collections`, `/fields`, `/relations`                                                  |
-| Promoting schema + config (roles, policies, flows, settings) from dev to staging to prod, reviewed in git | Environment Sync: `d6s` (`@directus/cli@12`), Directus 12.2+                                   |
-| Schema-only promotion, or CI on older versions                                                            | `directus schema snapshot` / `apply`, or `/schema/snapshot` → `/schema/diff` → `/schema/apply` |
-| Seeding content (demo data, fixtures, initial pages)                                                      | A seed script (see [Seeding content](#seeding-content))                                        |
-| Starting a new project from a Directus starter (schema + content + frontend)                              | `directus-template-cli` (`init` / `apply`)                                                     |
+| Situation | Use |
+| --- | --- |
+| An agent building or changing a schema interactively on a dev instance | Directus MCP tools |
+| A script or app creating schema in code | REST: `/collections`, `/fields`, `/relations` |
+| Promoting schema + config (roles, policies, flows, settings) from dev to staging to prod, reviewed in git | Environment Sync: `d6s` (`@directus/cli@12`), Directus 12.2+ |
+| Schema-only promotion, or CI on older versions | `directus schema snapshot` / `apply`, or `/schema/snapshot` → `/schema/diff` → `/schema/apply` |
+| Seeding content (demo data, fixtures, initial pages) | A seed script (see [Seeding content](#seeding-content)) |
+| Starting a new project from a Directus starter (schema + content + frontend) | `directus-template-cli` (`init` / `apply`) |
 
 **House rule:** model on a dev instance, promote with Environment Sync. Never hand-build schema on production.
 

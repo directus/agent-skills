@@ -15,13 +15,13 @@ fixtures: `directus-content-modeling` (`references/applying-schema.md`). Batch `
 
 ## Pick the tool
 
-| Task                                                             | Use                                                                            |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| A CSV or JSON file into one collection, matched by primary key   | `POST /utils/import/<collection>` (multipart)                                  |
-| Several related collections at once, source ids remapped for you | `POST /utils/import` (JSON array of `{ collection, items }`)                   |
-| Upsert by `slug`, `sku`, or another non-primary key              | Script: read the key → id map, then `PATCH` / `POST` arrays                    |
-| Nested writes (create an item with its children in one payload)  | `POST /items/<collection>`; the import endpoints reject nesting                |
-| Files                                                            | `POST /files/import` from URLs, see [files-and-assets.md](files-and-assets.md) |
+| Task | Use |
+| --- | --- |
+| A CSV or JSON file into one collection, matched by primary key | `POST /utils/import/<collection>` (multipart) |
+| Several related collections at once, source ids remapped for you | `POST /utils/import` (JSON array of `{ collection, items }`) |
+| Upsert by `slug`, `sku`, or another non-primary key | Script: read the key → id map, then `PATCH` / `POST` arrays |
+| Nested writes (create an item with its children in one payload) | `POST /items/<collection>`; the import endpoints reject nesting |
+| Files | `POST /files/import` from URLs, see [files-and-assets.md](files-and-assets.md) |
 
 All imports run as the caller, in one transaction: any failing row rolls back the whole request. They fire hooks and
 flows and write activity and revisions per row like normal writes. `directus_*` collections are admin-only. At most
@@ -55,11 +55,11 @@ curl -X POST "$DIRECTUS_URL/utils/import?dryRun=true" -H "Authorization: Bearer 
 # => {"data":{"applied":false,"mode":"add","collections":{"authors":{"new":[12],"mapped":{"500":12},...},"posts":{...}}}}
 ```
 
-| Query                         | Effect                                                                                                         |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `mode=add` (default)          | Always creates. Auto-increment ids are reassigned; a clashing UUID is regenerated; a clashing string key fails |
-| `mode=merge`                  | Upsert by primary key                                                                                          |
-| `dryRun=true`                 | Runs everything, returns the result, rolls back                                                                |
+| Query | Effect |
+| --- | --- |
+| `mode=add` (default) | Always creates. Auto-increment ids are reassigned; a clashing UUID is regenerated; a clashing string key fails |
+| `mode=merge` | Upsert by primary key |
+| `dryRun=true` | Runs everything, returns the result, rolls back |
 | `dangerouslyAllowDelete=true` | Merge only. Deletes every row in the listed collections that isn't in the payload. Confirm with the user first |
 
 - Source ids in many-to-one fields and in one-to-many or many-to-many arrays are rewritten to the new ids. `mapped`

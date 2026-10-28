@@ -54,18 +54,16 @@ the existing schema says otherwise.
 
 ## Routing
 
-| Load when                                                                                                              | Reference                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Naming collections and fields, PKs, system fields, status/sort/archive, folders, display templates, notes, plan limits | [references/conventions.md](references/conventions.md)                     |
-| Creating any relationship: M2O, O2M, M2M, M2A, files, `on_delete`, junction naming, exact payloads                     | [references/relationships.md](references/relationships.md)                 |
-| Choosing a field type or interface, JSON vs a related collection, field groups, conditions, validation                 | [references/fields-and-interfaces.md](references/fields-and-interfaces.md) |
-| Building pages from reusable blocks (M2A page builder), nested blocks, block naming                                    | [references/page-builder.md](references/page-builder.md)                   |
-| Multilingual content: `languages`, `*_translations` junctions, the translations interface                              | [references/translations.md](references/translations.md)                   |
-| URLs (permalink vs slug vs nested pages), SEO fields (JSON vs shared `seo` collection), redirects                      | [references/routing-and-seo.md](references/routing-and-seo.md)             |
-| Applying schema: MCP vs REST vs snapshot/apply vs Environment Sync (`d6s`) vs templates, dev to prod, seeding          | [references/applying-schema.md](references/applying-schema.md)             |
-| Indexes: which fields to index, FK columns, `is_indexed` / `is_unique`, composite indexes via migrations               | [references/indexes.md](references/indexes.md)                             |
-| Changing a schema that holds data: rename, type change, text to relation, split/merge, required/unique, delete         | [references/schema-changes.md](references/schema-changes.md)               |
-| Starting a new Directus + framework site from a starter: pick, run, apply, frontend env, first checks                  | [references/new-project.md](references/new-project.md)                     |
+- Naming collections and fields, PKs, system fields, status/sort/archive, folders, display templates, notes, plan limits → [conventions.md](references/conventions.md)
+- Creating any relationship: M2O, O2M, M2M, M2A, files, `on_delete`, junction naming, exact payloads → [relationships.md](references/relationships.md)
+- Choosing a field type or interface, JSON vs a related collection, field groups, conditions, validation → [fields-and-interfaces.md](references/fields-and-interfaces.md)
+- Building pages from reusable blocks (M2A page builder), nested blocks, block naming → [page-builder.md](references/page-builder.md)
+- Multilingual content: `languages`, `*_translations` junctions, the translations interface → [translations.md](references/translations.md)
+- URLs (permalink vs slug vs nested pages), SEO fields (JSON vs shared `seo` collection), redirects → [routing-and-seo.md](references/routing-and-seo.md)
+- Applying schema: MCP vs REST vs snapshot/apply vs Environment Sync (`d6s`) vs templates, dev to prod, seeding → [applying-schema.md](references/applying-schema.md)
+- Indexes: which fields to index, FK columns, `is_indexed` / `is_unique`, composite indexes via migrations → [indexes.md](references/indexes.md)
+- Changing a schema that holds data: rename, type change, text to relation, split/merge, required/unique, delete → [schema-changes.md](references/schema-changes.md)
+- Starting a new Directus + framework site from a starter: pick, run, apply, frontend env, first checks → [new-project.md](references/new-project.md)
 
 ## Reference implementation
 

@@ -12,13 +12,13 @@ project per tenant. Rows marked **licensed** need a license on v12 ([licensing.m
 
 ## Pick a shape
 
-| Situation                                                                              | Shape                                                  |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| One editorial team publishes to several sites; every editor may see every site         | One project, `site` field, no per-site access. Core OK |
-| Each client's editors must see and edit only their own content                         | One project + tenant-scoped policies. **Licensed**     |
-| Same need, but on the core tier                                                        | Separate projects                                      |
-| Separate databases, backups, admins, extensions, or upgrade timing; a client may leave | Separate projects                                      |
-| Tenants need different schemas                                                         | Separate projects                                      |
+| Situation | Shape |
+| --- | --- |
+| One editorial team publishes to several sites; every editor may see every site | One project, `site` field, no per-site access. Core OK |
+| Each client's editors must see and edit only their own content | One project + tenant-scoped policies. **Licensed** |
+| Same need, but on the core tier | Separate projects |
+| Separate databases, backups, admins, extensions, or upgrade timing; a client may leave | Separate projects |
+| Tenants need different schemas | Separate projects |
 
 **On core, one project can't isolate tenants.** Without item rules every grant covers whole collections, so any user
 who can edit `pages` can edit every site's pages, and public read on `pages` returns every site's rows. Core limits are
@@ -50,21 +50,21 @@ collection limit (junctions and translations count too) and multiply every polic
 Map users to tenants with a field on `directus_users`. Dynamic variables traverse it, including to-many paths, which
 resolve to an array for `_in`:
 
-| Mapping                  | Field on `directus_users`                         | Rule                                            |
-| ------------------------ | ------------------------------------------------- | ----------------------------------------------- |
-| One tenant per user      | M2O `site`                                        | `{"site":{"_eq":"$CURRENT_USER.site"}}`         |
-| Several tenants per user | M2M `sites` (junction `user_sites`, FK `site`)    | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}` |
-| Fixed, few tenants       | none: one policy per tenant with the id hardcoded | `{"site":{"_eq":"<site-id>"}}`                  |
+| Mapping | Field on `directus_users` | Rule |
+| --- | --- | --- |
+| One tenant per user | M2O `site` | `{"site":{"_eq":"$CURRENT_USER.site"}}` |
+| Several tenants per user | M2M `sites` (junction `user_sites`, FK `site`) | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}` |
+| Fixed, few tenants | none: one policy per tenant with the id hardcoded | `{"site":{"_eq":"<site-id>"}}` |
 
 A tenant editor policy (**licensed**), several-tenants form. Swap in the one-tenant rule as needed:
 
-| Collection            | Action               | Item rule                                                                                         | Validation                                           |
-| --------------------- | -------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `pages`, `posts`      | read, update, delete | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}`                                                   | update: same filter as the item rule                 |
-| `pages`, `posts`      | create               | -                                                                                                 | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}`      |
-| `page_blocks`         | read, update, delete | `{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}`                                          | -                                                    |
-| each block collection | read, update, delete | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}}` | -                                                    |
-| `directus_files`      | read, update, delete | `{"folder":{"_in":["$CURRENT_USER.sites.site.folder"]}}`                                          | create and update: `{"folder":{"_in":[...same...]}}` |
+| Collection | Action | Item rule | Validation |
+| --- | --- | --- | --- |
+| `pages`, `posts` | read, update, delete | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}` | update: same filter as the item rule |
+| `pages`, `posts` | create | - | `{"site":{"_in":["$CURRENT_USER.sites.site"]}}` |
+| `page_blocks` | read, update, delete | `{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}` | - |
+| each block collection | read, update, delete | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"site":{"_in":["$CURRENT_USER.sites.site"]}}}}` | - |
+| `directus_files` | read, update, delete | `{"folder":{"_in":["$CURRENT_USER.sites.site.folder"]}}` | create and update: `{"folder":{"_in":[...same...]}}` |
 
 - **File moves need update validation too.** The item rule checks the file's current folder, not the new one. Without
   the update validation (or with `folder` writable and no validation), an editor can move a file into another tenant's

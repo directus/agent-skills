@@ -17,12 +17,12 @@ docs miss or get wrong.
 
 ## Docs per type
 
-| Type      | Define function                             | Docs                                                                  |
-| --------- | ------------------------------------------- | --------------------------------------------------------------------- |
-| hook      | `defineHook`                                | https://directus.com/docs/guides/extensions/api-extensions/hooks      |
-| endpoint  | `defineEndpoint`                            | https://directus.com/docs/guides/extensions/api-extensions/endpoints  |
+| Type | Define function | Docs |
+| --- | --- | --- |
+| hook | `defineHook` | https://directus.com/docs/guides/extensions/api-extensions/hooks |
+| endpoint | `defineEndpoint` | https://directus.com/docs/guides/extensions/api-extensions/endpoints |
 | operation | `defineOperationApp` + `defineOperationApi` | https://directus.com/docs/guides/extensions/api-extensions/operations |
-| services  | n/a                                         | https://directus.com/docs/guides/extensions/api-extensions/services   |
+| services | n/a | https://directus.com/docs/guides/extensions/api-extensions/services |
 
 Context (second argument): `services`, `database` (Knex, **not** a transaction), `getSchema`, `env` (all variables),
 `logger` (Pino), and `emitter` (hooks and endpoints). Operations get `data` and `accountability` instead of `emitter`.

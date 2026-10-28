@@ -51,10 +51,8 @@ query; `relational-variable` reads its picked items over REST)
 
 ## Routing
 
-| Load when                                                                           | Reference                                        |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Creating a dashboard and panels over REST, layout and sizes, permissions, promoting | [references/building.md](references/building.md) |
-| Choosing a panel type, exact `options` keys, aggregate functions, variables         | [references/panels.md](references/panels.md)     |
+- Creating a dashboard and panels over REST, layout and sizes, permissions, promoting → [building.md](references/building.md)
+- Choosing a panel type, exact `options` keys, aggregate functions, variables → [panels.md](references/panels.md)
 
 ## Related skills
 

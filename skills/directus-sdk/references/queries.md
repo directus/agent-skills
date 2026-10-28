@@ -18,10 +18,10 @@ Commands are standalone, tree-shakeable exports from `@directus/sdk` that build 
 
 | Command | Signature | Notes |
 | --- | --- | --- |
-| `readItems` / `readItem` | `(collection, query?)` / `(collection, key, query?)` | |
-| `readSingleton` / `updateSingleton` | `(collection, query?)` / `(collection, item, query?)` | |
-| `createItem` / `createItems` | `(collection, item, query?)` / `(collection, items[], query?)` | |
-| `updateItem` | `(collection, key, item, query?)` | |
+| `readItems` / `readItem` | `(collection, query?)` / `(collection, key, query?)` |  |
+| `readSingleton` / `updateSingleton` | `(collection, query?)` / `(collection, item, query?)` |  |
+| `createItem` / `createItems` | `(collection, item, query?)` / `(collection, items[], query?)` |  |
+| `updateItem` | `(collection, key, item, query?)` |  |
 | `updateItems` | `(collection, keys[] \| query, item, query?)` | Sends `{ keys \| query, data }` |
 | `updateItemsBatch` | `(collection, items[], query?)` | Each item carries its primary key |
 | `deleteItem` / `deleteItems` | `(collection, key)` / `(collection, keys[] \| query)` | `deleteItem` resolves `null` |

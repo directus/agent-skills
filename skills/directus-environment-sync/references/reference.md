@@ -36,15 +36,15 @@ interactive wizard; never use it in automation.
 
 `--json` failures report `error.code`; the process exits `1` for all of them.
 
-| Code              | Meaning                                                                                             |
-| ----------------- | --------------------------------------------------------------------------------------------------- |
-| `USAGE`           | Fix the command line: missing flag, missing `--yes`, missing delete consent                         |
-| `UNKNOWN_COMMAND` | No such command                                                                                     |
-| `CONFIG`          | `directus.config.json` missing, invalid, or contradicts the request                                 |
-| `AUTH`            | Credential rejected, or not an admin                                                                |
-| `HTTP`            | Instance unreachable or returned an error (including license errors from the target)                |
-| `STATE`           | Files and instance disagree: version mismatch, target schema changed, incomplete pull, below 12.2.0 |
-| `UNKNOWN`         | Anything else                                                                                       |
+| Code | Meaning |
+| --- | --- |
+| `USAGE` | Fix the command line: missing flag, missing `--yes`, missing delete consent |
+| `UNKNOWN_COMMAND` | No such command |
+| `CONFIG` | `directus.config.json` missing, invalid, or contradicts the request |
+| `AUTH` | Credential rejected, or not an admin |
+| `HTTP` | Instance unreachable or returned an error (including license errors from the target) |
+| `STATE` | Files and instance disagree: version mismatch, target schema changed, incomplete pull, below 12.2.0 |
+| `UNKNOWN` | Anything else |
 
 Symptoms and fixes: [troubleshooting.md](troubleshooting.md).
 

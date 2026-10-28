@@ -4,6 +4,7 @@
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { compactTables } from './compact-tables.mjs';
 
 const root = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const skillsDir = join(root, 'skills');
@@ -37,6 +38,10 @@ function checkLinks(file, text) {
 		const path = target.split('#')[0];
 		if (!existsSync(resolve(dirname(file), path))) errors.push(`${rel(file)}: broken link ${target}`);
 	}
+}
+
+function checkTables(file, text) {
+	if (compactTables(text) !== text) errors.push(`${rel(file)}: padded markdown table (run node scripts/compact-tables.mjs)`);
 }
 
 function checkTodos(file, text) {
@@ -97,6 +102,7 @@ for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skills
 
 	checkLinks(skillFile, text);
 	checkTodos(skillFile, text);
+	checkTables(skillFile, text);
 	checkCodexMetadata(dir, name);
 
 	// Every router sends agents on older majors to the base skill's version notes (AUTHORING.md).
@@ -121,6 +127,7 @@ for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skills
 
 		checkLinks(refFile, refText);
 		checkTodos(refFile, refText);
+		checkTables(refFile, refText);
 	}
 }
 

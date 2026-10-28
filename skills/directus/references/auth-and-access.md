@@ -6,11 +6,11 @@ Admin Access bypasses all permissions, and `GET /permissions/me` shows what the 
 
 ## Sending credentials
 
-| Method         | How                                                         | Use for                                                                          |
-| -------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Header         | `Authorization: Bearer <token>`                             | Servers, scripts, agents. Preferred.                                             |
-| Session cookie | `directus_session_token`, sent by the browser automatically | Browser apps on the same site, with `credentials: "include"`                     |
-| Query param    | `?access_token=<token>`                                     | Only when nothing else works (asset URLs, some MCP clients). It ends up in logs. |
+| Method | How | Use for |
+| --- | --- | --- |
+| Header | `Authorization: Bearer <token>` | Servers, scripts, agents. Preferred. |
+| Session cookie | `directus_session_token`, sent by the browser automatically | Browser apps on the same site, with `credentials: "include"` |
+| Query param | `?access_token=<token>` | Only when nothing else works (asset URLs, some MCP clients). It ends up in logs. |
 
 No credential means the request runs as the **public policy** (the Public role in the Studio).
 
@@ -25,11 +25,11 @@ curl -X POST "$DIRECTUS_URL/auth/login" \
 
 `expires` is the access token lifetime in milliseconds. Add `"otp": "123456"` if the user has 2FA.
 
-| `mode`                 | Access token                                                 | Refresh token                              |
-| ---------------------- | ------------------------------------------------------------ | ------------------------------------------ |
-| `json` (login default) | In the body                                                  | In the body                                |
-| `cookie`               | In the body                                                  | `httpOnly` cookie `directus_refresh_token` |
-| `session`              | `httpOnly` cookie `directus_session_token` (not in the body) | Same cookie; one token does both           |
+| `mode` | Access token | Refresh token |
+| --- | --- | --- |
+| `json` (login default) | In the body | In the body |
+| `cookie` | In the body | `httpOnly` cookie `directus_refresh_token` |
+| `session` | `httpOnly` cookie `directus_session_token` (not in the body) | Same cookie; one token does both |
 
 - **Refresh:** `POST /auth/refresh` with `{ "refresh_token": "...", "mode": "json" }`, or just `{ "mode": "cookie" }` /
   `{ "mode": "session" }` when the cookie carries it. Refresh tokens rotate; store the new one.
@@ -65,12 +65,12 @@ Configure with `AUTH_PROVIDERS` and `AUTH_<PROVIDER>_*` env vars (https://direct
 
 ## Inspecting a caller
 
-| Request                                                        | Returns                                                    |
-| -------------------------------------------------------------- | ---------------------------------------------------------- |
-| `GET /users/me?fields=id,email,role.name,policies.policy.name` | Who the token is                                           |
-| `GET /permissions/me`                                          | Effective permissions per collection and action            |
-| `GET /policies/me/globals`                                     | `admin_access`, `app_access`, `enforce_tfa` for the caller |
-| `GET /roles/me`                                                | The caller's roles                                         |
+| Request | Returns |
+| --- | --- |
+| `GET /users/me?fields=id,email,role.name,policies.policy.name` | Who the token is |
+| `GET /permissions/me` | Effective permissions per collection and action |
+| `GET /policies/me/globals` | `admin_access`, `app_access`, `enforce_tfa` for the caller |
+| `GET /roles/me` | The caller's roles |
 
 ## Sources
 

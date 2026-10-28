@@ -63,11 +63,11 @@ curl -X POST "$DIRECTUS_URL/files/import" -H "Authorization: Bearer $TOKEN" -H '
 
 The project setting `storage_asset_transform` (**Allowed Transformations**) controls what is allowed:
 
-| Setting         | Allowed requests                          |
-| --------------- | ----------------------------------------- |
-| `all` (default) | Any params, plus configured preset keys   |
-| `presets`       | Only `?key=<preset>` with no other params |
-| `none`          | Only built-in `system-*` keys             |
+| Setting | Allowed requests |
+| --- | --- |
+| `all` (default) | Any params, plus configured preset keys |
+| `presets` | Only `?key=<preset>` with no other params |
+| `none` | Only built-in `system-*` keys |
 
 Disallowed requests fail with `INVALID_QUERY`. Limits: `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` (source, default 6000),
 `ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION` (every step of the output, default 6000), `ASSETS_TRANSFORM_MAX_OPERATIONS`

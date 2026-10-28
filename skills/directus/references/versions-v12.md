@@ -8,33 +8,33 @@ and the File Library: move to 12.4.1 or later.
 
 ## API and MCP
 
-| The skills assume                                            | Since  | Before that                                                                    |
-| ------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------ |
-| MCP registry mode (`/mcp?tool_mode=registry`)                | 12.3.0 | Default tool mode only. Call the tools directly                                |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| MCP registry mode (`/mcp?tool_mode=registry`) | 12.3.0 | Default tool mode only. Call the tools directly |
 | `POST /utils/import` (several collections, `mode`, `dryRun`) | 12.2.0 | `POST /utils/import/<collection>`, one collection at a time, in relation order |
-| Valueless flags mean true (`?background`, `?force`)          | 12.2.0 | Always pass a value (`?background=true`)                                       |
-| `directus_folders.type`, flow folders in `GET /folders`      | 12.4.0 | No `type` field. Drop `filter[type][_eq]=files`, every folder is a file folder |
-| `COLLECTION_INACTIVE` (403) on deactivated collections       | 12.4.0 | Doesn't happen. A collection over the license limit is still served            |
-| `directus_settings.default_exports_folder`                   | 12.6.0 | Pass `file.folder` to `/utils/export` to pick the folder                       |
+| Valueless flags mean true (`?background`, `?force`) | 12.2.0 | Always pass a value (`?background=true`) |
+| `directus_folders.type`, flow folders in `GET /folders` | 12.4.0 | No `type` field. Drop `filter[type][_eq]=files`, every folder is a file folder |
+| `COLLECTION_INACTIVE` (403) on deactivated collections | 12.4.0 | Doesn't happen. A collection over the license limit is still served |
+| `directus_settings.default_exports_folder` | 12.6.0 | Pass `file.folder` to `/utils/export` to pick the folder |
 
 ## Access control
 
-| The skills assume                                                   | Since  | Before that                                                                                                   |
-| ------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
-| Update or delete by `query` needs read on the key and filter fields | 12.4.0 | No read needed. A policy with update or delete but no read can still change rows by query                     |
-| New App Access policies read a limited set of `directus_settings`   | 12.2.0 | App Access reads every settings field, AI provider keys included. Scope the settings permission               |
-| Strict `ip_access` parsing                                          | 12.5.0 | Loosely parsed. Write values the 12.5 rules accept (single IP, `a-b` range, CIDR) so they survive the upgrade |
-| `enforce_tfa` from every effective policy                           | 12.5.0 | Only policies on the user's own role count. Put Require 2FA on that role's policy                             |
-| `GET /license` failure field `invalid_reason`                       | 12.5.0 | Read `downgrade_reason`                                                                                       |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| Update or delete by `query` needs read on the key and filter fields | 12.4.0 | No read needed. A policy with update or delete but no read can still change rows by query |
+| New App Access policies read a limited set of `directus_settings` | 12.2.0 | App Access reads every settings field, AI provider keys included. Scope the settings permission |
+| Strict `ip_access` parsing | 12.5.0 | Loosely parsed. Write values the 12.5 rules accept (single IP, `a-b` range, CIDR) so they survive the upgrade |
+| `enforce_tfa` from every effective policy | 12.5.0 | Only policies on the user's own role count. Put Require 2FA on that role's policy |
+| `GET /license` failure field `invalid_reason` | 12.5.0 | Read `downgrade_reason` |
 
 ## Modeling and visual editing
 
-| The skills assume                                              | Since  | Before that                                                                                             |
-| -------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| WYSIWYG (`input-rich-text-html`) on Tiptap                     | 12.2.0 | TinyMCE: keeps `<div>` wrappers and inline styles, honors `tinymceOverrides`                            |
-| `richtext` extensions on the WYSIWYG                           | 12.6.0 | None                                                                                                    |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| WYSIWYG (`input-rich-text-html`) on Tiptap | 12.2.0 | TinyMCE: keeps `<div>` wrappers and inline styles, honors `tinymceOverrides` |
+| `richtext` extensions on the WYSIWYG | 12.6.0 | None |
 | `{{$preview_base_url}}`, Settings > Project > Preview Base URL | 12.5.0 | Hardcode the host in Preview and Visual Editor URLs, and fix it on each instance after promoting schema |
-| `list` (Repeater) edit mode `inline`                           | 12.0.1 | Drawer mode only                                                                                        |
+| `list` (Repeater) edit mode `inline` | 12.0.1 | Drawer mode only |
 
 ## Environment Sync and schema
 
@@ -49,11 +49,11 @@ and the File Library: move to 12.4.1 or later.
 
 ## Flows
 
-| The skills assume                                                 | Since  | Before that                                                                 |
-| ----------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- |
-| `item-update` / `item-delete` with no key and no query do nothing | 12.3.0 | They touch **every item** in the collection. Always set a key or a `query`  |
-| MCP `operations` works out `position_x` / `position_y`            | 12.4.0 | Send both on every operation, as over REST (`19`, `37`, `55` along one row) |
-| Flow folders (`folders` with `type: "flows"`)                     | 12.4.0 | No folders for flows. Group by name prefix (`Utils: ...`)                   |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| `item-update` / `item-delete` with no key and no query do nothing | 12.3.0 | They touch **every item** in the collection. Always set a key or a `query` |
+| MCP `operations` works out `position_x` / `position_y` | 12.4.0 | Send both on every operation, as over REST (`19`, `37`, `55` along one row) |
+| Flow folders (`folders` with `type: "flows"`) | 12.4.0 | No folders for flows. Group by name prefix (`Utils: ...`) |
 
 ## SDK and extensions
 
@@ -67,12 +67,12 @@ and the File Library: move to 12.4.1 or later.
 
 ## Self-hosting
 
-| The skills assume                             | Since  | Before that                                                                                                                    |
-| --------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Node 26 in the image (`NODE_VERSION=26.12.1`) | 12.6.0 | Node 22. Build stages use `node:22`, and `corepack enable` still works                                                         |
-| No `npm` / `npx` in the image                 | 12.1.0 | 12.0 still has them, but write `node /directus/cli.js` anyway so it survives upgrades                                          |
-| `CMD ["node", "docker-entrypoint.cjs"]`       | 12.3.0 | Shell `CMD`: `node cli.js bootstrap && pm2-runtime start ecosystem.config.cjs`. A custom `CMD` copies the one from its own tag |
-| Telemetry to `telemetry.directus.com`         | 12.6.0 | `telemetry.directus.io`. Allow that host in restricted egress                                                                  |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| Node 26 in the image (`NODE_VERSION=26.12.1`) | 12.6.0 | Node 22. Build stages use `node:22`, and `corepack enable` still works |
+| No `npm` / `npx` in the image | 12.1.0 | 12.0 still has them, but write `node /directus/cli.js` anyway so it survives upgrades |
+| `CMD ["node", "docker-entrypoint.cjs"]` | 12.3.0 | Shell `CMD`: `node cli.js bootstrap && pm2-runtime start ecosystem.config.cjs`. A custom `CMD` copies the one from its own tag |
+| Telemetry to `telemetry.directus.com` | 12.6.0 | `telemetry.directus.io`. Allow that host in restricted egress |
 
 For everything else, read the release notes and breaking changes: Directus docs MCP (`https://directus.com/docs/mcp`,
 `search-docs`) or `https://directus.com/docs/raw/releases/breaking-changes/version-12.md`. To upgrade, use

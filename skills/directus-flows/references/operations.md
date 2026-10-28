@@ -18,20 +18,20 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 
 ## Operation table
 
-| `type`                                                      | Does                 | Notes                                                                                                                  |
-| ----------------------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `condition`                                                 | Branch on a filter   | Resolves with `null` when the filter passes, rejects when it fails. See below.                                         |
-| `item-create` / `item-read` / `item-update` / `item-delete` | CRUD                 | `collection`, `key` or `query` (not both for update and delete; read takes both), `payload`, `permissions`, `emitEvents`. See below.                          |
-| `exec`                                                      | Run Script           | Sandboxed JS. See below.                                                                                               |
-| `request`                                                   | HTTP call            | Rejects on non-2xx. See below.                                                                                         |
-| `mail`                                                      | Send email           | Fire and forget. See below.                                                                                            |
-| `notification`                                              | In-app notification  | `recipient` (user id, array, or comma-separated ids), `subject`, `message`                                                                    |
-| `transform`                                                 | Build JSON           | `json` with `{{ }}` values. Use it to shape a payload or a return value.                                               |
-| `trigger`                                                   | Run another flow     | `flow` (UUID), `payload`, `iterationMode`, `batchSize`. See [utility-flows-and-loops.md](utility-flows-and-loops.md).  |
-| `json-web-token`                                            | Sign, verify, decode | Keep secrets in `$env`                                                                                                 |
-| `sleep`                                                     | Wait                 | `milliseconds`                                                                                                         |
-| `log`                                                       | Write to server log  | `message`. Goes to the server log at `info`, not the flow log. Secrets in `headers` and `payload` are redacted.        |
-| `throw-error`                                               | Fail on purpose      | `code`, `status`, `message`. Use at the end of a branch to cancel a filter event or fail a webhook with a real status. |
+| `type` | Does | Notes |
+| --- | --- | --- |
+| `condition` | Branch on a filter | Resolves with `null` when the filter passes, rejects when it fails. See below. |
+| `item-create` / `item-read` / `item-update` / `item-delete` | CRUD | `collection`, `key` or `query` (not both for update and delete; read takes both), `payload`, `permissions`, `emitEvents`. See below. |
+| `exec` | Run Script | Sandboxed JS. See below. |
+| `request` | HTTP call | Rejects on non-2xx. See below. |
+| `mail` | Send email | Fire and forget. See below. |
+| `notification` | In-app notification | `recipient` (user id, array, or comma-separated ids), `subject`, `message` |
+| `transform` | Build JSON | `json` with `{{ }}` values. Use it to shape a payload or a return value. |
+| `trigger` | Run another flow | `flow` (UUID), `payload`, `iterationMode`, `batchSize`. See [utility-flows-and-loops.md](utility-flows-and-loops.md). |
+| `json-web-token` | Sign, verify, decode | Keep secrets in `$env` |
+| `sleep` | Wait | `milliseconds` |
+| `log` | Write to server log | `message`. Goes to the server log at `info`, not the flow log. Secrets in `headers` and `payload` are redacted. |
+| `throw-error` | Fail on purpose | `code`, `status`, `message`. Use at the end of a branch to cancel a filter event or fail a webhook with a real status. |
 
 ## Condition
 
@@ -49,13 +49,13 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 
 ## Item operations
 
-| Option        | Meaning                                                                                                                                              |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `key`         | One key or an array. Update and delete reject `key` with `query`; read applies `query` to the keyed items.                                                                                                    |
-| `query`       | A normal query (`filter`, `fields`, `limit`, `sort`). For update and delete, no `key` and no `query` returns `null` instead of touching every item; to hit all, use `{"limit": -1}`. A read with neither returns the first page.    |
-| `payload`     | Object, or an **array** for `item-create` (creates many) and `item-update` (batch update; each object carries its primary key, no `key` or `query`). |
-| `permissions` | `$trigger` (default), `$public`, `$full`, or a role UUID                                                                                             |
-| `emitEvents`  | Default `false`. When `true`, the write fires hooks and event flows.                                                                                 |
+| Option | Meaning |
+| --- | --- |
+| `key` | One key or an array. Update and delete reject `key` with `query`; read applies `query` to the keyed items. |
+| `query` | A normal query (`filter`, `fields`, `limit`, `sort`). For update and delete, no `key` and no `query` returns `null` instead of touching every item; to hit all, use `{"limit": -1}`. A read with neither returns the first page. |
+| `payload` | Object, or an **array** for `item-create` (creates many) and `item-update` (batch update; each object carries its primary key, no `key` or `query`). |
+| `permissions` | `$trigger` (default), `$public`, `$full`, or a role UUID |
+| `emitEvents` | Default `false`. When `true`, the write fires hooks and event flows. |
 
 - **`$trigger` permissions** run as the trigger's caller
   ([who the flow runs as](triggers-and-data-chain.md#who-the-flow-runs-as)). An anonymous webhook usually reads nothing.

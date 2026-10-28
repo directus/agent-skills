@@ -30,12 +30,12 @@ works on core.
 
 Settings (the **User Registration** section of project settings, or `PATCH /settings` as admin):
 
-| Field                              | Default | Effect                                                                                          |
-| ---------------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
-| `public_registration`              | `false` | Off: `/users/register` returns 403 `FORBIDDEN`                                                  |
-| `public_registration_role`         | `null`  | Role given to every new user. `null` means no role: only the public policy                      |
-| `public_registration_verify_email` | `true`  | New users get status `unverified` and can't log in until verified                               |
-| `public_registration_email_filter` | `null`  | Filter on `email`, e.g. `{"_and":[{"email":{"_ends_with":"@acme.com"}}]}`; no match returns 403 |
+| Field | Default | Effect |
+| --- | --- | --- |
+| `public_registration` | `false` | Off: `/users/register` returns 403 `FORBIDDEN` |
+| `public_registration_role` | `null` | Role given to every new user. `null` means no role: only the public policy |
+| `public_registration_verify_email` | `true` | New users get status `unverified` and can't log in until verified |
+| `public_registration_email_filter` | `null` | Filter on `email`, e.g. `{"_and":[{"email":{"_ends_with":"@acme.com"}}]}`; no match returns 403 |
 
 ```bash
 curl -X POST "$DIRECTUS_URL/users/register" -H 'Content-Type: application/json' \
@@ -87,11 +87,11 @@ status `invited` and emails a link. `invite_url` must be in `USER_INVITE_URL_ALL
 
 Login, refresh, and logout are in [auth-and-access.md](auth-and-access.md). Pick the mode by where the code runs:
 
-| Frontend                                  | Mode                                                                          |
-| ----------------------------------------- | ----------------------------------------------------------------------------- |
-| Browser, same site as Directus            | `session`: one httpOnly cookie, `credentials: "include"` on every request     |
-| Browser, different site                   | `cookie` (refresh token in httpOnly cookie) plus CORS and `REFRESH_TOKEN_COOKIE_*` setup |
-| Server-rendered app (BFF, Next.js server) | `json` on the server; keep tokens in your own httpOnly session, never in JS   |
+| Frontend | Mode |
+| --- | --- |
+| Browser, same site as Directus | `session`: one httpOnly cookie, `credentials: "include"` on every request |
+| Browser, different site | `cookie` (refresh token in httpOnly cookie) plus CORS and `REFRESH_TOKEN_COOKIE_*` setup |
+| Server-rendered app (BFF, Next.js server) | `json` on the server; keep tokens in your own httpOnly session, never in JS |
 
 **House rule:** never put a refresh token in `localStorage`. SDK code for each mode: `directus-sdk`
 (`references/setup-and-auth.md`).

@@ -30,10 +30,10 @@ directus/default/         # <directory>/<project>/
 
 ## What syncs
 
-| Axis          | Contents                                                                                                                   | Scope with                                              |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Schema        | Collections, fields, relations, including custom fields on system collections and collection folders                       | `--collections`, `--exclude-collections`, `--no-schema` |
-| Configuration | Roles, policies, access, permissions, flows, operations, dashboards, panels, settings, folders, translations; users opt-in | `--roles`, `--flows`, `--no-settings`, `--all`, ...     |
+| Axis | Contents | Scope with |
+| --- | --- | --- |
+| Schema | Collections, fields, relations, including custom fields on system collections and collection folders | `--collections`, `--exclude-collections`, `--no-schema` |
+| Configuration | Roles, policies, access, permissions, flows, operations, dashboards, panels, settings, folders, translations; users opt-in | `--roles`, `--flows`, `--no-settings`, `--all`, ... |
 
 The axes scope independently: resource flags never narrow Schema; `--collections` never narrows Configuration.
 
@@ -77,11 +77,11 @@ preview is advisory. On PostgreSQL, `diff`'s rolled-back dry run can advance int
 
 ## Push modes and deletions
 
-| Mode              | Schema              | Configuration                                       | Deletes    |
-| ----------------- | ------------------- | --------------------------------------------------- | ---------- |
-| `add`             | Adds and modifies   | Creates only, never updates existing records        | No         |
-| `merge` (default) | Adds and modifies   | Creates and updates                                 | No         |
-| `mirror`          | May delete in scope | Creates, updates, deletes records absent from files | Yes, gated |
+| Mode | Schema | Configuration | Deletes |
+| --- | --- | --- | --- |
+| `add` | Adds and modifies | Creates only, never updates existing records | No |
+| `merge` (default) | Adds and modifies | Creates and updates | No |
+| `mirror` | May delete in scope | Creates, updates, deletes records absent from files | Yes, gated |
 
 Resolution: `--mode` flag, then the project's `mode`, then `merge`.
 
@@ -106,12 +106,12 @@ up front; a vendor mismatch comes back as the server's refusal (`STATE` error).
 
 An unlicensed target enforces core limits on what a push writes (tiers and limits: `directus-access-control`).
 
-| Files contain                                                                                                         | Result on a core-tier target                                                                                                                                      |
-| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Permissions with custom rules (item filter, field list other than `*`, validation, presets)                           | Configuration import fails `403 RESOURCE_RESTRICTED`, `category: custom_permission_rules_enabled`; no configuration lands. The diff's dry run hits the same error |
-| More active collections than the limit                                                                                | Schema apply fails `403 LIMIT_EXCEEDED`, `category: collections`; the schema transaction rolls back                                                               |
-| More flows than the limit                                                                                             | Configuration import fails `403 LIMIT_EXCEEDED`, `category: flows`                                                                                                |
-| Custom LLM settings (`ai_openai_compatible_base_url`, `_name`, or `_models` set; the CLI strips only key and headers) | Configuration import fails `403 RESOURCE_RESTRICTED`, `category: custom_llms_enabled`                                                                             |
+| Files contain | Result on a core-tier target |
+| --- | --- |
+| Permissions with custom rules (item filter, field list other than `*`, validation, presets) | Configuration import fails `403 RESOURCE_RESTRICTED`, `category: custom_permission_rules_enabled`; no configuration lands. The diff's dry run hits the same error |
+| More active collections than the limit | Schema apply fails `403 LIMIT_EXCEEDED`, `category: collections`; the schema transaction rolls back |
+| More flows than the limit | Configuration import fails `403 LIMIT_EXCEEDED`, `category: flows` |
+| Custom LLM settings (`ai_openai_compatible_base_url`, `_name`, or `_models` set; the CLI strips only key and headers) | Configuration import fails `403 RESOURCE_RESTRICTED`, `category: custom_llms_enabled` |
 
 Fix by licensing the target, or by leaving out what it isn't entitled to: whole permission rows (the target then denies
 that action), extra collections or flows, or the custom LLM settings (exclude `settings`, or clear those fields on the
@@ -123,11 +123,11 @@ wider. An unlicensed **source** hiding its custom rules: [troubleshooting.md](tr
 The schema-only tools (`directus schema snapshot` / `apply` inside the server, and `/schema/*` REST) don't share
 Environment Sync's guards. Each path checks something different:
 
-| Path                                  | Version + vendor check                  | Hash check (target changed since diff) | Deletes                                                           |
-| ------------------------------------- | --------------------------------------- | -------------------------------------- | ----------------------------------------------------------------- |
-| CLI `directus schema apply <file>`    | **None.** Applies any version or vendor | None; diffs against the live DB        | Everything the snapshot lacks, minus `--ignoreRules`              |
-| `POST /schema/diff`                   | Yes. `force=true` bypasses it           | n/a                                    | `mode` defaults to `mirror`; pass `mode=merge` to plan no deletes |
-| `POST /schema/apply` (body: the diff) | No (it never sees the snapshot)         | Yes. `force=true` bypasses it          | Whatever the diff contains                                        |
+| Path | Version + vendor check | Hash check (target changed since diff) | Deletes |
+| --- | --- | --- | --- |
+| CLI `directus schema apply <file>` | **None.** Applies any version or vendor | None; diffs against the live DB | Everything the snapshot lacks, minus `--ignoreRules` |
+| `POST /schema/diff` | Yes. `force=true` bypasses it | n/a | `mode` defaults to `mirror`; pass `mode=merge` to plan no deletes |
+| `POST /schema/apply` (body: the diff) | No (it never sees the snapshot) | Yes. `force=true` bypasses it | Whatever the diff contains |
 
 - **The CLI apply is the dangerous one.** Compare the snapshot's `directus` and `vendor` keys with the target yourself,
   and run `--dry-run` first.

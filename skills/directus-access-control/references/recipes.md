@@ -22,14 +22,14 @@ Attach to the public policy. **Licensed** for the filters.
 Every row applies the full publication predicate (`status` is `published` and `published_at <= $NOW`) to the page
 the row hangs off. A block rule that checks only `status` leaks blocks of pages scheduled for the future.
 
-| Collection                   | Action | Item rule                                                                                                                                                                 | Fields                           |
-| ---------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| `pages`, `posts`             | read   | `{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}`                                                                                              | `*`                              |
-| `page_blocks`                | read   | `{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}`                                                                                     | `*`                              |
-| each block in the M2A        | read   | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}}`                                            | `*`                              |
-| child of a block (M2O to it) | read   | e.g. on `block_pricing_cards`: `{"pricing":{"$FOLLOW(page_blocks,item,collection)":{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}}}` | `*`                              |
-| `directus_files`             | read   | `{"folder":{"_eq":"<public-folder-id>"}}`                                                                                                                                 | `*`                              |
-| `directus_users`             | read   | `{"posts":{"_nnull":true}}` (authors only)                                                                                                                                | `id,first_name,last_name,avatar` |
+| Collection | Action | Item rule | Fields |
+| --- | --- | --- | --- |
+| `pages`, `posts` | read | `{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}` | `*` |
+| `page_blocks` | read | `{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}` | `*` |
+| each block in the M2A | read | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}}` | `*` |
+| child of a block (M2O to it) | read | e.g. on `block_pricing_cards`: `{"pricing":{"$FOLLOW(page_blocks,item,collection)":{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}}}` | `*` |
+| `directus_files` | read | `{"folder":{"_eq":"<public-folder-id>"}}` | `*` |
+| `directus_users` | read | `{"posts":{"_nnull":true}}` (authors only) | `id,first_name,last_name,avatar` |
 
 - **Block collections leak without their own rule.** Filtering `page_blocks` hides the link, not the block:
   `GET /items/block_hero/<id>` still answers. An unfiltered public read on a block collection (the CMS starter ships
@@ -50,12 +50,12 @@ the row hangs off. A block rule that checks only `status` leaks blocks of pages 
 
 Needs an owner field (`author` M2O to users, or `user_created`). **Licensed.**
 
-| Collection       | Action         | Item rule                                 | Validation                        | Presets                      |
-| ---------------- | -------------- | ----------------------------------------- | --------------------------------- | ---------------------------- |
-| `posts`          | create         | -                                         | `{"status":{"_neq":"published"}}` | `{"author":"$CURRENT_USER"}` |
-| `posts`          | read           | `{"author":{"_eq":"$CURRENT_USER"}}`      | -                                 | -                            |
-| `posts`          | update         | `{"author":{"_eq":"$CURRENT_USER"}}`      | `{"status":{"_neq":"published"}}` | -                            |
-| `directus_files` | update, delete | `{"uploaded_by":{"_eq":"$CURRENT_USER"}}` | -                                 | -                            |
+| Collection | Action | Item rule | Validation | Presets |
+| --- | --- | --- | --- | --- |
+| `posts` | create | - | `{"status":{"_neq":"published"}}` | `{"author":"$CURRENT_USER"}` |
+| `posts` | read | `{"author":{"_eq":"$CURRENT_USER"}}` | - | - |
+| `posts` | update | `{"author":{"_eq":"$CURRENT_USER"}}` | `{"status":{"_neq":"published"}}` | - |
+| `directus_files` | update, delete | `{"uploaded_by":{"_eq":"$CURRENT_USER"}}` | - | - |
 
 - To stop authors reassigning `author`, leave it out of the create and update `fields` list; the preset still sets it.
 - Add the public policy to the same role if authors should also see published posts by others. The read rules OR
@@ -66,10 +66,10 @@ Needs an owner field (`author` M2O to users, or `user_created`). **Licensed.**
 One "manage" policy with full CRUD on content collections, blocks, junctions, files, and folders. No item rules, so it
 works on core. Pair with a separate app-access policy so seats stay explicit. For versioned collections add:
 
-| Collection           | Actions                      | Notes                                                      |
-| -------------------- | ---------------------------- | ---------------------------------------------------------- |
-| `directus_versions`  | read, create, update, delete | All fields, no item rules (a rule on update blocks saving) |
-| `directus_revisions` | read                         | Licensed: scope with `{"collection":{"_in":[...]}}`        |
+| Collection | Actions | Notes |
+| --- | --- | --- |
+| `directus_versions` | read, create, update, delete | All fields, no item rules (a rule on update blocks saving) |
+| `directus_revisions` | read | Licensed: scope with `{"collection":{"_in":[...]}}` |
 
 ## Live preview and drafts
 
@@ -84,11 +84,11 @@ works on core. Pair with a separate app-access policy so seats stay explicit. Fo
 The starter's `Forms - Submission` pattern, attached directly to an API-only "Frontend Bot" user whose token stays on
 the server.
 
-| Collection                                   | Action | Fields | Licensed extras                                                                      |
-| -------------------------------------------- | ------ | ------ | ------------------------------------------------------------------------------------ |
-| `form_submissions`, `form_submission_values` | create | `*`    | -                                                                                    |
-| `form_submissions`, `form_submission_values` | read   | `id`   | Field list is licensed. On core, read is all fields, or leave it off                 |
-| `directus_files`                             | create | `*`    | Preset `{"folder":"<uploads-folder>"}`, validation `{"filesize":{"_lte":"5000000"}}` |
+| Collection | Action | Fields | Licensed extras |
+| --- | --- | --- | --- |
+| `form_submissions`, `form_submission_values` | create | `*` | - |
+| `form_submissions`, `form_submission_values` | read | `id` | Field list is licensed. On core, read is all fields, or leave it off |
+| `directus_files` | create | `*` | Preset `{"folder":"<uploads-folder>"}`, validation `{"filesize":{"_lte":"5000000"}}` |
 
 - Without read, a create returns 204 with no body. Granting read on `id` lets the caller get the new key back.
 - **House rule:** don't give the public policy create on submissions or files. Proxy through a server route with the

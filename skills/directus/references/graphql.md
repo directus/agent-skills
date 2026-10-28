@@ -16,15 +16,15 @@ already has a GraphQL client and wants typed, nested selections in one request.
 - Authenticate with `Authorization: Bearer <token>` like REST. A locked-down instance returns 403
   `RESOURCE_RESTRICTED` on `/graphql` (see `directus-access-control`).
 
-| Operation | Field for a collection `posts`                                                                        |
-| --------- | ----------------------------------------------------------------------------------------------------- |
-| List      | `posts(filter:, sort:, limit:, offset:, page:, search:)`                                              |
-| One       | `posts_by_id(id: 1, version: "draft")`                                                                |
-| Aggregate | `posts_aggregated(groupBy: [...]) { count { id } sum { views } countAll }`                            |
-| Version   | `posts_by_version(id: 1, version: "draft")`                                                           |
-| Create    | `create_posts_item(data:)`, `create_posts_items(data: [])`                                            |
-| Update    | `update_posts_item(id:, data:)`, `update_posts_items(ids: [], data:)`, `update_posts_batch(data: [])` |
-| Delete    | `delete_posts_item(id:)`, `delete_posts_items(ids: [])`                                               |
+| Operation | Field for a collection `posts` |
+| --- | --- |
+| List | `posts(filter:, sort:, limit:, offset:, page:, search:)` |
+| One | `posts_by_id(id: 1, version: "draft")` |
+| Aggregate | `posts_aggregated(groupBy: [...]) { count { id } sum { views } countAll }` |
+| Version | `posts_by_version(id: 1, version: "draft")` |
+| Create | `create_posts_item(data:)`, `create_posts_items(data: [])` |
+| Update | `update_posts_item(id:, data:)`, `update_posts_items(ids: [], data:)`, `update_posts_batch(data: [])` |
+| Delete | `delete_posts_item(id:)`, `delete_posts_items(ids: [])` |
 
 Singletons have no `_by_id`, `_aggregated`, create, or delete; update uses `update_<singleton>(data:)`.
 

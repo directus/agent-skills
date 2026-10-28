@@ -16,12 +16,12 @@ processes with separate memory.
 Setting any `REDIS` or `REDIS_*` variable switches some things to Redis automatically. Others have their own switch and
 stay in memory until you set it.
 
-| Feature                                                                                                                           | Switch                        | Without it, per process                                                    |
-| --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | -------------------------------------------------------------------------- |
-| Message bus: WebSocket subscription events, flow reloads, extension reloads, schema-change notices                                | automatic with `REDIS*`       | A change on one instance isn't seen by subscribers or caches on the others |
-| Locks and shared stores: TUS uploads, extension sync, collaborative editing rooms, license state                                  | automatic with `REDIS*`       | Each instance locks alone                                                  |
-| Data cache and system cache (schema, permissions)                                                                                 | `CACHE_STORE=redis`           | Each process has its own copy; a purge on one doesn't clear the rest       |
-| Rate limiter                                                                                                                      | `RATE_LIMITER_STORE=redis`    | Each instance allows the full budget                                       |
+| Feature | Switch | Without it, per process |
+| --- | --- | --- |
+| Message bus: WebSocket subscription events, flow reloads, extension reloads, schema-change notices | automatic with `REDIS*` | A change on one instance isn't seen by subscribers or caches on the others |
+| Locks and shared stores: TUS uploads, extension sync, collaborative editing rooms, license state | automatic with `REDIS*` | Each instance locks alone |
+| Data cache and system cache (schema, permissions) | `CACHE_STORE=redis` | Each process has its own copy; a purge on one doesn't clear the rest |
+| Rate limiter | `RATE_LIMITER_STORE=redis` | Each instance allows the full budget |
 | Synchronized schedules: schedule-trigger flows, `schedule()` in hook extensions, retention, TUS cleanup, telemetry, license check | `SYNCHRONIZATION_STORE=redis` | **Every instance runs every scheduled job.** A nightly flow sends N emails |
 
 `SYNCHRONIZATION_STORE` is the one people miss: it defaults to `memory` even when `REDIS` is set.

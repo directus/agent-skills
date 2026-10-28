@@ -6,7 +6,8 @@ Rules for every skill in this repo. Read before editing.
 
 - `skills/<name>/SKILL.md` is a **router**. It loads every time the skill triggers, so keep it under ~100 lines.
   It holds: frontmatter, a 2-3 sentence scope, a short "first checks" list, at most ~8 critical traps that an agent
-  would get wrong without being told, a routing table (`Load when` → `reference`), and a "Go deeper" section.
+  would get wrong without being told, a routing list (`- <load when> → [file.md](references/file.md)`), and a "Go
+  deeper" section.
 - `skills/<name>/references/*.md` hold the depth. One level deep (SKILL.md links to references, references don't chain
   to other references except a "See also" line). Any reference over 100 lines starts with a short table of contents.
 - One topic per reference. Name files by topic (`filters.md`, not `misc.md`).
@@ -136,6 +137,8 @@ references, major for renamed or removed skills. Details in [.changeset/README.m
 
 ## Voice
 
-Plain, short, direct. Imperative ("Send `fields` on every read"). Tables for lookups, code blocks for anything an
-agent will copy. No em dashes. No marketing. No time-sensitive phrasing ("new in", "recently"); put what differs on
+Plain, short, direct. Imperative ("Send `fields` on every read"). Tables only for lookups with three or more columns
+(version maps, env defaults); prefer a list for two. Write tables compact (`| a | b |`, `| --- |`), never padded: padding
+costs tokens. `node scripts/compact-tables.mjs` fixes them and the validator rejects padding. Prettier skips
+`skills/**/*.md` so editors don't re-pad. Code blocks for anything an agent will copy. No em dashes. No marketing. No time-sensitive phrasing ("new in", "recently"); put what differs on
 older versions in the `directus` version notes (`references/versions-v<major>.md`).

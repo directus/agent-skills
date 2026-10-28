@@ -15,11 +15,11 @@ versions are a different feature: [content-versioning.md](content-versioning.md)
 
 Each collection's **Accountability** setting (`meta.accountability`) decides:
 
-| Value           | Activity row (`directus_activity`) | Revision row (`directus_revisions`) |
-| --------------- | ---------------------------------- | ----------------------------------- |
-| `all` (default) | Yes                                | On create and update                |
-| `activity`      | Yes                                | No                                  |
-| `null`          | No                                 | No                                  |
+| Value | Activity row (`directus_activity`) | Revision row (`directus_revisions`) |
+| --- | --- | --- |
+| `all` (default) | Yes | On create and update |
+| `activity` | Yes | No |
+| `null` | No | No |
 
 - **Delete writes activity only, never a revision.** The deleted row's values are not stored anywhere at delete time.
 - A revision holds `delta` (the fields sent in that write) and `data` (a snapshot of the item after the write).
@@ -48,11 +48,11 @@ GET /revisions?filter[collection][_eq]=posts&filter[item][_eq]=5&sort=-id
 
 ## Restoring a previous state
 
-| Where        | How                                                                                                                           |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| Studio       | Item page → **Revisions** sidebar → pick one → revert. This loads the old values as unsaved edits; the user still clicks Save |
-| API          | `POST /utils/revert/<revision-id>`: applies that revision's `data` to the item as a normal update (204)                       |
-| API, partial | `PATCH /items/<collection>/<id>` with just the fields you want back, copied from the revision's `data`                        |
+| Where | How |
+| --- | --- |
+| Studio | Item page → **Revisions** sidebar → pick one → revert. This loads the old values as unsaved edits; the user still clicks Save |
+| API | `POST /utils/revert/<revision-id>`: applies that revision's `data` to the item as a normal update (204) |
+| API, partial | `PATCH /items/<collection>/<id>` with just the fields you want back, copied from the revision's `data` |
 
 - Revert restores scalar fields only, because `data` has no relational fields. Checked on 12.5.1: reverting to the
   revision before `author` changed put the title back and left `author` at the new value. Restore relations by hand from

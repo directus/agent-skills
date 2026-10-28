@@ -70,17 +70,17 @@ the instance._
 Load only the hop files you cross, in order, stopping at the target. In a minors file, read only the sections after your
 current version.
 
-| Current version              | Load, in order                                                                                       |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
-| 9.x                          | [v9-to-10.0](references/v9-to-10.0.md), [10.x-minors](references/10.x-minors.md), then the 10.13 row |
-| 10.0 to 10.12                | [10.x-minors](references/10.x-minors.md), then the 10.13 row                                         |
-| 10.13                        | [11.0](references/11.0.md), [11.x-minors](references/11.x-minors.md), then the 11.17 row             |
-| 11.0 to 11.16                | [11.x-minors](references/11.x-minors.md), then the 11.17 row                                         |
-| 11.17                        | [12.0](references/12.0.md), [12.x-minors](references/12.x-minors.md)                                 |
-| 12.0 to 12.6                 | [12.x-minors](references/12.x-minors.md)                                                             |
-| Patch bump within a minor    | That major's minors file; search it for the target patch (10.6.3, 10.13.2, 11.1.2, 11.14.1 break)    |
-| Any, plus SDK/extension work | [sdk-and-extensions](references/sdk-and-extensions.md) (version map, `host`, extension API changes)  |
-| Running the upgrade          | [checklist](references/checklist.md) (copyable checklist, commands, env grep, rollback)              |
+| Current version | Load, in order |
+| --- | --- |
+| 9.x | [v9-to-10.0](references/v9-to-10.0.md), [10.x-minors](references/10.x-minors.md), then the 10.13 row |
+| 10.0 to 10.12 | [10.x-minors](references/10.x-minors.md), then the 10.13 row |
+| 10.13 | [11.0](references/11.0.md), [11.x-minors](references/11.x-minors.md), then the 11.17 row |
+| 11.0 to 11.16 | [11.x-minors](references/11.x-minors.md), then the 11.17 row |
+| 11.17 | [12.0](references/12.0.md), [12.x-minors](references/12.x-minors.md) |
+| 12.0 to 12.6 | [12.x-minors](references/12.x-minors.md) |
+| Patch bump within a minor | That major's minors file; search it for the target patch (10.6.3, 10.13.2, 11.1.2, 11.14.1 break) |
+| Any, plus SDK/extension work | [sdk-and-extensions](references/sdk-and-extensions.md) (version map, `host`, extension API changes) |
+| Running the upgrade | [checklist](references/checklist.md) (copyable checklist, commands, env grep, rollback) |
 
 ## Go deeper
 

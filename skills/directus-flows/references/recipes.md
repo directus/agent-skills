@@ -6,14 +6,14 @@
 a hook or endpoint (`directus-extensions` skill) once the logic branches heavily, needs npm packages, needs tests, or
 runs on every write of a busy collection.
 
-| Situation                                    | Use                                                |
-| -------------------------------------------- | -------------------------------------------------- |
-| Editors need to see and tweak the automation | Flow                                               |
-| Directus Cloud below Enterprise              | Flow, plus sandboxed Marketplace operations        |
-| More than ~10 operations, or nested loops    | Hook or endpoint                                   |
+| Situation | Use |
+| --- | --- |
+| Editors need to see and tweak the automation | Flow |
+| Directus Cloud below Enterprise | Flow, plus sandboxed Marketplace operations |
+| More than ~10 operations, or nested loops | Hook or endpoint |
 | Needs a library (Stripe SDK, PDF generation) | Operation extension, called from a flow, or a hook |
-| Must be unit tested or code reviewed         | Hook or endpoint                                   |
-| Core tier and already at the active-flow limit | Merge flows, or a hook (extensions don't count)    |
+| Must be unit tested or code reviewed | Hook or endpoint |
+| Core tier and already at the active-flow limit | Merge flows, or a hook (extensions don't count) |
 
 ## Slug on create
 

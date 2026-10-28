@@ -11,7 +11,7 @@
 
 ## Live Preview vs Visual Editor
 
-| | Live Preview | Visual Editor |
+|  | Live Preview | Visual Editor |
 | --- | --- | --- |
 | Configured in | Settings > Data Model > collection > **Preview URL** (`directus_collections.preview_url`) | Settings > Project > **Visual Editor URLs** (`directus_settings.visual_editor_urls`, `{ url }[]`) |
 | Opens from | The item page (split pane, or pop-out window) | Its own module (enable it under Settings > Modules / module bar) |

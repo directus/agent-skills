@@ -24,14 +24,14 @@ What a caller controls to keep reads fast. Indexes are a schema decision: `direc
 
 ## Query checklist
 
-| Do                                                                                 | Why                                                                 |
-| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Send `fields` with only what the page renders                                      | Fewer columns, fewer relation queries, smaller cached entries       |
-| Name M2A collections: `blocks.item:block_hero.title`                               | `blocks.item.*` queries every allowed block collection              |
-| Always send `limit`; page with `limit` + `page` and a stable `sort`                | Default is 100. `limit=-1` loads the whole collection into memory   |
+| Do | Why |
+| --- | --- |
+| Send `fields` with only what the page renders | Fewer columns, fewer relation queries, smaller cached entries |
+| Name M2A collections: `blocks.item:block_hero.title` | `blocks.item.*` queries every allowed block collection |
+| Always send `limit`; page with `limit` + `page` and a stable `sort` | Default is 100. `limit=-1` loads the whole collection into memory |
 | For deep paging or exports, use keyset paging: `sort=id&filter[id][_gt]=<last id>` | Large `offset` values make the database walk past every skipped row |
-| Filter and sort on indexed fields                                                  | Everything else is a table scan on large collections                |
-| Ask for `meta` only when the UI shows a total                                      | Each `meta` value is an extra query (below)                         |
+| Filter and sort on indexed fields | Everything else is a table scan on large collections |
+| Ask for `meta` only when the UI shows a total | Each `meta` value is an extra query (below) |
 
 **Limits.** `QUERY_LIMIT_DEFAULT` (100) applies when `limit` is omitted. `QUERY_LIMIT_MAX` is unset by default, which means no cap (`/server/info` reports `-1`).
 When it's set, `limit=-1` becomes the max and a larger `limit` fails with `INVALID_QUERY`. `GET /server/info` shows
@@ -55,16 +55,16 @@ the instance's values. `MAX_RELATIONAL_DEPTH` (10) caps nesting.
 
 Off by default. Configured with `CACHE_*` env vars.
 
-| Behavior                | Detail                                                                                                                                                                                                                                    |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| What's cached           | `GET` responses and GraphQL, when `CACHE_ENABLED=true`. Key: user, path, and parsed query (plus IP if an IP-restricted policy matches). Public requests share entries; each logged-in user gets their own.                                |
-| Not cached              | `/auth`, `export`, responses over `CACHE_VALUE_MAX_SIZE`, and reads of a collection whose read permission uses `$NOW` (for that caller)                                                                                                   |
-| **Stale reads**         | `CACHE_AUTO_PURGE` defaults to `false`. Writes don't clear the cache; reads return old data until `CACHE_TTL` (default `5m`). Verified: after a `PATCH`, the next read was a `HIT` with the old value.                                    |
-| `CACHE_AUTO_PURGE=true` | Any write clears the **whole** data cache, not just that collection (except collections in `CACHE_AUTO_PURGE_IGNORE_LIST`). Write-heavy instances barely cache.                                                                           |
-| Bypass one request      | Send `Cache-Control: no-store`. Works only when `CACHE_SKIP_ALLOWED=true`; otherwise the header is ignored. Studio requests skip the cache when auto purge is off.                                                                        |
-| Clear manually          | `POST /utils/cache/clear` (admin). Add `?system` to also clear the system and schema cache.                                                                                                                                          |
-| Response headers        | Cacheable responses get `Cache-Control: public` (no token) or `private`, `max-age=<TTL>`, plus `s-maxage` from `CACHE_CONTROL_S_MAXAGE`. With auto purge on, or for uncacheable responses, `no-cache`. A CDN can cache the `public` ones. |
-| Debug                   | `CACHE_STATUS_HEADER=X-Cache` adds `HIT` / `MISS`.                                                                                                                                                                                        |
+| Behavior | Detail |
+| --- | --- |
+| What's cached | `GET` responses and GraphQL, when `CACHE_ENABLED=true`. Key: user, path, and parsed query (plus IP if an IP-restricted policy matches). Public requests share entries; each logged-in user gets their own. |
+| Not cached | `/auth`, `export`, responses over `CACHE_VALUE_MAX_SIZE`, and reads of a collection whose read permission uses `$NOW` (for that caller) |
+| **Stale reads** | `CACHE_AUTO_PURGE` defaults to `false`. Writes don't clear the cache; reads return old data until `CACHE_TTL` (default `5m`). Verified: after a `PATCH`, the next read was a `HIT` with the old value. |
+| `CACHE_AUTO_PURGE=true` | Any write clears the **whole** data cache, not just that collection (except collections in `CACHE_AUTO_PURGE_IGNORE_LIST`). Write-heavy instances barely cache. |
+| Bypass one request | Send `Cache-Control: no-store`. Works only when `CACHE_SKIP_ALLOWED=true`; otherwise the header is ignored. Studio requests skip the cache when auto purge is off. |
+| Clear manually | `POST /utils/cache/clear` (admin). Add `?system` to also clear the system and schema cache. |
+| Response headers | Cacheable responses get `Cache-Control: public` (no token) or `private`, `max-age=<TTL>`, plus `s-maxage` from `CACHE_CONTROL_S_MAXAGE`. With auto purge on, or for uncacheable responses, `no-cache`. A CDN can cache the `public` ones. |
+| Debug | `CACHE_STATUS_HEADER=X-Cache` adds `HIT` / `MISS`. |
 
 - `CACHE_STORE=memory` is per process. Several instances need `redis` or each serves its own stale copy
   (`directus-self-hosting`).

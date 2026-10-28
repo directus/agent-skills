@@ -81,14 +81,12 @@ const posts = await directus.request(
 
 ## References
 
-| Load when                                                                                                                                                                     | Reference                                                        |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Composables, login/refresh/logout, `json`/`cookie`/`session` modes, token storage, SSO, CORS and cross-site cookies, custom fetch, polyfills                                  | [references/setup-and-auth.md](references/setup-and-auth.md)     |
-| Writing or fixing the `Schema` type: singletons, M2O/O2M/M2M/M2A, `directus_users` custom fields, `'datetime'`/`'json'` markers, output inference, type generation, TS errors | [references/typing.md](references/typing.md)                     |
-| CRUD signatures, query keys the SDK sends, response unwrapping, counting and pagination, `withToken`/`withOptions`/`withSearch`/`customEndpoint`, `isDirectusError`, GraphQL  | [references/queries.md](references/queries.md)                   |
-| Subscribing to changes, WebSocket auth modes, reconnects, raw messages                                                                                                        | [references/realtime.md](references/realtime.md)                 |
-| Next.js App Router, Nuxt, Astro, SvelteKit: client placement, env vars, caching and revalidation, M2A page fetching, starter file map                                         | [references/frameworks.md](references/frameworks.md)             |
-| Asset URLs, private files, transform params in URLs, framework image config, uploads                                                                                          | [references/files-and-images.md](references/files-and-images.md) |
+- Composables, login/refresh/logout, `json`/`cookie`/`session` modes, token storage, SSO, CORS and cross-site cookies, custom fetch, polyfills → [setup-and-auth.md](references/setup-and-auth.md)
+- Writing or fixing the `Schema` type: singletons, M2O/O2M/M2M/M2A, `directus_users` custom fields, `'datetime'`/`'json'` markers, output inference, type generation, TS errors → [typing.md](references/typing.md)
+- CRUD signatures, query keys the SDK sends, response unwrapping, counting and pagination, `withToken`/`withOptions`/`withSearch`/`customEndpoint`, `isDirectusError`, GraphQL → [queries.md](references/queries.md)
+- Subscribing to changes, WebSocket auth modes, reconnects, raw messages → [realtime.md](references/realtime.md)
+- Next.js App Router, Nuxt, Astro, SvelteKit: client placement, env vars, caching and revalidation, M2A page fetching, starter file map → [frameworks.md](references/frameworks.md)
+- Asset URLs, private files, transform params in URLs, framework image config, uploads → [files-and-images.md](references/files-and-images.md)
 
 ## Go deeper
 

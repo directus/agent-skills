@@ -40,13 +40,13 @@ Operators that trip agents up:
 
 Resolved on the server for the current request.
 
-| Variable                                 | Value                                                                                           |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Variable | Value |
+| --- | --- |
 | `$CURRENT_USER` / `$CURRENT_USER.<path>` | User primary key / any field on the user, including relations (`$CURRENT_USER.avatar.filesize`) |
-| `$CURRENT_ROLE` / `$CURRENT_ROLE.<path>` | Primary key of the user's role / any field on the role                                          |
-| `$CURRENT_ROLES`                         | Array of role keys (the role plus its parent roles)                                             |
-| `$CURRENT_POLICIES`                      | Array of the caller's policy keys                                                               |
-| `$NOW`, `$NOW(<adjustment>)`             | Current timestamp, optionally offset: `$NOW(-7 days)`, `$NOW(+2 hours)`                         |
+| `$CURRENT_ROLE` / `$CURRENT_ROLE.<path>` | Primary key of the user's role / any field on the role |
+| `$CURRENT_ROLES` | Array of role keys (the role plus its parent roles) |
+| `$CURRENT_POLICIES` | Array of the caller's policy keys |
+| `$NOW`, `$NOW(<adjustment>)` | Current timestamp, optionally offset: `$NOW(-7 days)`, `$NOW(+2 hours)` |
 
 ```json
 { "_and": [{ "user_created": { "_eq": "$CURRENT_USER" } }, { "publish_date": { "_lte": "$NOW" } }] }
@@ -108,11 +108,11 @@ Keys are AND-ed; `_and` / `_or` arrays work inside `_json`.
 
 ## Where filters show up
 
-| Context                  | Behavior                                                                                                                                    |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Permission item rule     | Rows the policy can see or change. Rules from several policies are OR'ed. Needs a license on v12 (see `directus-access-control`).           |
-| Validation rule          | Payload must match or the write fails with `FAILED_VALIDATION`. Only place `_regex` works.                                                  |
-| Permission presets       | Default values on create or update, may use variables.                                                                                      |
+| Context | Behavior |
+| --- | --- |
+| Permission item rule | Rows the policy can see or change. Rules from several policies are OR'ed. Needs a license on v12 (see `directus-access-control`). |
+| Validation rule | Payload must match or the write fails with `FAILED_VALIDATION`. Only place `_regex` works. |
+| Permission presets | Default values on create or update, may use variables. |
 | Flow condition operation | Filter runs against the data chain: nest from the root key, `{"$trigger": {"payload": {"status": {"_eq": "published"}}}}`. Never dot paths. |
 
 ## Sources

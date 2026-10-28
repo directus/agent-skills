@@ -12,20 +12,20 @@ Get the user's approval before any of these (see the router). This file is the p
 
 Observed on 12.5.1 against Postgres 16 and SQLite:
 
-| Change                                                                    | What happens                                                                                                   |
-| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Change | What happens |
+| --- | --- |
 | Rename a field: `PATCH /fields/posts/title` with `field` or `schema.name` | **No rename.** Returns 200 and the old field. With `meta` in the body it also inserts a stray `directus_fields` row for the new name (no column). Never send `field` in a PATCH. |
-| Rename a collection: `PATCH /collections/posts` with `collection`         | **Ignored.** Returns 200, nothing changes.                                                                     |
-| Rename in a snapshot or `d6s` push                                        | Diffs match by name, so a rename is a delete of the old field plus a create of an empty new one. Data is lost. |
-| Change type with `{ "type": "integer" }` only                             | **Ignored.** The column is altered only when the body has a `schema` object (`"schema": {}` is enough).        |
-| Change type, Postgres                                                     | `ALTER ... USING (col::type)`. Any value that can't cast fails the whole change (500, nothing altered).        |
-| Change type, SQLite                                                       | Succeeds, and values that can't convert stay as text (`"draft"` in an `integer` column).                       |
-| Lower `schema.max_length`                                                 | **Postgres truncates silently** (`"T149"` became `"T"`). SQLite keeps the long values.                         |
-| `is_nullable: false` on a column with nulls                               | 400 `CONTAINS_NULL_VALUES`, nothing changes                                                                    |
-| `is_unique: true` on a column with duplicates                             | 400 `RECORD_NOT_UNIQUE`, nothing changes                                                                       |
-| Alias (O2M, M2M, group) to a real type or back                            | 400 `INVALID_PAYLOAD`: "Alias type cannot be changed"                                                          |
-| Primary key type                                                          | Can't be changed                                                                                               |
-| `DELETE /fields/posts/title`                                              | 204. The column and its data are gone at once. Recreating the field gives nulls.                               |
+| Rename a collection: `PATCH /collections/posts` with `collection` | **Ignored.** Returns 200, nothing changes. |
+| Rename in a snapshot or `d6s` push | Diffs match by name, so a rename is a delete of the old field plus a create of an empty new one. Data is lost. |
+| Change type with `{ "type": "integer" }` only | **Ignored.** The column is altered only when the body has a `schema` object (`"schema": {}` is enough). |
+| Change type, Postgres | `ALTER ... USING (col::type)`. Any value that can't cast fails the whole change (500, nothing altered). |
+| Change type, SQLite | Succeeds, and values that can't convert stay as text (`"draft"` in an `integer` column). |
+| Lower `schema.max_length` | **Postgres truncates silently** (`"T149"` became `"T"`). SQLite keeps the long values. |
+| `is_nullable: false` on a column with nulls | 400 `CONTAINS_NULL_VALUES`, nothing changes |
+| `is_unique: true` on a column with duplicates | 400 `RECORD_NOT_UNIQUE`, nothing changes |
+| Alias (O2M, M2M, group) to a real type or back | 400 `INVALID_PAYLOAD`: "Alias type cannot be changed" |
+| Primary key type | Can't be changed |
+| `DELETE /fields/posts/title` | 204. The column and its data are gone at once. Recreating the field gives nulls. |
 
 So a "rename" or a lossy type change is always: new field, copy, switch, delete.
 

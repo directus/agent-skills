@@ -19,12 +19,12 @@ The skills are written for 12.6. Upgrading: `directus-upgrade` `references/10.x-
 
 ## API gates
 
-| The skills assume                                  | Since   | Before that                                |
-| -------------------------------------------------- | ------- | ------------------------------------------ |
-| WebSockets (`/websocket`), GraphQL subscriptions   | 10.3.0  | Poll REST                                  |
-| Content versions (`/versions`, `?version=<key>`)   | 10.7.0  | No drafts. Use a `status` field            |
-| GraphQL `<collection>_by_version`                  | 10.8.3  | `version` argument on `<collection>_by_id` |
-| `/users/register`, `public_registration*` settings | 10.11.0 | Create users as admin, or invite them      |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| WebSockets (`/websocket`), GraphQL subscriptions | 10.3.0 | Poll REST |
+| Content versions (`/versions`, `?version=<key>`) | 10.7.0 | No drafts. Use a `status` field |
+| GraphQL `<collection>_by_version` | 10.8.3 | `version` argument on `<collection>_by_id` |
+| `/users/register`, `public_registration*` settings | 10.11.0 | Create users as admin, or invite them |
 
 ## Modeling, visual editing, Insights
 
@@ -56,36 +56,36 @@ The composable SDK (`createDirectus().with(rest())`, SDK 11) starts at 10.5.0. B
 `new Directus(url)` client and the `directus-sdk` skill doesn't apply. On 10.5+, match the SDK major to the server
 (map: `directus-upgrade` `references/sdk-and-extensions.md`):
 
-| The skills assume                               | Since              | Before that                                                      |
-| ----------------------------------------------- | ------------------ | ---------------------------------------------------------------- |
-| `withOptions`, `withSearch`                     | 10.6.2 (SDK 12)    | `asSearch`                                                       |
-| Content version commands, `version`             | 10.7.0 (SDK 13)    | No drafts                                                        |
-| `authentication('session')`                     | 10.10.0 (SDK 15)   | `cookie` mode                                                    |
-| `customEndpoint`                                | 10.10.5 (SDK 15.1) | Plain `fetch`                                                    |
-| `isDirectusError`, `login({ email, password })` | 11.x               | `error?.errors?.[0]?.extensions?.code`; `login(email, password)` |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| `withOptions`, `withSearch` | 10.6.2 (SDK 12) | `asSearch` |
+| Content version commands, `version` | 10.7.0 (SDK 13) | No drafts |
+| `authentication('session')` | 10.10.0 (SDK 15) | `cookie` mode |
+| `customEndpoint` | 10.10.5 (SDK 15.1) | Plain `fetch` |
+| `isDirectusError`, `login({ email, password })` | 11.x | `error?.errors?.[0]?.extensions?.code`; `login(email, password)` |
 
 ## Extensions
 
-| The skills assume                                   | Since   | Before that                                                                      |
-| --------------------------------------------------- | ------- | -------------------------------------------------------------------------------- |
-| Any folder in `extensions/` loads; Marketplace      | 10.10.0 | Name it `directus-extension-<name>`, or use `extensions/<type>s/<name>/index.js` |
-| App extensions authenticate with the session cookie | 10.10.0 | No cookie. Calls outside `useApi()` need the token added by hand                 |
-| `@directus/errors` (`createError`)                  | 10.4.0  | `exceptions` from the extension context                                          |
-| Sandbox, `--theme--*` CSS variables                 | 10.7.0  | API extensions run with full access. Old `--primary`-style variables             |
-| `useSdk()`                                          | 10.9.0  | `useApi()` (axios)                                                               |
-| `accountability.roles`, policies                    | 11.0.0  | One `accountability.role`                                                        |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| Any folder in `extensions/` loads; Marketplace | 10.10.0 | Name it `directus-extension-<name>`, or use `extensions/<type>s/<name>/index.js` |
+| App extensions authenticate with the session cookie | 10.10.0 | No cookie. Calls outside `useApi()` need the token added by hand |
+| `@directus/errors` (`createError`) | 10.4.0 | `exceptions` from the extension context |
+| Sandbox, `--theme--*` CSS variables | 10.7.0 | API extensions run with full access. Old `--primary`-style variables |
+| `useSdk()` | 10.9.0 | `useApi()` (axios) |
+| `accountability.roles`, policies | 11.0.0 | One `accountability.role` |
 
 ## Self-hosting
 
-| The skills assume                    | Since   | Before that                                                                   |
-| ------------------------------------ | ------- | ----------------------------------------------------------------------------- |
-| `SYNCHRONIZATION_STORE`              | 10.2.0  | Every replica runs every schedule. Run schedules on one replica               |
-| One `REDIS` / `REDIS_*` set          | 10.4.0  | Separate `CACHE_REDIS*`, `RATE_LIMITER_REDIS*`, `MESSENGER_REDIS*`, and so on |
-| `PM2_INSTANCES`                      | 10.7.1  | One process per container. Scale with containers                              |
-| `KEY` not required                   | 10.11.0 | Set both `KEY` and `SECRET` or the process exits                              |
-| `ADMIN_TOKEN` on first boot          | 10.13.1 | Create a static token after the first login                                   |
-| `IP_TRUST_PROXY` defaults to `false` | 12.0.0  | `true` on 10.x. Set the proxy hop count so `ip_access` can't be spoofed       |
-| Node 26                              | 12.6.0  | Node 18 on all of 10.x. `npx directus` works in the image                     |
+| The skills assume | Since | Before that |
+| --- | --- | --- |
+| `SYNCHRONIZATION_STORE` | 10.2.0 | Every replica runs every schedule. Run schedules on one replica |
+| One `REDIS` / `REDIS_*` set | 10.4.0 | Separate `CACHE_REDIS*`, `RATE_LIMITER_REDIS*`, `MESSENGER_REDIS*`, and so on |
+| `PM2_INSTANCES` | 10.7.1 | One process per container. Scale with containers |
+| `KEY` not required | 10.11.0 | Set both `KEY` and `SECRET` or the process exits |
+| `ADMIN_TOKEN` on first boot | 10.13.1 | Create a static token after the first login |
+| `IP_TRUST_PROXY` defaults to `false` | 12.0.0 | `true` on 10.x. Set the proxy hop count so `ip_access` can't be spoofed |
+| Node 26 | 12.6.0 | Node 18 on all of 10.x. `npx directus` works in the image |
 
 For everything else, read the release notes and breaking changes: Directus docs MCP (`https://directus.com/docs/mcp`,
 `search-docs`) or `https://directus.com/docs/raw/releases/breaking-changes/version-10.md`.

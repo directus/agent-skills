@@ -15,31 +15,31 @@ and `meta.special` (behavior flags). Get the type right first. It's the only par
 
 Non-obvious picks only. Full list: https://directus.com/docs/guides/data-model/fields
 
-| Data                                                  | `type`              | Notes                                                        |
-| ----------------------------------------------------- | ------------------- | ------------------------------------------------------------ |
-| Short text (titles, names, slugs)                     | `string`            | Default length 255; set `schema.max_length` higher if needed |
-| Money, exact decimals                                 | `decimal`           | Set precision and scale. Never `float` for money.            |
-| Counts, ratings, sort                                 | `integer`           | `bigInteger` only past 2.1 billion                           |
-| Yes/no                                                | `boolean`           | Set `default_value` and `is_nullable: false`                 |
-| A moment in time (`published_at`, event start)        | `timestamp`         | Stored in UTC. The usual pick.                               |
-| Calendar date with no time (birthday)                 | `date`              |                                                              |
-| Wall-clock time with no zone                          | `dateTime` / `time` | Rare. Prefer `timestamp`.                                    |
-| Structured blob, repeater rows, SEO object            | `json`              | Add `special: ["cast-json"]`                                 |
-| Relational alias (O2M, M2M, M2A, files, translations) | `alias`             | `schema: null`, no column                                    |
-| Presentation (divider, notice, header, group)         | `alias`             | `special: ["alias", "no-data"]` (+ `"group"` for groups)     |
+| Data | `type` | Notes |
+| --- | --- | --- |
+| Short text (titles, names, slugs) | `string` | Default length 255; set `schema.max_length` higher if needed |
+| Money, exact decimals | `decimal` | Set precision and scale. Never `float` for money. |
+| Counts, ratings, sort | `integer` | `bigInteger` only past 2.1 billion |
+| Yes/no | `boolean` | Set `default_value` and `is_nullable: false` |
+| A moment in time (`published_at`, event start) | `timestamp` | Stored in UTC. The usual pick. |
+| Calendar date with no time (birthday) | `date` |  |
+| Wall-clock time with no zone | `dateTime` / `time` | Rare. Prefer `timestamp`. |
+| Structured blob, repeater rows, SEO object | `json` | Add `special: ["cast-json"]` |
+| Relational alias (O2M, M2M, M2A, files, translations) | `alias` | `schema: null`, no column |
+| Presentation (divider, notice, header, group) | `alias` | `special: ["alias", "no-data"]` (+ `"group"` for groups) |
 
 ## Interface picker
 
 Non-obvious picks only. Full list: https://directus.com/docs/guides/data-model/interfaces
 
-| Need                                            | Interface                                                                                                                                               |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| One line of text                                | `input` (`options.trim: true` on slugs, `font: "monospace"` for codes and URLs); `options.slug: true` for slugs                                         |
-| Structured editorial content (Editor.js blocks) | `input-block-editor` (`json`)                                                                                                                           |
-| Fixed values                                    | `select-dropdown`, or `select-radio` for 2-4 that should be visible. Several: `select-multiple-dropdown` / `select-multiple-checkbox` (`json` or `csv`) |
-| Free-form tags                                  | `tags` (`json` / `csv`). Use an M2M to `tags` instead if tags need pages, filtering, or reuse.                                                          |
-| Ordered list of small objects                   | `list` (Repeater, `json`)                                                                                                                               |
-| Link to one item in any collection, no relation | `collection-item-dropdown` (`json`)                                                                                                                     |
+| Need | Interface |
+| --- | --- |
+| One line of text | `input` (`options.trim: true` on slugs, `font: "monospace"` for codes and URLs); `options.slug: true` for slugs |
+| Structured editorial content (Editor.js blocks) | `input-block-editor` (`json`) |
+| Fixed values | `select-dropdown`, or `select-radio` for 2-4 that should be visible. Several: `select-multiple-dropdown` / `select-multiple-checkbox` (`json` or `csv`) |
+| Free-form tags | `tags` (`json` / `csv`). Use an M2M to `tags` instead if tags need pages, filtering, or reuse. |
+| Ordered list of small objects | `list` (Repeater, `json`) |
+| Link to one item in any collection, no relation | `collection-item-dropdown` (`json`) |
 
 ## JSON or a related collection
 

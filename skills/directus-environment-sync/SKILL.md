@@ -53,26 +53,24 @@ _Verified against Directus v12.6.0 (CLI source `packages/cli`, `@directus/cli` 1
 
 ## Which tool
 
-| Need                                                                                                  | Use                                                                       |
-| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Promote schema + roles, policies, permissions, flows, settings between live instances, via git review | Environment Sync (`d6s`), Directus 12.2+                                  |
-| Schema only, from inside the server container, or Directus before 12.2                                | `directus schema snapshot` / `directus schema apply`, or `/schema/*` REST |
-| Start a new project from a Directus starter, including content and files                              | `directus-template-cli` (`init` / `apply`)                                |
-| Seed content (items, files)                                                                           | A seed script; see `directus-content-modeling` (applying-schema.md)       |
+| Need | Use |
+| --- | --- |
+| Promote schema + roles, policies, permissions, flows, settings between live instances, via git review | Environment Sync (`d6s`), Directus 12.2+ |
+| Schema only, from inside the server container, or Directus before 12.2 | `directus schema snapshot` / `directus schema apply`, or `/schema/*` REST |
+| Start a new project from a Directus starter, including content and files | `directus-template-cli` (`init` / `apply`) |
+| Seed content (items, files) | A seed script; see `directus-content-modeling` (applying-schema.md) |
 
 Schema snapshot/apply checks (the CLI apply has **no** version or vendor check; REST does) and tradeoffs:
 [references/how-it-works.md](references/how-it-works.md#schema-snapshot-and-apply).
 
 ## Routing
 
-| Load when                                                                                                                               | Reference                                                      |
-| --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Installing, profiles, `directus.config.json`, credentials, `.env`, test-connection, projects                                            | [references/setup.md](references/setup.md)                     |
-| What syncs, settings, record identity and ID map, push phases, modes, compatibility, core-tier targets, `directus schema` / `/schema/*` | [references/how-it-works.md](references/how-it-works.md)       |
-| Promote dev to prod, ship only ready work, adopt on an existing project, roll back, rebase, new instance                                | [references/workflows.md](references/workflows.md)             |
-| CI: non-interactive rules, `DIRECTUS_<PROFILE>_TOKEN`, `--json` reports, GitHub Actions pipeline                                        | [references/ci.md](references/ci.md)                           |
-| Command cheat sheet, flag rules that refuse, error codes                                                                                | [references/reference.md](references/reference.md)             |
-| Errors, refusals, incomplete pulls, secrets blind spot, duplicated panels, known limitations                                            | [references/troubleshooting.md](references/troubleshooting.md) |
+- Installing, profiles, `directus.config.json`, credentials, `.env`, test-connection, projects → [setup.md](references/setup.md)
+- What syncs, settings, record identity and ID map, push phases, modes, compatibility, core-tier targets, `directus schema` / `/schema/*` → [how-it-works.md](references/how-it-works.md)
+- Promote dev to prod, ship only ready work, adopt on an existing project, roll back, rebase, new instance → [workflows.md](references/workflows.md)
+- CI: non-interactive rules, `DIRECTUS_<PROFILE>_TOKEN`, `--json` reports, GitHub Actions pipeline → [ci.md](references/ci.md)
+- Command cheat sheet, flag rules that refuse, error codes → [reference.md](references/reference.md)
+- Errors, refusals, incomplete pulls, secrets blind spot, duplicated panels, known limitations → [troubleshooting.md](references/troubleshooting.md)
 
 ## Related skills
 

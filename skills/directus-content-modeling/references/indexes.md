@@ -11,12 +11,12 @@ creates a few on its own and exposes two flags for the rest. Anything else needs
 
 ## What Directus creates
 
-| Field setting                    | Database result                                                          |
-| -------------------------------- | ------------------------------------------------------------------------ |
-| Primary key                      | Primary key constraint (indexed by every vendor)                         |
-| `schema.is_unique: true`         | Unique index `<collection>_<field>_unique`                               |
-| `schema.is_indexed: true`        | Index `<collection>_<field>_index`                                       |
-| M2O relation (`POST /relations`) | Foreign key constraint `<collection>_<field>_foreign`, **no index**      |
+| Field setting | Database result |
+| --- | --- |
+| Primary key | Primary key constraint (indexed by every vendor) |
+| `schema.is_unique: true` | Unique index `<collection>_<field>_unique` |
+| `schema.is_indexed: true` | Index `<collection>_<field>_index` |
+| M2O relation (`POST /relations`) | Foreign key constraint `<collection>_<field>_foreign`, **no index** |
 | Two or more columns in one index | Not possible through the API, the Studio, or snapshots. Use a migration. |
 
 Names longer than 60 characters are shortened with a hash. Setting the flag back to `false` drops the index.
@@ -42,12 +42,12 @@ PATCH /fields/posts/slug            { "schema": { "is_unique": true } }
 **Large tables.** A plain `CREATE INDEX` blocks writes to the table while it builds. Add `?concurrentIndexCreation` to
 `POST /fields/:collection`, `PATCH /fields/:collection[/:field]`, or `POST /collections`:
 
-| Vendor     | With `?concurrentIndexCreation`                                          |
-| ---------- | ------------------------------------------------------------------------ |
-| Postgres   | `CREATE INDEX CONCURRENTLY` (runs outside the transaction)               |
-| MySQL      | `ALGORITHM=INPLACE LOCK=NONE`, falls back to a blocking build if refused |
-| SQL Server | `WITH (ONLINE = ON)` on Enterprise edition only, blocking otherwise      |
-| Others     | Ignored, blocking build                                                  |
+| Vendor | With `?concurrentIndexCreation` |
+| --- | --- |
+| Postgres | `CREATE INDEX CONCURRENTLY` (runs outside the transaction) |
+| MySQL | `ALGORITHM=INPLACE LOCK=NONE`, falls back to a blocking build if refused |
+| SQL Server | `WITH (ONLINE = ON)` on Enterprise edition only, blocking otherwise |
+| Others | Ignored, blocking build |
 
 ## When to index
 
@@ -105,12 +105,12 @@ export async function down(knex) {
 `GET /fields/:collection` shows `schema.is_indexed`, `is_unique`, and `foreign_key_table` per field. For the full
 picture (composite, partial, and hand-made indexes) ask the database:
 
-| Vendor     | Query                                                                   |
-| ---------- | ----------------------------------------------------------------------- |
-| Postgres   | `SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'posts';` |
-| MySQL      | `SHOW INDEX FROM posts;`                                                |
-| SQLite     | `PRAGMA index_list('posts');`                                           |
-| SQL Server | `EXEC sp_helpindex 'posts';`                                            |
+| Vendor | Query |
+| --- | --- |
+| Postgres | `SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'posts';` |
+| MySQL | `SHOW INDEX FROM posts;` |
+| SQLite | `PRAGMA index_list('posts');` |
+| SQL Server | `EXEC sp_helpindex 'posts';` |
 
 ## Sources
 

@@ -55,13 +55,11 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 
 ## Routing
 
-| Load when                                                                                               | Reference                                                                      |
-| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Picking a trigger, event scopes, filter vs action, return values, `$trigger` shapes, the data chain     | [references/triggers-and-data-chain.md](references/triggers-and-data-chain.md) |
-| Configuring an operation: condition, item CRUD, Run Script, request, mail, trigger, errors              | [references/operations.md](references/operations.md)                           |
-| Reusable utility flows, loops, iteration modes, render and send patterns, flow limits                   | [references/utility-flows-and-loops.md](references/utility-flows-and-loops.md) |
-| Creating flows over REST or MCP, linking operations, running, reading flow logs, debugging              | [references/building-and-debugging.md](references/building-and-debugging.md)   |
-| Ready-made flows: slug on create, notify on publish, form emails, redirects, nightly jobs; flow vs hook | [references/recipes.md](references/recipes.md)                                 |
+- Picking a trigger, event scopes, filter vs action, return values, `$trigger` shapes, the data chain → [triggers-and-data-chain.md](references/triggers-and-data-chain.md)
+- Configuring an operation: condition, item CRUD, Run Script, request, mail, trigger, errors → [operations.md](references/operations.md)
+- Reusable utility flows, loops, iteration modes, render and send patterns, flow limits → [utility-flows-and-loops.md](references/utility-flows-and-loops.md)
+- Creating flows over REST or MCP, linking operations, running, reading flow logs, debugging → [building-and-debugging.md](references/building-and-debugging.md)
+- Ready-made flows: slug on create, notify on publish, form emails, redirects, nightly jobs; flow vs hook → [recipes.md](references/recipes.md)
 
 ## Related skills
 

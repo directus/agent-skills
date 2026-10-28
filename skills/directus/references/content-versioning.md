@@ -35,14 +35,14 @@ GET /items/posts?version=draft&fields=id,title
 
 ## Version API
 
-| Purpose       | Request                                                            | Body / notes                                                                                                                                                                                        |
-| ------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| List versions | `GET /versions?filter[collection][_eq]=posts&filter[item][_eq]=42` |                                                                                                                                                                                                     |
-| Create        | `POST /versions`                                                   | `{ "key": "draft", "collection": "posts", "item": "42", "name": "Draft" }`. `item: null` only with `key: "draft"`. Fails if the collection isn't versioned or the key already exists for that item. |
-| Save changes  | `POST /versions/<version-id>/save`                                 | Partial item payload, merged into the delta. Required fields are only validated on promote.                                                                                                         |
-| Compare       | `GET /versions/<version-id>/compare`                               | Returns `outdated`, `mainHash`, `current` (delta), `main` (published item).                                                                                                                         |
-| Promote       | `POST /versions/<version-id>/promote`                              | `{ "mainHash": "<from compare>", "fields": ["title"] }`. `mainHash` is required when the version has an item; `fields` limits what gets applied.                                                    |
-| Delete        | `DELETE /versions/<version-id>`                                    | Discards the version.                                                                                                                                                                               |
+| Purpose | Request | Body / notes |
+| --- | --- | --- |
+| List versions | `GET /versions?filter[collection][_eq]=posts&filter[item][_eq]=42` |  |
+| Create | `POST /versions` | `{ "key": "draft", "collection": "posts", "item": "42", "name": "Draft" }`. `item: null` only with `key: "draft"`. Fails if the collection isn't versioned or the key already exists for that item. |
+| Save changes | `POST /versions/<version-id>/save` | Partial item payload, merged into the delta. Required fields are only validated on promote. |
+| Compare | `GET /versions/<version-id>/compare` | Returns `outdated`, `mainHash`, `current` (delta), `main` (published item). |
+| Promote | `POST /versions/<version-id>/promote` | `{ "mainHash": "<from compare>", "fields": ["title"] }`. `mainHash` is required when the version has an item; `fields` limits what gets applied. |
+| Delete | `DELETE /versions/<version-id>` | Discards the version. |
 
 Promote flow:
 
@@ -58,11 +58,11 @@ and action events.
 
 ## Permissions
 
-| Collection               | Editors need                                            | Read-only frontends need |
-| ------------------------ | ------------------------------------------------------- | ------------------------ |
-| The versioned collection | Read, Create, Update                                    | Read                     |
-| `directus_versions`      | Read, Create, Update, Delete (all fields, no item rule) | Read                     |
-| `directus_revisions`     | Read (scope by `collection`)                            | none                     |
+| Collection | Editors need | Read-only frontends need |
+| --- | --- | --- |
+| The versioned collection | Read, Create, Update | Read |
+| `directus_versions` | Read, Create, Update, Delete (all fields, no item rule) | Read |
+| `directus_revisions` | Read (scope by `collection`) | none |
 
 Missing pieces show up as a disabled Create button, a read-only form, or FORBIDDEN on publish. Clearing
 `directus_revisions` by hand can break versions still in use.

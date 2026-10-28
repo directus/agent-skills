@@ -18,27 +18,27 @@ In grep patterns inside tables, `\|` is an escaped pipe: type a plain `|` in you
 Versions in the monorepo at each release tag. **House rule:** pin the SDK major that shipped with your server version,
 and bump both together.
 
-| Directus         | `@directus/sdk`                               | `@directus/extensions-sdk` | Node (`directus` engines) |
-| ---------------- | --------------------------------------------- | -------------------------- | ------------------------- |
-| 9.25 to 9.26     | legacy `new Directus()` (not in the monorepo) | 9.25.0, 9.26.0             | `>=18`                    |
-| 10.0 to 10.1     | legacy `new Directus()` (not in the monorepo) | 10.0.0, 10.1.0             | `>=18`                    |
-| 10.2 to 10.4     | 10.3.3 to 10.3.4 (legacy `new Directus()`)    | 10.1.x                     | `>=18`                    |
-| 10.5 to 10.6     | 11.x (composable `createDirectus`)            | 10.1.x                     | `>=18`                    |
-| 10.7 to 10.8.2   | 13.x (14.x from 10.8.3)                       | 10.1 to 10.2               | `>=18`                    |
-| 10.9 to 10.10    | 15.x                                          | 10.3 / 11.0                | `>=18`                    |
-| 10.11 to 10.13   | 16.x                                          | 11.0.x                     | `>=18`                    |
-| 11.0 to 11.1.1   | 17.x                                          | 12.0.x (12.1.0 on 11.1.1)  | `>=18`                    |
-| 11.1.2 to 11.3   | 18.x                                          | 12.1.x                     | `>=18`                    |
-| 11.4 to 11.8     | 19.x                                          | 13.x                       | `>=22`                    |
-| 11.9 to 11.14.0  | 20.x                                          | 14.x to 17.x               | `>=22`                    |
-| 11.14.1 to 11.17 | 21.x                                          | 17.x                       | `>=22`                    |
-| 12.0             | 22.x                                          | 18.0.0                     | `>=22`                    |
-| 12.1             | 23.x                                          | 18.0.1                     | `>=22`                    |
-| 12.2             | 24.x                                          | 18.0.2                     | `>=22`                    |
-| 12.3             | 25.x                                          | 18.0.3                     | `>=22`                    |
-| 12.4             | 26.x                                          | 18.0.5                     | `>=22`                    |
-| 12.5             | 27.0.x                                        | 18.0.6                     | `>=22`                    |
-| 12.6             | 27.1.x                                        | 18.1.0                     | `>=26`                    |
+| Directus | `@directus/sdk` | `@directus/extensions-sdk` | Node (`directus` engines) |
+| --- | --- | --- | --- |
+| 9.25 to 9.26 | legacy `new Directus()` (not in the monorepo) | 9.25.0, 9.26.0 | `>=18` |
+| 10.0 to 10.1 | legacy `new Directus()` (not in the monorepo) | 10.0.0, 10.1.0 | `>=18` |
+| 10.2 to 10.4 | 10.3.3 to 10.3.4 (legacy `new Directus()`) | 10.1.x | `>=18` |
+| 10.5 to 10.6 | 11.x (composable `createDirectus`) | 10.1.x | `>=18` |
+| 10.7 to 10.8.2 | 13.x (14.x from 10.8.3) | 10.1 to 10.2 | `>=18` |
+| 10.9 to 10.10 | 15.x | 10.3 / 11.0 | `>=18` |
+| 10.11 to 10.13 | 16.x | 11.0.x | `>=18` |
+| 11.0 to 11.1.1 | 17.x | 12.0.x (12.1.0 on 11.1.1) | `>=18` |
+| 11.1.2 to 11.3 | 18.x | 12.1.x | `>=18` |
+| 11.4 to 11.8 | 19.x | 13.x | `>=22` |
+| 11.9 to 11.14.0 | 20.x | 14.x to 17.x | `>=22` |
+| 11.14.1 to 11.17 | 21.x | 17.x | `>=22` |
+| 12.0 | 22.x | 18.0.0 | `>=22` |
+| 12.1 | 23.x | 18.0.1 | `>=22` |
+| 12.2 | 24.x | 18.0.2 | `>=22` |
+| 12.3 | 25.x | 18.0.3 | `>=22` |
+| 12.4 | 26.x | 18.0.5 | `>=22` |
+| 12.5 | 27.0.x | 18.0.6 | `>=22` |
+| 12.6 | 27.1.x | 18.1.0 | `>=26` |
 
 At 12.6.0, `@directus/sdk` still declares `engines.node: ">=22"` and `@directus/extensions-sdk` `>=20.19.0`, while
 the server needs Node 26. `@directus/cli` (`d6s`) is 12.4.0 at 12.6.0.
@@ -51,19 +51,19 @@ the server needs Node 26. `@directus/cli` (`d6s`) is 12.4.0 at 12.6.0.
    `client.request(readItems('x', query))` (`directus-sdk` skill).
 3. Walk the breaking changes you cross:
 
-| SDK                       | Change                                                                                              | Detect                                  | Fix                                        |
-| ------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------ |
-| 12 (10.6.2)               | `refresh(mode, token)` order; `asSearch` → `withSearch`                                             | `rg -n "asSearch"`                      | rename; see 20 below for current `refresh` |
-| 14 (10.8.3), 15 (10.9)    | `ExtensionItem` → `DirectusExtension`; no scoped imports                                            | `rg -n "ExtensionItem\|@directus/sdk/"` | import from `@directus/sdk` root           |
-| 17 (11.0)                 | policy functions; roles lose access flags                                                           | `rg -n "admin_access\|app_access"`      | see `11.0.md`                              |
-| 18 (11.1.2)               | comment functions use `/comments`, UUID ids                                                         | `rg -n "createComment\|updateComment"`  | upgrade with the server                    |
-| 20 (11.9)                 | `login({ email, password })`, `refresh({ mode, refresh_token })`, `logout({ mode, refresh_token })` | see `11.x-minors.md`                    | object args                                |
-| 21 (11.14.1)              | webhook commands removed                                                                            | `rg -n "Webhook"`                       | use flows                                  |
-| 22 (12.0)                 | failed requests throw `RequestError` (an `Error`), `updateExtension(id, data)`                      | see `12.0.md`                           | use `isDirectusError`                      |
-| 23 (12.1)                 | `generateHash`, `verifyHash` removed                                                                | `rg -n "generateHash\|verifyHash"`      | custom endpoint                            |
-| 24 (12.2)                 | `schemaDiff(snapshot, { force, mode })`                                                             | `rg -n "schemaDiff\("`                  | options object                             |
-| 25, 26, 27 (12.3 to 12.5) | system type corrections (nullable fields, `string[]` ip_access, `number` notification id)           | `tsc --noEmit`                          | handle nulls; see `12.x-minors.md`         |
-| 27.1 (12.6)               | not breaking: `DirectusSettings.default_exports_folder`; `customEndpoint` `FormData` upload fix     | none                                    | nothing required                           |
+| SDK | Change | Detect | Fix |
+| --- | --- | --- | --- |
+| 12 (10.6.2) | `refresh(mode, token)` order; `asSearch` → `withSearch` | `rg -n "asSearch"` | rename; see 20 below for current `refresh` |
+| 14 (10.8.3), 15 (10.9) | `ExtensionItem` → `DirectusExtension`; no scoped imports | `rg -n "ExtensionItem\|@directus/sdk/"` | import from `@directus/sdk` root |
+| 17 (11.0) | policy functions; roles lose access flags | `rg -n "admin_access\|app_access"` | see `11.0.md` |
+| 18 (11.1.2) | comment functions use `/comments`, UUID ids | `rg -n "createComment\|updateComment"` | upgrade with the server |
+| 20 (11.9) | `login({ email, password })`, `refresh({ mode, refresh_token })`, `logout({ mode, refresh_token })` | see `11.x-minors.md` | object args |
+| 21 (11.14.1) | webhook commands removed | `rg -n "Webhook"` | use flows |
+| 22 (12.0) | failed requests throw `RequestError` (an `Error`), `updateExtension(id, data)` | see `12.0.md` | use `isDirectusError` |
+| 23 (12.1) | `generateHash`, `verifyHash` removed | `rg -n "generateHash\|verifyHash"` | custom endpoint |
+| 24 (12.2) | `schemaDiff(snapshot, { force, mode })` | `rg -n "schemaDiff\("` | options object |
+| 25, 26, 27 (12.3 to 12.5) | system type corrections (nullable fields, `string[]` ip_access, `number` notification id) | `tsc --noEmit` | handle nulls; see `12.x-minors.md` |
+| 27.1 (12.6) | not breaking: `DirectusSettings.default_exports_folder`; `customEndpoint` `FormData` upload fix | none | nothing required |
 
 4. Type check (`tsc --noEmit`, `vue-tsc --noEmit`, `nuxi typecheck`) and fix. Regenerate generated schema types.
 5. Content versions: send `version: 'published'` (or `'draft'`), not `'main'`, in new code.

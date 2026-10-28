@@ -67,21 +67,19 @@ _Verified against Directus v12.6.0. If the instance behaves differently, trust t
 
 ## References
 
-| Load when                                                                                    | Reference                                                            |
-| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Calling REST: endpoints, envelopes, query params, aggregates, relational writes, error codes | [references/rest-api.md](references/rest-api.md)                     |
-| Writing filters: operators, dynamic variables, relational and logical filters, functions, JSON | [references/filters.md](references/filters.md)                       |
-| Logging in, tokens, cookies, SSO, inspecting a caller                                        | [references/auth-and-access.md](references/auth-and-access.md)       |
-| Connecting an AI client to `/mcp`, choosing a tool mode, tool workflow, MCP errors           | [references/mcp.md](references/mcp.md)                               |
-| Uploading or importing files, folders, `/assets` transforms and presets                      | [references/files-and-assets.md](references/files-and-assets.md)     |
-| WebSockets or GraphQL subscriptions, auth on the socket, CRUD over the socket                | [references/realtime.md](references/realtime.md)                     |
-| Versions API: `version` param, save, compare, promote                                        | [references/content-versioning.md](references/content-versioning.md) |
-| Using GraphQL instead of REST                                                                | [references/graphql.md](references/graphql.md)                       |
-| Slow queries: `fields` and relation cost, limits and paging, counts, `search`, data caching  | [references/performance.md](references/performance.md)               |
-| Member signup: `/users/register`, email verification, password reset, invites, seats         | [references/users-and-signup.md](references/users-and-signup.md)     |
-| Bulk import (CSV/JSON, `/utils/import`), upsert by slug, export, migrating from another CMS  | [references/import-and-export.md](references/import-and-export.md)   |
-| Activity log, revisions, who changed what, reverting, recovering deleted items, retention    | [references/audit-and-restore.md](references/audit-and-restore.md)   |
-| AI Assistant, AI Translations, provider keys, which AI features need a license               | [references/ai-settings.md](references/ai-settings.md)               |
+- Calling REST: endpoints, envelopes, query params, aggregates, relational writes, error codes → [rest-api.md](references/rest-api.md)
+- Writing filters: operators, dynamic variables, relational and logical filters, functions, JSON → [filters.md](references/filters.md)
+- Logging in, tokens, cookies, SSO, inspecting a caller → [auth-and-access.md](references/auth-and-access.md)
+- Connecting an AI client to `/mcp`, choosing a tool mode, tool workflow, MCP errors → [mcp.md](references/mcp.md)
+- Uploading or importing files, folders, `/assets` transforms and presets → [files-and-assets.md](references/files-and-assets.md)
+- WebSockets or GraphQL subscriptions, auth on the socket, CRUD over the socket → [realtime.md](references/realtime.md)
+- Versions API: `version` param, save, compare, promote → [content-versioning.md](references/content-versioning.md)
+- Using GraphQL instead of REST → [graphql.md](references/graphql.md)
+- Slow queries: `fields` and relation cost, limits and paging, counts, `search`, data caching → [performance.md](references/performance.md)
+- Member signup: `/users/register`, email verification, password reset, invites, seats → [users-and-signup.md](references/users-and-signup.md)
+- Bulk import (CSV/JSON, `/utils/import`), upsert by slug, export, migrating from another CMS → [import-and-export.md](references/import-and-export.md)
+- Activity log, revisions, who changed what, reverting, recovering deleted items, retention → [audit-and-restore.md](references/audit-and-restore.md)
+- AI Assistant, AI Translations, provider keys, which AI features need a license → [ai-settings.md](references/ai-settings.md)
 
 **Related skills:** `directus-flows`, `directus-insights`, `directus-access-control`, `directus-content-modeling`, `directus-sdk`,
 `directus-visual-editing`, `directus-extensions`, `directus-environment-sync` (promoting schema and config with `d6s`),

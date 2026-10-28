@@ -48,13 +48,13 @@ Duplicate a shared tail or call a utility.
 
 ## Running a flow
 
-| Trigger   | Run it with                                                                                                 |
-| --------- | ----------------------------------------------------------------------------------------------------------- |
-| manual    | Studio button, `POST /flows/trigger/<id>` with `{ "collection", "keys", ...inputs }`, or MCP `trigger-flow` |
-| webhook   | `GET` or `POST /flows/trigger/<id>` (method must match `options.method`)                                    |
-| event     | Make the write it listens for, on a test item                                                               |
-| schedule  | Temporarily set the cron to every minute (`"0 * * * * *"`), or call its body as a utility                   |
-| operation | From a parent flow, or a temporary manual wrapper                                                           |
+| Trigger | Run it with |
+| --- | --- |
+| manual | Studio button, `POST /flows/trigger/<id>` with `{ "collection", "keys", ...inputs }`, or MCP `trigger-flow` |
+| webhook | `GET` or `POST /flows/trigger/<id>` (method must match `options.method`) |
+| event | Make the write it listens for, on a test item |
+| schedule | Temporarily set the cron to every minute (`"0 * * * * *"`), or call its body as a utility |
+| operation | From a parent flow, or a temporary manual wrapper |
 
 ```bash
 curl -X POST "$URL/flows/trigger/$FLOW_ID" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
@@ -86,18 +86,18 @@ so you're not writing a revision with the full payload on every save.
 
 ## When a flow doesn't fire or misbehaves
 
-| Symptom                                      | Check                                                                                                               |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Event flow never runs                        | `status: "active"`; `collections` set for `items.*` scopes; system collection uses the short scope (`users.update`) |
-| Runs, then stops after the first operation   | `resolve` links are UUIDs; the flow's `operation` points at the first one                                           |
-| Condition always fails                       | Filter nested from the root, and every field in it exists in the data (update payloads hold only changed fields)    |
-| Item read returns nothing in a webhook flow  | `permissions: "$trigger"` with an anonymous caller is the public policy. Use a role or `$full`                      |
-| A value arrives as the string `"undefined"`             | The `{{ }}` path doesn't exist in the data chain (wrong key or typo). Check the step `options` in the log |
-| Utility returns `null`                       | Child inactive or missing, or no `options.return` on the child                                                      |
-| Email never arrives, flow shows success      | `mail` doesn't wait for delivery. Check the server log and `EMAIL_*` config                                         |
-| Webhook returns stale data                   | `GET` responses are cached. Set `cacheEnabled: false`                                                               |
-| Flow fires twice or forever                  | An item operation with `emitEvents: true` writing to the collection the flow listens on                             |
-| Custom operation flows break after a push    | The operation's extension isn't installed on the target                                                             |
+| Symptom | Check |
+| --- | --- |
+| Event flow never runs | `status: "active"`; `collections` set for `items.*` scopes; system collection uses the short scope (`users.update`) |
+| Runs, then stops after the first operation | `resolve` links are UUIDs; the flow's `operation` points at the first one |
+| Condition always fails | Filter nested from the root, and every field in it exists in the data (update payloads hold only changed fields) |
+| Item read returns nothing in a webhook flow | `permissions: "$trigger"` with an anonymous caller is the public policy. Use a role or `$full` |
+| A value arrives as the string `"undefined"` | The `{{ }}` path doesn't exist in the data chain (wrong key or typo). Check the step `options` in the log |
+| Utility returns `null` | Child inactive or missing, or no `options.return` on the child |
+| Email never arrives, flow shows success | `mail` doesn't wait for delivery. Check the server log and `EMAIL_*` config |
+| Webhook returns stale data | `GET` responses are cached. Set `cacheEnabled: false` |
+| Flow fires twice or forever | An item operation with `emitEvents: true` writing to the collection the flow listens on |
+| Custom operation flows break after a push | The operation's extension isn't installed on the target |
 
 ## Sources
 

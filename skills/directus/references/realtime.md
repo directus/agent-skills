@@ -19,11 +19,11 @@ https://directus.com/docs/configuration/realtime.
 
 ## Authenticate the socket
 
-| Mode        | Behavior                                                               |
-| ----------- | ---------------------------------------------------------------------- |
-| `public`    | No auth. Runs with the public policy until you send an auth message.       |
+| Mode | Behavior |
+| --- | --- |
+| `public` | No auth. Runs with the public policy until you send an auth message. |
 | `handshake` | Connect, then the **first message** must be `auth` before the timeout. |
-| `strict`    | Pass `?access_token=<token>` on the connection URL.                    |
+| `strict` | Pass `?access_token=<token>` on the connection URL. |
 
 ```json
 { "type": "auth", "access_token": "<token>" }

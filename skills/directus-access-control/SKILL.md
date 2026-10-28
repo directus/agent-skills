@@ -61,15 +61,13 @@ _Verified against Directus v12.6.0 source (`api/src/permissions`, `api/src/servi
 
 ## Routing
 
-| Load when                                                                                                | Reference                                                                  |
-| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Users, roles, policies, access rows, nesting, flags, public policy, how stacked policies combine         | [references/model.md](references/model.md)                                 |
-| Writing one permission: item rules, dynamic variables, fields, validation, presets                       | [references/permission-rules.md](references/permission-rules.md)           |
-| Core limits, lockdown, `RESOURCE_RESTRICTED`, designing without custom rules, upgrading to licensed      | [references/licensing.md](references/licensing.md)                         |
-| Laying out policies and roles for a project, the CMS starter's policies explained                        | [references/cms-starter-blueprint.md](references/cms-starter-blueprint.md) |
-| Public published content, own items, editors, live preview, forms, service users, MCP agents, invites    | [references/recipes.md](references/recipes.md)                             |
-| Creating via REST, promoting with Environment Sync, testing as a user, 403 vs filtered results, failures | [references/applying-and-testing.md](references/applying-and-testing.md)   |
-| One Directus for several sites, brands, or clients: tenant field and policies vs separate projects       | [references/multi-tenancy.md](references/multi-tenancy.md)                 |
+- Users, roles, policies, access rows, nesting, flags, public policy, how stacked policies combine → [model.md](references/model.md)
+- Writing one permission: item rules, dynamic variables, fields, validation, presets → [permission-rules.md](references/permission-rules.md)
+- Core limits, lockdown, `RESOURCE_RESTRICTED`, designing without custom rules, upgrading to licensed → [licensing.md](references/licensing.md)
+- Laying out policies and roles for a project, the CMS starter's policies explained → [cms-starter-blueprint.md](references/cms-starter-blueprint.md)
+- Public published content, own items, editors, live preview, forms, service users, MCP agents, invites → [recipes.md](references/recipes.md)
+- Creating via REST, promoting with Environment Sync, testing as a user, 403 vs filtered results, failures → [applying-and-testing.md](references/applying-and-testing.md)
+- One Directus for several sites, brands, or clients: tenant field and policies vs separate projects → [multi-tenancy.md](references/multi-tenancy.md)
 
 ## Related skills
 

@@ -113,21 +113,21 @@ Checklist per role:
 
 ## Reading failures
 
-| Symptom                                                 | Likely cause                                                                                                |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 403 "...for collection X or it does not exist"          | No policy grants that action, the collection name is wrong, or (unlicensed) the row has a custom rule       |
-| 403 naming a field                                      | Field not in any allowed list (explicitly requested, written, filtered, or sorted)                          |
-| 403 on a nested `fields` path                           | No read permission on the related collection; fails the whole request                                       |
-| 200 with fewer rows than expected                       | Item rule filtering (a single item by key outside the rule is a 403). Check the rule and its variables      |
-| 200, fields missing from a `fields=*` response          | Partial field list; forbidden fields are dropped silently                                                   |
-| Field is `null` on some rows                            | Another policy grants the field only for rows matching its own rule                                         |
-| 204 on create or update                                 | Write allowed, read not. Grant read (even just `id`)                                                        |
-| 400 `FAILED_VALIDATION`                                 | A permission validation rule (from any policy) or field validation failed                                   |
-| 403 `RESOURCE_RESTRICTED` on saving a permission        | Unlicensed instance and the row has a custom rule, or `fields: ["*"]` missing from the payload              |
-| Works from one network, not another                     | `ip_access` on a policy, which drops the whole policy for other IPs. Behind a proxy, check `IP_TRUST_PROXY` |
-| Editor can't create or save a draft, or publish         | No read/create/update on `directus_versions`, or no update on the versioned collection                      |
-| 403 `RESOURCE_RESTRICTED` on `/items`, `/files`, login  | Instance locked down over core limits, not a permission. See [licensing.md](licensing.md)                   |
-| `/permissions/me` looks right but a request still fails | Update/delete by query needs read on the filtered fields; filters and sorts check read permissions          |
+| Symptom | Likely cause |
+| --- | --- |
+| 403 "...for collection X or it does not exist" | No policy grants that action, the collection name is wrong, or (unlicensed) the row has a custom rule |
+| 403 naming a field | Field not in any allowed list (explicitly requested, written, filtered, or sorted) |
+| 403 on a nested `fields` path | No read permission on the related collection; fails the whole request |
+| 200 with fewer rows than expected | Item rule filtering (a single item by key outside the rule is a 403). Check the rule and its variables |
+| 200, fields missing from a `fields=*` response | Partial field list; forbidden fields are dropped silently |
+| Field is `null` on some rows | Another policy grants the field only for rows matching its own rule |
+| 204 on create or update | Write allowed, read not. Grant read (even just `id`) |
+| 400 `FAILED_VALIDATION` | A permission validation rule (from any policy) or field validation failed |
+| 403 `RESOURCE_RESTRICTED` on saving a permission | Unlicensed instance and the row has a custom rule, or `fields: ["*"]` missing from the payload |
+| Works from one network, not another | `ip_access` on a policy, which drops the whole policy for other IPs. Behind a proxy, check `IP_TRUST_PROXY` |
+| Editor can't create or save a draft, or publish | No read/create/update on `directus_versions`, or no update on the versioned collection |
+| 403 `RESOURCE_RESTRICTED` on `/items`, `/files`, login | Instance locked down over core limits, not a permission. See [licensing.md](licensing.md) |
+| `/permissions/me` looks right but a request still fails | Update/delete by query needs read on the filtered fields; filters and sorts check read permissions |
 
 ## Sources
 

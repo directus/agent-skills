@@ -18,15 +18,15 @@ These limits ship in the `@directus/license` package and can change without a Di
 before relying on them: `GET /license` (admin) returns `entitlements` (limits) and `usage` (current counts). Other
 skills point here instead of repeating the numbers. As of `@directus/license` 0.6.1 (pinned by 12.5.1 and 12.6.0):
 
-| Entitlement                   | Core tier | Over the limit or using it                                                                                           |
-| ----------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
-| Seats                         | 3         | Adding one more throws `LIMIT_EXCEEDED` (403, `extensions.category: "seats"`)                                        |
-| Collections                   | 25        | Same, category `collections`. Junction and translation collections count                                             |
-| Flows                         | 5         | Same, category `flows`. Only active flows count, see below                                                           |
-| SSO                           | off       | `/auth/login/<provider>` returns 404 `ROUTE_NOT_FOUND`. Any active user with a non-default `provider` is a violation |
-| Custom permission rules       | off       | See [What happens without a license](#what-happens-without-a-license)                                                |
-| Custom or self-hosted LLMs    | off       | Saving one in settings returns 403 `RESOURCE_RESTRICTED`                                                             |
-| Activity and revision history | 30 days   | Reads of `/activity` and `/revisions` only return the last 30 days. Older rows are filtered out, not deleted         |
+| Entitlement | Core tier | Over the limit or using it |
+| --- | --- | --- |
+| Seats | 3 | Adding one more throws `LIMIT_EXCEEDED` (403, `extensions.category: "seats"`) |
+| Collections | 25 | Same, category `collections`. Junction and translation collections count |
+| Flows | 5 | Same, category `flows`. Only active flows count, see below |
+| SSO | off | `/auth/login/<provider>` returns 404 `ROUTE_NOT_FOUND`. Any active user with a non-default `provider` is a violation |
+| Custom permission rules | off | See [What happens without a license](#what-happens-without-a-license) |
+| Custom or self-hosted LLMs | off | Saving one in settings returns 403 `RESOURCE_RESTRICTED` |
+| Activity and revision history | 30 days | Reads of `/activity` and `/revisions` only return the last 30 days. Older rows are filtered out, not deleted |
 
 - Flows: a create with no `status` counts as active (the default). A PATCH that sends `status: "active"` is counted
   as adding a flow even if it's already active, so re-sending a full flow object at 5/5 fails. Leave `status` out of
@@ -55,12 +55,12 @@ skills point here instead of repeating the numbers. As of `@directus/license` 0.
 A permission row has a custom rule (source: `custom-permission-rules-enabled.ts`, `hasCustomRule`) when it is not a
 built-in system row and any of these is true:
 
-| Condition                                                             | Example                                  |
-| --------------------------------------------------------------------- | ---------------------------------------- |
+| Condition | Example |
+| --- | --- |
 | `fields` does not include `"*"`. **This includes `null` and omitted** | `["title", "slug"]`, `null`, key missing |
-| `permissions` (item rule) has any key                                 | `{ "status": { "_eq": "published" } }`   |
-| `validation` has any key                                              | `{ "title": { "_nnull": true } }`        |
-| `presets` has any key                                                 | `{ "author": "$CURRENT_USER" }`          |
+| `permissions` (item rule) has any key | `{ "status": { "_eq": "published" } }` |
+| `validation` has any key | `{ "title": { "_nnull": true } }` |
+| `presets` has any key | `{ "author": "$CURRENT_USER" }` |
 
 **Exception:** rows that exactly match one of the Studio's recommended app permissions (same collection, action, item
 rule, and fields, with `validation` and `presets` null) are allowed. Even `validation: {}` or `presets: {}` disqualifies
@@ -72,13 +72,13 @@ read on `directus_flows`. Change anything about them and they become custom.
 
 Verified in `api/src/services/permissions.ts` (unchanged through 12.6.0):
 
-| Operation                                                    | Result                                                                                                                                                     |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Create a permission with a custom rule (REST, batch, nested) | 403 `RESOURCE_RESTRICTED`, category `custom_permission_rules_enabled`. Nothing saved                                                                       |
-| Update a permission, payload without `fields: ["*"]`         | 403 `RESOURCE_RESTRICTED`, even if you only changed `action` or `collection`. The check runs on the partial payload, and missing `fields` counts as custom |
-| Read `/permissions`                                          | Rows with custom rules are **hidden**                                                                                                                      |
-| Evaluate a request                                           | Rows with custom rules are **dropped**. The whole collection + action grant disappears for that policy. It is denied, not granted without the rule         |
-| Environment Sync pull from the instance                      | Hidden rows make the pull incomplete; `mirror` push refuses it                                                                                             |
+| Operation | Result |
+| --- | --- |
+| Create a permission with a custom rule (REST, batch, nested) | 403 `RESOURCE_RESTRICTED`, category `custom_permission_rules_enabled`. Nothing saved |
+| Update a permission, payload without `fields: ["*"]` | 403 `RESOURCE_RESTRICTED`, even if you only changed `action` or `collection`. The check runs on the partial payload, and missing `fields` counts as custom |
+| Read `/permissions` | Rows with custom rules are **hidden** |
+| Evaluate a request | Rows with custom rules are **dropped**. The whole collection + action grant disappears for that policy. It is denied, not granted without the rule |
+| Environment Sync pull from the instance | Hidden rows make the pull incomplete; `mirror` push refuses it |
 
 So a public `read` on `posts` with `status = published` becomes **no public read on posts at all** (403) when the license
 lapses. Nothing leaks, but the site breaks. A Writer's "own posts only" rule likewise loses the Writer access to posts

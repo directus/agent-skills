@@ -67,15 +67,13 @@ With `EXTENSIONS_AUTO_RELOAD=true`, check Settings → Extensions and the API lo
 
 ## References
 
-| Load when                                                                                                                               | Reference                                                     |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Picking a type, app vs API vs bundle, or whether a Flow/built-in feature is enough                                                      | [choosing-a-type.md](references/choosing-a-type.md)           |
-| Scaffolding, the manifest, build/dev/link/add/validate, loading into Docker or npm installs, bundles, env vars                          | [scaffold-build-dev.md](references/scaffold-build-dev.md)     |
-| Interfaces, displays, layouts, modules, panels, themes; options; `useApi`/`useStores`/`useSdk`; UI components, CSS variables, i18n, CSP | [app-extensions.md](references/app-extensions.md)             |
-| Hooks, endpoints, operations; hook event traps; services and accountability; `@directus/errors`; env casting; tests                     | [api-extensions.md](references/api-extensions.md)             |
-| Sandbox scopes and shapes, `MARKETPLACE_TRUST`, security review                                                                         | [sandbox-and-security.md](references/sandbox-and-security.md) |
-| Publishing to npm, Marketplace listing, README and screenshots                                                                          | [publishing.md](references/publishing.md)                     |
-| A real example per type, app-plus-endpoint bundles, repo layout                                                                         | [patterns.md](references/patterns.md)                         |
+- Picking a type, app vs API vs bundle, or whether a Flow/built-in feature is enough → [choosing-a-type.md](references/choosing-a-type.md)
+- Scaffolding, the manifest, build/dev/link/add/validate, loading into Docker or npm installs, bundles, env vars → [scaffold-build-dev.md](references/scaffold-build-dev.md)
+- Interfaces, displays, layouts, modules, panels, themes; options; `useApi`/`useStores`/`useSdk`; UI components, CSS variables, i18n, CSP → [app-extensions.md](references/app-extensions.md)
+- Hooks, endpoints, operations; hook event traps; services and accountability; `@directus/errors`; env casting; tests → [api-extensions.md](references/api-extensions.md)
+- Sandbox scopes and shapes, `MARKETPLACE_TRUST`, security review → [sandbox-and-security.md](references/sandbox-and-security.md)
+- Publishing to npm, Marketplace listing, README and screenshots → [publishing.md](references/publishing.md)
+- A real example per type, app-plus-endpoint bundles, repo layout → [patterns.md](references/patterns.md)
 
 **Related skills:** `directus` (REST, MCP), `directus-access-control` (permissions), `directus-flows` (when a Flow is
 enough), `directus-sdk` (`@directus/sdk` in frontends), `directus-content-modeling` (collections, fields, relations),

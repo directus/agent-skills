@@ -54,10 +54,10 @@ npx create-directus-extension@latest hook my-hook --no-install
 
 `npm run build` (minified) or `npm run dev` (watch, unminified); add `--sourcemap` to `npx directus-extension build` for maps. The CLI is Rollup with esbuild for TS and `@vitejs/plugin-vue` for app code. Everything you import is **bundled** into `dist`, except:
 
-| Side | Left external (provided by Directus at runtime)                      |
-| ---- | -------------------------------------------------------------------- |
-| App  | `@directus/extensions-sdk`, `vue`, `vue-router`, `vue-i18n`, `pinia` |
-| API  | `directus`, `directus:api`                                           |
+| Side | Left external (provided by Directus at runtime) |
+| --- | --- |
+| App | `@directus/extensions-sdk`, `vue`, `vue-router`, `vue-i18n`, `pinia` |
+| API | `directus`, `directus:api` |
 
 So API-side packages like `@directus/errors` and `@directus/types` get bundled from your own `node_modules`. Install what you import. Use `import type` for types-only imports. Custom Rollup plugins go in `extension.config.js` (`export default { plugins: [], watch: { clearScreen: false } }`).
 
@@ -108,13 +108,13 @@ Production with npm packages: Directus images don't include npm. Install in a bu
 
 The ones that matter while building; full list in [configuration/extensions](https://directus.com/docs/configuration/extensions). Sandbox and Marketplace trust variables: [sandbox-and-security.md](sandbox-and-security.md).
 
-| Variable                 | Default                        | Notes                                                                   |
-| ------------------------ | ------------------------------ | ----------------------------------------------------------------------- |
-| `EXTENSIONS_PATH`        | `./extensions`                 | Local folder. Subpath inside storage when `EXTENSIONS_LOCATION` is set. |
-| `EXTENSIONS_AUTO_RELOAD` | `false`                        | Watch and reload. Not with `EXTENSIONS_LOCATION`.                       |
-| `EXTENSIONS_MUST_LOAD`   | `false`                        | Exit if an API extension fails to load.                                 |
-| `EXTENSIONS_LOCATION`    | unset                          | Storage location key to load extensions from.                           |
-| `MARKETPLACE_REGISTRY`   | `https://registry.directus.io` | Source default (`DEFAULT_REGISTRY`); the config docs list `.com`.       |
+| Variable | Default | Notes |
+| --- | --- | --- |
+| `EXTENSIONS_PATH` | `./extensions` | Local folder. Subpath inside storage when `EXTENSIONS_LOCATION` is set. |
+| `EXTENSIONS_AUTO_RELOAD` | `false` | Watch and reload. Not with `EXTENSIONS_LOCATION`. |
+| `EXTENSIONS_MUST_LOAD` | `false` | Exit if an API extension fails to load. |
+| `EXTENSIONS_LOCATION` | unset | Storage location key to load extensions from. |
+| `MARKETPLACE_REGISTRY` | `https://registry.directus.io` | Source default (`DEFAULT_REGISTRY`); the config docs list `.com`. |
 
 ## Sources
 

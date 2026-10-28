@@ -23,13 +23,13 @@ it once, then 10.x), then onward through its hop files.
 
 ## What exists, with gates
 
-| Feature                                                      | Since          | Notes                                                   |
-| ------------------------------------------------------------ | -------------- | ------------------------------------------------------- |
-| `directus schema snapshot` / `schema apply`                  | 9.0.0          | Match version and database vendor on both sides         |
-| `GET /schema/snapshot`, `POST /schema/diff`, `/schema/apply` | 9.23.0         | Every diff is a mirror: check for `"kind": "D"` first   |
-| Insights `metric`, `list`, `time-series`, `label`            | 9.0.0          | No `bar-chart`, `line-chart`, `pie-chart`, `meter`      |
-| Insights `variable` / `relational-variable` panels           | 9.13.0, 9.18.0 |                                                         |
-| Flows                                                        | 9.12.0         | None of the 11.x and 12.x operations or trigger options |
+| Feature | Since | Notes |
+| --- | --- | --- |
+| `directus schema snapshot` / `schema apply` | 9.0.0 | Match version and database vendor on both sides |
+| `GET /schema/snapshot`, `POST /schema/diff`, `/schema/apply` | 9.23.0 | Every diff is a mirror: check for `"kind": "D"` first |
+| Insights `metric`, `list`, `time-series`, `label` | 9.0.0 | No `bar-chart`, `line-chart`, `pie-chart`, `meter` |
+| Insights `variable` / `relational-variable` panels | 9.13.0, 9.18.0 |  |
+| Flows | 9.12.0 | None of the 11.x and 12.x operations or trigger options |
 
 On top of that, everything listed as missing in `versions-v10.md` is missing on 9.x too.
 

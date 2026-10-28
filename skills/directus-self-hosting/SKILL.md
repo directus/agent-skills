@@ -57,13 +57,11 @@ _Verified against Directus v12.6.0 source (`Dockerfile`, `docker-entrypoint.cjs`
 
 ## Routing
 
-| Load when                                                                                                   | Reference                                                                |
-| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Writing docker-compose, what happens on container start, volumes, permissions, extensions, platform deploys | [references/docker.md](references/docker.md)                             |
-| Env vars: SECRET, PUBLIC_URL, DB, admin bootstrap, CORS, proxies, rate limits, email, storage, logs         | [references/configuration.md](references/configuration.md)               |
-| Several instances, load balancers, Redis, cache and stale data, query limits, DB pool, slow or 503s         | [references/scaling.md](references/scaling.md)                           |
-| What to back up, Postgres/MySQL/SQLite dumps, restoring, disaster recovery                                  | [references/backups-and-recovery.md](references/backups-and-recovery.md) |
-| The project is on Directus Cloud                                                                            | [references/directus-cloud.md](references/directus-cloud.md)             |
+- Writing docker-compose, what happens on container start, volumes, permissions, extensions, platform deploys → [docker.md](references/docker.md)
+- Env vars: SECRET, PUBLIC_URL, DB, admin bootstrap, CORS, proxies, rate limits, email, storage, logs → [configuration.md](references/configuration.md)
+- Several instances, load balancers, Redis, cache and stale data, query limits, DB pool, slow or 503s → [scaling.md](references/scaling.md)
+- What to back up, Postgres/MySQL/SQLite dumps, restoring, disaster recovery → [backups-and-recovery.md](references/backups-and-recovery.md)
+- The project is on Directus Cloud → [directus-cloud.md](references/directus-cloud.md)
 
 ## Related skills
 

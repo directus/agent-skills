@@ -8,13 +8,13 @@
 
 ## What to back up
 
-| Piece                              | Why                                                                                                                | Where                                                |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
-| **Database**                       | Everything Directus knows: content, users, roles, policies, permissions, flows, settings, file metadata, revisions | Postgres/MySQL/etc., or the SQLite file              |
-| **File storage**                   | The database only holds file rows; the bytes live in storage                                                       | `/directus/uploads` volume, or the bucket            |
-| **`SECRET` and the env**           | Without the same `SECRET`, encrypted settings (AI keys, license) decrypt to `null` after a restore                 | Secret manager, not only the server                  |
-| **Extensions**                     | Custom builds, and Marketplace installs in `extensions/.registry/`                                                 | Git and the image for your own; the folder or volume |
-| Email templates, custom migrations | Files Directus reads from disk                                                                                     | `/directus/templates`, `MIGRATIONS_PATH`             |
+| Piece | Why | Where |
+| --- | --- | --- |
+| **Database** | Everything Directus knows: content, users, roles, policies, permissions, flows, settings, file metadata, revisions | Postgres/MySQL/etc., or the SQLite file |
+| **File storage** | The database only holds file rows; the bytes live in storage | `/directus/uploads` volume, or the bucket |
+| **`SECRET` and the env** | Without the same `SECRET`, encrypted settings (AI keys, license) decrypt to `null` after a restore | Secret manager, not only the server |
+| **Extensions** | Custom builds, and Marketplace installs in `extensions/.registry/` | Git and the image for your own; the folder or volume |
+| Email templates, custom migrations | Files Directus reads from disk | `/directus/templates`, `MIGRATIONS_PATH` |
 
 Redis needs no backup: it holds caches, locks, and messages that Directus rebuilds.
 

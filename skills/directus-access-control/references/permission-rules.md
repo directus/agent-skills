@@ -7,13 +7,13 @@ time. What callers see when a rule bites: [applying-and-testing.md](applying-and
 
 A full row in context: [applying-and-testing.md](applying-and-testing.md#create-with-rest).
 
-| Key           | Applies to                  | Meaning                                                               |
-| ------------- | --------------------------- | --------------------------------------------------------------------- |
-| `action`      | -                           | `create`, `read`, `update`, `delete`, or `share`                      |
-| `permissions` | read, update, delete, share | Item rule: a filter rows must match. `{}` or null means all rows      |
-| `fields`      | read, create, update        | Allowed fields. `["*"]` is all fields. `null` or `[]` means no fields. Ignored for delete and share, but on core those rows still need `["*"]` or they count as custom |
-| `validation`  | create, update              | Filter the incoming payload (after presets) must satisfy              |
-| `presets`     | create, update              | Default values merged under the payload                               |
+| Key | Applies to | Meaning |
+| --- | --- | --- |
+| `action` | - | `create`, `read`, `update`, `delete`, or `share` |
+| `permissions` | read, update, delete, share | Item rule: a filter rows must match. `{}` or null means all rows |
+| `fields` | read, create, update | Allowed fields. `["*"]` is all fields. `null` or `[]` means no fields. Ignored for delete and share, but on core those rows still need `["*"]` or they count as custom |
+| `validation` | create, update | Filter the incoming payload (after presets) must satisfy |
+| `presets` | create, update | Default values merged under the payload |
 
 One row per policy + collection + action. Everything except `["*"]` fields and empty rules is a **custom rule** and is
 licensed on v12. See [licensing.md](licensing.md).
@@ -30,13 +30,13 @@ Normal filter syntax, including relational paths and `_and` / `_or`. Examples: [
 
 ## Dynamic variables
 
-| Variable                                  | Resolves to                                                                                           |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Variable | Resolves to |
+| --- | --- |
 | `$CURRENT_USER` / `$CURRENT_USER.<field>` | The user's primary key / a field on the user, including relational paths (`$CURRENT_USER.department`) |
-| `$CURRENT_ROLE` / `$CURRENT_ROLE.<field>` | The user's own role id / a field on that role                                                         |
-| `$CURRENT_ROLES`                          | Array of the role id and all ancestor role ids. Use with `_in` / `_nin`                               |
-| `$CURRENT_POLICIES`                       | Array of the request's policy ids (after IP filtering). Use with `_in` / `_nin`                       |
-| `$NOW`, `$NOW(-1 year)`                   | Current timestamp, optionally adjusted                                                                |
+| `$CURRENT_ROLE` / `$CURRENT_ROLE.<field>` | The user's own role id / a field on that role |
+| `$CURRENT_ROLES` | Array of the role id and all ancestor role ids. Use with `_in` / `_nin` |
+| `$CURRENT_POLICIES` | Array of the request's policy ids (after IP filtering). Use with `_in` / `_nin` |
+| `$NOW`, `$NOW(-1 year)` | Current timestamp, optionally adjusted |
 
 - `$CURRENT_ROLES` and `$CURRENT_POLICIES` aren't on the docs' filter-rules page; they come from the source
   (`parse-filter.ts`, `fetch-dynamic-variable-data.ts`) and the Studio's own built-in permissions use them.

@@ -11,10 +11,10 @@ An M2M between your collection and `languages`, with the translated fields livin
 
 ## Pick a storage strategy
 
-| Strategy                           | How                                                                                                                    | Use when                                                                                                                          |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Strategy | How | Use when |
+| --- | --- | --- |
 | **Default language on the parent** | Parent keeps `title`, `slug`, etc. in the default locale. `*_translations` holds the other languages. Frontend merges. | Most sites. Works with one-language content today and adds languages later without a migration. The `cms-i18n` starter does this. |
-| **All languages in translations**  | Parent keeps only language-neutral fields. Every locale, including the default, is a translation row.                  | Every language is equal, with no fallback language.                                                                               |
+| **All languages in translations** | Parent keeps only language-neutral fields. Every locale, including the default, is a translation row. | Every language is equal, with no fallback language. |
 
 **House rule:** default language on the parent.
 
@@ -75,12 +75,12 @@ others are published. `cms-i18n` does this. Public read permissions then filter 
 
 ## What goes where
 
-| On the parent (language-neutral)                 | On `*_translations`                           |
-| ------------------------------------------------ | --------------------------------------------- |
+| On the parent (language-neutral) | On `*_translations` |
+| --- | --- |
 | `id`, `status` (overall), `sort`, `published_at` | `title`, `headline`, `tagline`, `description` |
-| Relations (author, image, blocks, category)      | `content` (rich text)                         |
-| Booleans, numbers, colors, selects, dates        | `slug` / `permalink` when URLs are localized  |
-| SEO JSON if it's per-site, not per-locale        | Per-locale `status`                           |
+| Relations (author, image, blocks, category) | `content` (rich text) |
+| Booleans, numbers, colors, selects, dates | `slug` / `permalink` when URLs are localized |
+| SEO JSON if it's per-site, not per-locale | Per-locale `status` |
 
 For an M2A page builder, translate each **block** collection (`block_hero_translations`), not the junction.
 

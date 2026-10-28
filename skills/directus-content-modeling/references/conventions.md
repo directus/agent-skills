@@ -12,17 +12,17 @@
 
 Collection and field names become table and column names and API paths. You can't rename them cheaply.
 
-| Thing                                       | **House rule**                                               | Example                                                |
-| ------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
-| Collections                                 | `snake_case`, plural                                         | `posts`, `team_members`                                |
-| Singletons                                  | `snake_case`, singular                                       | `globals`, `site_settings`                             |
-| Fields                                      | `snake_case`, singular for scalars and M2O                   | `title`, `author`, `published_at`                      |
-| To-many alias fields (O2M, M2M, M2A, files) | plural                                                       | `tags`, `blocks`, `items`                              |
-| Booleans                                    | Read as yes/no; `is_` / `has_` is a good default, not a rule | `is_active`, `hide_block`                              |
-| Dates the user sets                         | `_at` suffix                                                 | `published_at`                                         |
-| Block collections                           | `block_` prefix, singular                                    | `block_hero`, `block_richtext`                         |
-| Child collections of a block                | `block_<parent>_<children>`                                  | `block_gallery_items`, `block_pricing_cards`           |
-| Presentation-only alias fields              | `meta_` prefix                                               | `meta_tabs`, `meta_notice_seo`, `meta_divider_content` |
+| Thing | **House rule** | Example |
+| --- | --- | --- |
+| Collections | `snake_case`, plural | `posts`, `team_members` |
+| Singletons | `snake_case`, singular | `globals`, `site_settings` |
+| Fields | `snake_case`, singular for scalars and M2O | `title`, `author`, `published_at` |
+| To-many alias fields (O2M, M2M, M2A, files) | plural | `tags`, `blocks`, `items` |
+| Booleans | Read as yes/no; `is_` / `has_` is a good default, not a rule | `is_active`, `hide_block` |
+| Dates the user sets | `_at` suffix | `published_at` |
+| Block collections | `block_` prefix, singular | `block_hero`, `block_richtext` |
+| Child collections of a block | `block_<parent>_<children>` | `block_gallery_items`, `block_pricing_cards` |
+| Presentation-only alias fields | `meta_` prefix | `meta_tabs`, `meta_notice_seo`, `meta_divider_content` |
 
 - Relational fields, junctions, and translations: see [relationships.md](relationships.md#naming).
 - Never use the `directus_` prefix. It's reserved for system collections.
@@ -57,11 +57,11 @@ frontend references by a stable handle (the starter's `navigation.id` = `main`, 
 **House rule:** every content collection gets the four tracking fields, hidden and read-only, at the bottom of the
 form:
 
-| Field          | type        | special        | interface                                 |
-| -------------- | ----------- | -------------- | ----------------------------------------- |
-| `user_created` | `uuid`      | `user-created` | `select-dropdown-m2o` (display `user`)    |
+| Field | type | special | interface |
+| --- | --- | --- | --- |
+| `user_created` | `uuid` | `user-created` | `select-dropdown-m2o` (display `user`) |
 | `date_created` | `timestamp` | `date-created` | `datetime` (display `datetime`, relative) |
-| `user_updated` | `uuid`      | `user-updated` | `select-dropdown-m2o` (display `user`)    |
+| `user_updated` | `uuid` | `user-updated` | `select-dropdown-m2o` (display `user`) |
 | `date_updated` | `timestamp` | `date-updated` | `datetime` (display `datetime`, relative) |
 
 `user_created` and `user_updated` need M2O relations to `directus_users` with `on_delete: SET NULL`, or deleting a user
@@ -106,16 +106,16 @@ items unless the caller filters.
 
 ## Collection settings
 
-| Setting            | **House rule**                                                                                                                                                                                                                                                                  |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `icon`             | Always set. Material Symbols name.                                                                                                                                                                                                                                              |
-| `note`             | One sentence saying what the collection is for. Shows in the data model and helps agents.                                                                                                                                                                                       |
-| `display_template` | Always set on relation targets: `{{title}}`, `{{first_name}} {{last_name}}`. Without it, editors see UUIDs.                                                                                                                                                                     |
-| `accountability`   | `all` (default). Only lower it for high-volume log tables.                                                                                                                                                                                                                      |
-| `versioning`       | `true` on pages, posts, and anything with an editorial review step.                                                                                                                                                                                                             |
-| `preview_url`      | Routable collections: `{{$preview_base_url}}{{permalink}}?version={{$version}}`, never a hardcoded host (collection meta travels between environments). `{{$version}}` resolves to `published` or the open version's key. Preview gating and tokens: `directus-visual-editing`. |
-| `singleton`        | `true` for one-off settings (`globals`). Still give it a UUID `id`.                                                                                                                                                                                                             |
-| `hidden`           | `true` for junctions, blocks, and child collections only edited through a parent.                                                                                                                                                                                               |
+| Setting | **House rule** |
+| --- | --- |
+| `icon` | Always set. Material Symbols name. |
+| `note` | One sentence saying what the collection is for. Shows in the data model and helps agents. |
+| `display_template` | Always set on relation targets: `{{title}}`, `{{first_name}} {{last_name}}`. Without it, editors see UUIDs. |
+| `accountability` | `all` (default). Only lower it for high-volume log tables. |
+| `versioning` | `true` on pages, posts, and anything with an editorial review step. |
+| `preview_url` | Routable collections: `{{$preview_base_url}}{{permalink}}?version={{$version}}`, never a hardcoded host (collection meta travels between environments). `{{$version}}` resolves to `published` or the open version's key. Preview gating and tokens: `directus-visual-editing`. |
+| `singleton` | `true` for one-off settings (`globals`). Still give it a UUID `id`. |
+| `hidden` | `true` for junctions, blocks, and child collections only edited through a parent. |
 
 **Field notes:** write a `meta.note` on every editor-facing field that isn't obvious. Say what it does on the site, not
 its type ("Short phrase shown under the logo." not "A string field.").

@@ -13,23 +13,23 @@ schema and content, wire the frontend, check it. How each schema tool works: [ap
 
 Starters live in `directus-labs/starters`. The folder name is the `--template` id.
 
-| Starter    | Frontends (`--frontend` id)                              | Tier                                               | What it is                                                       |
-| ---------- | -------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
-| `cms`      | `nextjs`, `nuxt`, `astro`, `svelte` (folder `sveltekit`) | Core. `template-licensed/` variant needs a license | Page builder, blog, forms, Live Preview, Visual Editor           |
-| `cms-i18n` | `nextjs`, `nuxt`                                         | Needs a license: 37 collections, over core's limit | The CMS plus `*_translations`, locale routing, language switcher |
-| `blank`    | none                                                     | Core                                               | Docker Compose only, no schema                                   |
+| Starter | Frontends (`--frontend` id) | Tier | What it is |
+| --- | --- | --- | --- |
+| `cms` | `nextjs`, `nuxt`, `astro`, `svelte` (folder `sveltekit`) | Core. `template-licensed/` variant needs a license | Page builder, blog, forms, Live Preview, Visual Editor |
+| `cms-i18n` | `nextjs`, `nuxt` | Needs a license: 37 collections, over core's limit | The CMS plus `*_translations`, locale routing, language switcher |
+| `blank` | none | Core | Docker Compose only, no schema |
 
 No starter for the user's framework? Apply the `cms` Directus template on its own and write the frontend with
 `directus-sdk`, copying the data layer from the closest starter.
 
 ## Run Directus and load the starter
 
-| Situation                                                           | Do                                                                      |
-| ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Local, `cms` core, Docker running                                   | `init`: one command for all of it                                       |
-| `cms-i18n`, the licensed CMS variant, or an existing local instance | Manual: `docker compose up -d` in `directus/`, then `apply`             |
-| Directus Cloud                                                      | Pick the CMS template when creating the project, then wire the frontend |
-| Production or a custom Docker setup                                 | `directus-self-hosting` skill, then `apply` against that instance       |
+| Situation | Do |
+| --- | --- |
+| Local, `cms` core, Docker running | `init`: one command for all of it |
+| `cms-i18n`, the licensed CMS variant, or an existing local instance | Manual: `docker compose up -d` in `directus/`, then `apply` |
+| Directus Cloud | Pick the CMS template when creating the project, then wire the frontend |
+| Production or a custom Docker setup | `directus-self-hosting` skill, then `apply` against that instance |
 
 ```bash
 npx directus-template-cli@latest init my-site --template=cms --frontend=nextjs --installDeps --no-gitInit
@@ -73,11 +73,11 @@ from there with `d6s sync pull` (`directus-environment-sync`) and seed later con
 
 ## Wire the frontend
 
-| Frontend         | Directus URL               | Site URL               | Visual editing flag                 |
-| ---------------- | -------------------------- | ---------------------- | ----------------------------------- |
-| Next.js          | `NEXT_PUBLIC_DIRECTUS_URL` | `NEXT_PUBLIC_SITE_URL` | `NEXT_PUBLIC_ENABLE_VISUAL_EDITING` |
-| Nuxt             | `DIRECTUS_URL`             | `NUXT_PUBLIC_SITE_URL` | `NUXT_PUBLIC_ENABLE_VISUAL_EDITING` |
-| Astro, SvelteKit | `PUBLIC_DIRECTUS_URL`      | `PUBLIC_SITE_URL`      | `PUBLIC_ENABLE_VISUAL_EDITING`      |
+| Frontend | Directus URL | Site URL | Visual editing flag |
+| --- | --- | --- | --- |
+| Next.js | `NEXT_PUBLIC_DIRECTUS_URL` | `NEXT_PUBLIC_SITE_URL` | `NEXT_PUBLIC_ENABLE_VISUAL_EDITING` |
+| Nuxt | `DIRECTUS_URL` | `NUXT_PUBLIC_SITE_URL` | `NUXT_PUBLIC_ENABLE_VISUAL_EDITING` |
+| Astro, SvelteKit | `PUBLIC_DIRECTUS_URL` | `PUBLIC_SITE_URL` | `PUBLIC_ENABLE_VISUAL_EDITING` |
 
 - `DIRECTUS_SERVER_TOKEN` (server-only) is, per the starter READMEs, the admin user's static token: Users Directory,
   open the user, generate a token, **Save** (unsaved tokens give "Invalid token"). Fine on a local dev instance. Before

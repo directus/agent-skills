@@ -15,15 +15,15 @@ type's config keys, props, and a starter component. This file holds what the doc
 
 ## Docs per type
 
-| Type      | Define function   | Docs (config keys, props, emits)                                      |
-| --------- | ----------------- | --------------------------------------------------------------------- |
+| Type | Define function | Docs (config keys, props, emits) |
+| --- | --- | --- |
 | interface | `defineInterface` | https://directus.com/docs/guides/extensions/app-extensions/interfaces |
-| display   | `defineDisplay`   | https://directus.com/docs/guides/extensions/app-extensions/displays   |
-| layout    | `defineLayout`    | https://directus.com/docs/guides/extensions/app-extensions/layouts    |
-| module    | `defineModule`    | https://directus.com/docs/guides/extensions/app-extensions/modules    |
-| panel     | `definePanel`     | https://directus.com/docs/guides/extensions/app-extensions/panels     |
-| theme     | `defineTheme`     | https://directus.com/docs/guides/extensions/app-extensions/themes     |
-| richtext  | `defineRichText`  | https://directus.com/docs/guides/extensions/app-extensions/richtext   |
+| display | `defineDisplay` | https://directus.com/docs/guides/extensions/app-extensions/displays |
+| layout | `defineLayout` | https://directus.com/docs/guides/extensions/app-extensions/layouts |
+| module | `defineModule` | https://directus.com/docs/guides/extensions/app-extensions/modules |
+| panel | `definePanel` | https://directus.com/docs/guides/extensions/app-extensions/panels |
+| theme | `defineTheme` | https://directus.com/docs/guides/extensions/app-extensions/themes |
+| richtext | `defineRichText` | https://directus.com/docs/guides/extensions/app-extensions/richtext |
 
 Composables: https://directus.com/docs/guides/extensions/app-extensions/composables. UI components:
 https://directus.com/docs/guides/extensions/app-extensions/ui-library.

@@ -58,12 +58,12 @@ starter is the reference build. Naming follows [relationships.md](relationships.
 
 ## Nested content inside blocks
 
-| Need                              | Pattern                                                                                                                                                                                               | Starter example                                  |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| A list owned by the block         | O2M child collection `block_<name>_<children>`, `sort_field: sort`, `on_delete: SET NULL`. Set `one_deselect_action: delete` so rows removed in the form don't linger (the starter leaves `nullify`). | `block_pricing_cards` → `block_pricing`          |
-| Many files                        | M2M to `directus_files`                                                                                                                                                                               | `block_gallery_items`                            |
-| A reusable group shared by blocks | M2O to a shared collection                                                                                                                                                                            | `block_hero.button_group` → `block_button_group` |
-| Link to a page or post            | M2O `page`, M2O `post`, plus a `type` select and a `url` string, with conditions that show only the one in use                                                                                        | `block_button`, `navigation_items`               |
+| Need | Pattern | Starter example |
+| --- | --- | --- |
+| A list owned by the block | O2M child collection `block_<name>_<children>`, `sort_field: sort`, `on_delete: SET NULL`. Set `one_deselect_action: delete` so rows removed in the form don't linger (the starter leaves `nullify`). | `block_pricing_cards` → `block_pricing` |
+| Many files | M2M to `directus_files` | `block_gallery_items` |
+| A reusable group shared by blocks | M2O to a shared collection | `block_hero.button_group` → `block_button_group` |
+| Link to a page or post | M2O `page`, M2O `post`, plus a `type` select and a `url` string, with conditions that show only the one in use | `block_button`, `navigation_items` |
 
 ## Querying it
 

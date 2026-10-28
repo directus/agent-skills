@@ -56,16 +56,14 @@ the monorepo package._
 
 ## Routing
 
-| Load when                                                                                                                                 | Reference                                                                    |
-| ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Configuring Directus: Preview URL variables, Visual Editor URLs, CSP, CORS, cache, versioning, permissions, Live Preview vs Visual Editor | [references/directus-setup.md](references/directus-setup.md)                 |
-| `@directus/visual-editing` API: `apply`, `setAttr`, attribute format, `onSaved`, scoping, `remove`/`disable`, styling                     | [references/visual-editing-library.md](references/visual-editing-library.md) |
-| Reading `draft`/`published`/custom versions in the frontend, 403 fallback, lists, how the Studio saves into versions                      | [references/content-versions.md](references/content-versions.md)             |
-| Making M2A page builder blocks editable, editing blocks in a draft, "Edit All Blocks", translated blocks                                  | [references/page-builder-blocks.md](references/page-builder-blocks.md)       |
-| Next.js App Router, Nuxt, Astro, SvelteKit: where to read params, call `apply`, refresh, set CSP; starter file map                        | [references/frameworks.md](references/frameworks.md)                         |
-| Preview tokens, gating preview, draft mode, hiding attributes from the public site, caching preview                                       | [references/preview-security.md](references/preview-security.md)             |
-| Complete working Next.js App Router setup: secret gate, preview token, versioned read with fallback, `apply` + `onSaved`                  | [references/nextjs-example.md](references/nextjs-example.md)                 |
-| Iframe blocked, nothing highlights, no version dropdown, stale data, 403/404 in draft, edits landing in published                         | [references/troubleshooting.md](references/troubleshooting.md)               |
+- Configuring Directus: Preview URL variables, Visual Editor URLs, CSP, CORS, cache, versioning, permissions, Live Preview vs Visual Editor → [directus-setup.md](references/directus-setup.md)
+- `@directus/visual-editing` API: `apply`, `setAttr`, attribute format, `onSaved`, scoping, `remove`/`disable`, styling → [visual-editing-library.md](references/visual-editing-library.md)
+- Reading `draft`/`published`/custom versions in the frontend, 403 fallback, lists, how the Studio saves into versions → [content-versions.md](references/content-versions.md)
+- Making M2A page builder blocks editable, editing blocks in a draft, "Edit All Blocks", translated blocks → [page-builder-blocks.md](references/page-builder-blocks.md)
+- Next.js App Router, Nuxt, Astro, SvelteKit: where to read params, call `apply`, refresh, set CSP; starter file map → [frameworks.md](references/frameworks.md)
+- Preview tokens, gating preview, draft mode, hiding attributes from the public site, caching preview → [preview-security.md](references/preview-security.md)
+- Complete working Next.js App Router setup: secret gate, preview token, versioned read with fallback, `apply` + `onSaved` → [nextjs-example.md](references/nextjs-example.md)
+- Iframe blocked, nothing highlights, no version dropdown, stale data, 403/404 in draft, edits landing in published → [troubleshooting.md](references/troubleshooting.md)
 
 ## Related skills
 

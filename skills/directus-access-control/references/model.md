@@ -14,12 +14,12 @@ answer for a request. Full docs: https://directus.com/docs/guides/auth/access-co
 
 ## The pieces
 
-| Collection             | What it holds                                                                                                                                                                 |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `directus_users`       | `role` (optional, one), `policies` (alias over `directus_access`), `status` (only `active` can authenticate), `token` (static token)                                          |
-| `directus_roles`       | `name`, `parent` (optional), `children`, `policies` (alias over `directus_access`), `users`. Roles group people; they carry no rules themselves                               |
-| `directus_policies`    | `name`, `admin_access`, `app_access`, `ip_access`, `enforce_tfa`, plus aliases `permissions`, `roles`, `users`                                                                |
-| `directus_access`      | One row per attachment: `policy` + `role`, or `policy` + `user`, or `policy` with both null (the public policy). `sort` orders policies on the role or user                   |
+| Collection | What it holds |
+| --- | --- |
+| `directus_users` | `role` (optional, one), `policies` (alias over `directus_access`), `status` (only `active` can authenticate), `token` (static token) |
+| `directus_roles` | `name`, `parent` (optional), `children`, `policies` (alias over `directus_access`), `users`. Roles group people; they carry no rules themselves |
+| `directus_policies` | `name`, `admin_access`, `app_access`, `ip_access`, `enforce_tfa`, plus aliases `permissions`, `roles`, `users` |
+| `directus_access` | One row per attachment: `policy` + `role`, or `policy` + `user`, or `policy` with both null (the public policy). `sort` orders policies on the role or user |
 | `directus_permissions` | One row per `policy` + `collection` + `action`. Actions: `create`, `read`, `update`, `delete`, `share`. Optional `permissions` (item rule), `fields`, `validation`, `presets` |
 
 **Role nesting.** A role or user can have any number of policies, and one policy can attach to many. A user gets the policies of their role and of every ancestor up to the root. A role can't be its own
@@ -40,12 +40,12 @@ IP-filtered policy list.
 
 ## Policy flags
 
-| Flag           | Effect                                                                                                                                                                    |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `admin_access` | Bypasses every permission check. If any applied policy has it, the user is an admin. A Studio seat                                                                        |
-| `app_access`   | Lets the user into the Studio and adds the [automatic Studio permissions](#automatic-studio-permissions). If any applied policy has it, the user has it. A Studio seat    |
-| `ip_access`    | Allowlist of IPs, full-address ranges (`10.0.0.1-10.0.0.50`), or CIDR blocks. No wildcards, netmasks, or short ranges. Empty or null means any IP. Subtractive: see above |
-| `enforce_tfa`  | If any applied policy has it, the login token carries `enforce_tfa` and the Studio sends users without 2FA to set it up. IP-filtered policies don't count                 |
+| Flag | Effect |
+| --- | --- |
+| `admin_access` | Bypasses every permission check. If any applied policy has it, the user is an admin. A Studio seat |
+| `app_access` | Lets the user into the Studio and adds the [automatic Studio permissions](#automatic-studio-permissions). If any applied policy has it, the user has it. A Studio seat |
+| `ip_access` | Allowlist of IPs, full-address ranges (`10.0.0.1-10.0.0.50`), or CIDR blocks. No wildcards, netmasks, or short ranges. Empty or null means any IP. Subtractive: see above |
+| `enforce_tfa` | If any applied policy has it, the login token carries `enforce_tfa` and the Studio sends users without 2FA to set it up. IP-filtered policies don't count |
 
 - `enforce_tfa` is set at login only. No API middleware checks it (only the Studio router does), and static tokens
   never go through login. It doesn't protect API access.
@@ -75,16 +75,16 @@ GET /permissions?filter[policy][_in]=<policy-id-1>,<policy-id-2>
 A user starts with nothing. Policies only add, with two exceptions: IP allowlists remove whole policies, and validation
 rules on writes all have to pass.
 
-| Aspect                  | How it combines                                                                                                                                                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Collections and actions | Union. Any policy granting `read` on `posts` grants it                                                                                                                                                                          |
-| Item rules (reads)      | Each permission row is a separate case: its item rule paired with its field list. A row is returned if any case matches. Effectively an OR. An empty rule (`{}` or null) matches every row                                      |
-| Fields (reads)          | Per row: a field is returned only if a case that grants that field matches that row. Otherwise the field comes back as `null`. Treat `null` as "maybe hidden"                                                                   |
-| Fields (writes)         | Union of `fields` across every permission for that collection + action, regardless of item rules. Sending a field outside the union is a 403                                                                                    |
-| Item rules (writes)     | Update, delete, and share check the targeted keys against the action's item rules (OR across policies). Any key that fails means 403 for the whole request                                                                      |
-| Validation (writes)     | **Every** non-empty validation rule from every applied permission for that action must pass, combined with `_and`, together with schema-level field validation. One policy's validation can block a write another policy allows |
-| Presets (writes)        | Shallow-merged in policy order (parent role, child role, user), later overrides earlier. The request payload overrides presets for fields the caller is allowed to write                                                        |
-| Admin / app flags       | OR                                                                                                                                                                                                                              |
+| Aspect | How it combines |
+| --- | --- |
+| Collections and actions | Union. Any policy granting `read` on `posts` grants it |
+| Item rules (reads) | Each permission row is a separate case: its item rule paired with its field list. A row is returned if any case matches. Effectively an OR. An empty rule (`{}` or null) matches every row |
+| Fields (reads) | Per row: a field is returned only if a case that grants that field matches that row. Otherwise the field comes back as `null`. Treat `null` as "maybe hidden" |
+| Fields (writes) | Union of `fields` across every permission for that collection + action, regardless of item rules. Sending a field outside the union is a 403 |
+| Item rules (writes) | Update, delete, and share check the targeted keys against the action's item rules (OR across policies). Any key that fails means 403 for the whole request |
+| Validation (writes) | **Every** non-empty validation rule from every applied permission for that action must pass, combined with `_and`, together with schema-level field validation. One policy's validation can block a write another policy allows |
+| Presets (writes) | Shallow-merged in policy order (parent role, child role, user), later overrides earlier. The request payload overrides presets for fields the caller is allowed to write |
+| Admin / app flags | OR |
 
 - Don't reason about writes from `api/src/permissions/utils/merge-permissions.ts` (it merges rules with `_or`, `{}`
   wins, and deep-merges presets). At runtime it is only used for shares and the v11 migration; writes use

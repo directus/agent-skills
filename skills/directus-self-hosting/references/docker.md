@@ -111,12 +111,12 @@ logs `Database already initialized, skipping install` and runs pending migration
 
 ## Volumes and permissions
 
-| Path in container      | Holds                                                    | Persist with                                         |
-| ---------------------- | -------------------------------------------------------- | ---------------------------------------------------- |
-| `/directus/uploads`    | Files with the default `local` storage                   | Named volume, or use S3 and skip it                  |
-| `/directus/extensions` | Your extensions and Marketplace installs (`.registry/`)  | Bind mount or volume, or `EXTENSIONS_LOCATION`       |
-| `/directus/database`   | The SQLite file, if `DB_CLIENT=sqlite3`                  | Volume                                               |
-| `/directus/templates`  | Custom email templates                                   | Bind mount (read-only is fine)                       |
+| Path in container | Holds | Persist with |
+| --- | --- | --- |
+| `/directus/uploads` | Files with the default `local` storage | Named volume, or use S3 and skip it |
+| `/directus/extensions` | Your extensions and Marketplace installs (`.registry/`) | Bind mount or volume, or `EXTENSIONS_LOCATION` |
+| `/directus/database` | The SQLite file, if `DB_CLIENT=sqlite3` | Volume |
+| `/directus/templates` | Custom email templates | Bind mount (read-only is fine) |
 
 - The image runs as `node` (uid 1000) and declares no `VOLUME`. Named volumes inherit the image's ownership; a
   bind-mounted host folder must be writable by uid 1000 (`chown -R 1000:1000 ./extensions`) or Marketplace installs

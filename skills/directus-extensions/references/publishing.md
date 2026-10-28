@@ -24,13 +24,13 @@ The Marketplace reads from the Directus Extensions Registry, which mirrors npm. 
 }
 ```
 
-| Field                                    | Why                                                                                                                                          |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `keywords` contains `directus-extension` | The registry searches npm for `keywords:directus-extension`. Without it, the package never appears.                                          |
-| `directus:extension`                     | Must parse against the manifest schema or the version is rejected. `type` drives the Marketplace category.                                   |
-| `host`                                   | If the instance version doesn't satisfy it, the listing says **Compatibility not guaranteed** (install still works). `^` stops at the major. |
-| `dist/` in the tarball                   | Run `npm run build` before `npm publish`; `files: ["dist"]` keeps source out.                                                                |
-| `sandbox` (API/hybrid)                   | Default instances (`MARKETPLACE_TRUST=sandbox`) only offer sandboxed API extensions. Requested scopes are shown to installers.               |
+| Field | Why |
+| --- | --- |
+| `keywords` contains `directus-extension` | The registry searches npm for `keywords:directus-extension`. Without it, the package never appears. |
+| `directus:extension` | Must parse against the manifest schema or the version is rejected. `type` drives the Marketplace category. |
+| `host` | If the instance version doesn't satisfy it, the listing says **Compatibility not guaranteed** (install still works). `^` stops at the major. |
+| `dist/` in the tarball | Run `npm run build` before `npm publish`; `files: ["dist"]` keeps source out. |
+| `sandbox` (API/hybrid) | Default instances (`MARKETPLACE_TRUST=sandbox`) only offer sandboxed API extensions. Requested scopes are shown to installers. |
 
 Description style, icon, detail page title, and author profile: [publishing docs](https://directus.com/docs/guides/extensions/marketplace/publishing).
 

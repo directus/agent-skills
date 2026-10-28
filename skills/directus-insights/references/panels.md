@@ -19,19 +19,19 @@ shows a query error. Keys are case-sensitive and differ between types: `meter` u
 
 "Default" is what the panel uses when the key is omitted.
 
-| `type`                | Required `options`                                                  | Notable optional keys and defaults                                                                                                                                                    |
-| --------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `metric`              | `collection`, `field`, `function`                                   | `sortField` (for `first`/`last`), `filter`, `prefix`, `suffix`, `numberStyle` `decimal`, `notation` `standard`, `minimumFractionDigits`/`maximumFractionDigits` `0`                   |
-| `metric-list`         | `collection`, `groupByField`, `aggregateField`, `aggregateFunction` | `limit` `5`, `sortDirection` `desc`, `filter`, same number formatting as `metric`                                                                                                     |
-| `list`                | `collection`                                                        | `displayTemplate` (e.g. `"{{title}}"`), `sortField` (primary key), `sortDirection` `desc`, `limit` `5`, `linkToItem` `false`, `filter`                                                |
-| `time-series`         | `collection`, `function`, `valueField`, `dateField`                 | `precision` `hour` (`second` to `year`), `range` `1 week` (`auto` means no window), `filter`, `curveType` `smooth`, `fillType` `gradient`, `decimals` `0`, `min`, `max`               |
-| `bar-chart`           | `collection`, `xAxis`, `yAxis`                                      | `function` **`max`**, `horizontal` `false`, `decimals` `2`, `showAxisLabels` `both` (`yOnly`, `xOnly`, `none`), `showDataLabel` `true`, `xAxisDisplayField` (m2o x axis), `filter`    |
-| `line-chart`          | `collection`, `xAxis`, `yAxis`, `aggregation`                       | `grouping` (field that splits series), `decimals` `2`, `showAxisLabels` `both` (`yAxis`, `xAxis`, `none`), `curveType` `smooth`, `fillType` `gradient`, `showMarker` `true`, `filter` |
-| `pie-chart`           | `collection`, `column`                                              | `function` `count`, `donut` `false`, `showLabels` `false`, `legend` `none` (`right`, `bottom`), `decimals` `0`, `filter`                                                              |
-| `meter`               | `collection`, `field`, `fn`                                         | `max` `100`, `size` `full` (`half`), `strokeWidth` `20`, `showPercentage` `true`, `filter`                                                                                            |
-| `label`               | `text`                                                              | `textAlign` `center`, `fontWeight` `800`, `fontSize` `auto`, `whiteSpace` `normal`, `color`, `font` `sans-serif`                                                                      |
-| `variable`            | `field`, `type`, `inter`                                            | `defaultValue` (typed to `type`), `options` (the interface's options)                                                                                                                 |
-| `relational-variable` | `field`, `collection`                                               | `multiple` `false`, `limit` (caps picks when `multiple`; `5` if omitted), `displayTemplate`, `filter`                                                    |
+| `type` | Required `options` | Notable optional keys and defaults |
+| --- | --- | --- |
+| `metric` | `collection`, `field`, `function` | `sortField` (for `first`/`last`), `filter`, `prefix`, `suffix`, `numberStyle` `decimal`, `notation` `standard`, `minimumFractionDigits`/`maximumFractionDigits` `0` |
+| `metric-list` | `collection`, `groupByField`, `aggregateField`, `aggregateFunction` | `limit` `5`, `sortDirection` `desc`, `filter`, same number formatting as `metric` |
+| `list` | `collection` | `displayTemplate` (e.g. `"{{title}}"`), `sortField` (primary key), `sortDirection` `desc`, `limit` `5`, `linkToItem` `false`, `filter` |
+| `time-series` | `collection`, `function`, `valueField`, `dateField` | `precision` `hour` (`second` to `year`), `range` `1 week` (`auto` means no window), `filter`, `curveType` `smooth`, `fillType` `gradient`, `decimals` `0`, `min`, `max` |
+| `bar-chart` | `collection`, `xAxis`, `yAxis` | `function` **`max`**, `horizontal` `false`, `decimals` `2`, `showAxisLabels` `both` (`yOnly`, `xOnly`, `none`), `showDataLabel` `true`, `xAxisDisplayField` (m2o x axis), `filter` |
+| `line-chart` | `collection`, `xAxis`, `yAxis`, `aggregation` | `grouping` (field that splits series), `decimals` `2`, `showAxisLabels` `both` (`yAxis`, `xAxis`, `none`), `curveType` `smooth`, `fillType` `gradient`, `showMarker` `true`, `filter` |
+| `pie-chart` | `collection`, `column` | `function` `count`, `donut` `false`, `showLabels` `false`, `legend` `none` (`right`, `bottom`), `decimals` `0`, `filter` |
+| `meter` | `collection`, `field`, `fn` | `max` `100`, `size` `full` (`half`), `strokeWidth` `20`, `showPercentage` `true`, `filter` |
+| `label` | `text` | `textAlign` `center`, `fontWeight` `800`, `fontSize` `auto`, `whiteSpace` `normal`, `color`, `font` `sans-serif` |
+| `variable` | `field`, `type`, `inter` | `defaultValue` (typed to `type`), `options` (the interface's options) |
+| `relational-variable` | `field`, `collection` | `multiple` `false`, `limit` (caps picks when `multiple`; `5` if omitted), `displayTemplate`, `filter` |
 
 Notes:
 
