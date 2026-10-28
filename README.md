@@ -157,6 +157,10 @@ Add `--clean` to run each agent with an empty Claude config (no personal skills,
 authenticates with a `claude setup-token` token from `CLAUDE_CODE_OAUTH_TOKEN` or
 `~/.config/directus-skills-evals/oauth-token`.
 
+Cases marked `license: true` run on a licensed instance. Put the key in `~/.config/directus-skills-evals/license-key`
+(or `DIRECTUS_EVALS_LICENSE_KEY`); it reaches Docker through the environment and never lands in results. Without it,
+those cases error and the rest run on the unlicensed core tier.
+
 Results land in `behavior-evals/results/` (git-ignored). Add a case as `cases/<name>.md` (the task) plus
 `checks/<name>.mjs` (exit 1 on any failed check). Seeds, extra shell commands, starting files (`fixtures/`), a second
 instance, Postgres, instance env, a turn limit, or no instance at all go in the `CASES` table in `run.mjs`.

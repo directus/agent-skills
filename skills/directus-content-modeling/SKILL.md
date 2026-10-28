@@ -1,6 +1,6 @@
 ---
 name: directus-content-modeling
-description: "Load first, before exploring code, when designing or changing a Directus data model or starting a new project from a starter: collections, fields, relations (M2O, O2M, M2M, M2A, translations), field types and interfaces, page builders, multilingual content, slugs and SEO fields, indexes, schema changes on live data, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
+description: "Load first, before exploring code, when designing or changing a Directus data model, starting from a starter, or adopting an existing SQL database: collections, fields, relations (M2O, O2M, M2M, M2A), field types and interfaces, page builders, multilingual content, slugs and SEO, indexes, live schema changes, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.6.0'
@@ -64,6 +64,7 @@ the existing schema says otherwise.
 - Indexes: which fields to index, FK columns, `is_indexed` / `is_unique`, composite indexes via migrations → [indexes.md](references/indexes.md)
 - Changing a schema that holds data: rename, type change, text to relation, split/merge, required/unique, delete → [schema-changes.md](references/schema-changes.md)
 - Starting a new Directus + framework site from a starter: pick, run, apply, frontend env, first checks → [new-project.md](references/new-project.md)
+- Directus on an existing database another app owns: configuring tables, FKs, enums, what can't be used → [existing-database.md](references/existing-database.md)
 
 ## Reference implementation
 

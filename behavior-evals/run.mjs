@@ -40,11 +40,18 @@ if (args.clean && !oauthToken) {
 	process.exit(1);
 }
 
+// Cases with `license: true` run licensed. The key comes from DIRECTUS_EVALS_LICENSE_KEY or this file and reaches
+// docker through the environment, so it never appears in a command line, error, or result file.
+const LICENSE_FILE = join(homedir(), '.config', 'directus-skills-evals', 'license-key');
+const licenseKey =
+	process.env.DIRECTUS_EVALS_LICENSE_KEY ?? (existsSync(LICENSE_FILE) ? readFileSync(LICENSE_FILE, 'utf8').trim() : '');
+
 const IMAGE = args.image;
 const TOKEN = 'skills-evals-admin-token';
 // Per-case setup. seeds: run against the instance in order. target: start a second instance with these seeds.
 // tools: shell commands allowed besides curl and jq. fixture: copied from fixtures/ into the work dir.
 // extensions: mount <work>/extensions into the instance with auto reload. env: extra instance env vars.
+// license: run licensed (see LICENSE_FILE); the job errors without a key.
 // postgres: run on Postgres instead of SQLite (some queries behave differently). sql: a file in seeds/sql/ run on that
 // Postgres before Directus first boots (an existing database). maxTurns: overrides --max-turns.
 // instance: false for file-only cases.
@@ -78,6 +85,7 @@ const CASES = {
 	'json-filters': { seeds: ['products'], postgres: true },
 	'internal-tools-approvals': { seeds: ['orders'], maxTurns: 100 },
 	'existing-database': { sql: 'billing.sql' },
+	'existing-database-hard': { sql: 'billing-hard.sql', maxTurns: 80 },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
@@ -114,7 +122,7 @@ async function startPostgres(name, port, sql) {
 		'-e', 'DB_DATABASE=directus', '-e', 'DB_USER=directus', '-e', 'DB_PASSWORD=directus'];
 }
 
-async function startDirectus(lane, { target = false, extensionsDir, env = {}, postgres = false, sql } = {}) {
+async function startDirectus(lane, { target = false, extensionsDir, env = {}, postgres = false, sql, license = false } = {}) {
 	const name = `directus-skills-evals-${lane}${target ? '-target' : ''}`;
 	const port = (target ? 18355 : 18255) + lane;
 	try {
@@ -148,8 +156,9 @@ async function startDirectus(lane, { target = false, extensionsDir, env = {}, po
 			? ['-v', `${extensionsDir}:/directus/extensions`, '-e', 'EXTENSIONS_AUTO_RELOAD=true', '-e', 'CHOKIDAR_USEPOLLING=true']
 			: []),
 		...Object.entries(env).flatMap(([k, v]) => ['-e', `${k}=${v}`]),
+		...(license ? ['-e', 'LICENSE_KEY'] : []),
 		IMAGE,
-	]);
+	], license ? { env: { ...process.env, LICENSE_KEY: licenseKey } } : {});
 	const url = `http://127.0.0.1:${port}`;
 	for (let i = 0; i < 90; i++) {
 		try {
@@ -188,6 +197,7 @@ const PREAMBLE = (url, target, tools) =>
 
 async function runJob(job, lane) {
 	const config = CASES[job.case] ?? {};
+	if (config.license && !licenseKey) throw new Error(`needs a license key: set DIRECTUS_EVALS_LICENSE_KEY or write ${LICENSE_FILE}`);
 	const tools = config.tools ?? [];
 	const work = mkdtempSync(join(tmpdir(), `skills-eval-${job.case}-`));
 	if (config.fixture) cpSync(join(here, 'fixtures', config.fixture), work, { recursive: true });
@@ -197,7 +207,13 @@ async function runJob(job, lane) {
 	const url =
 		config.instance === false
 			? undefined
-			: await startDirectus(lane, { extensionsDir, env: config.env, postgres: config.postgres || !!config.sql, sql: config.sql });
+			: await startDirectus(lane, {
+					extensionsDir,
+					env: config.env,
+					postgres: config.postgres || !!config.sql,
+					sql: config.sql,
+					license: config.license,
+				});
 	const target = config.target ? await startDirectus(lane, { target: true }) : undefined;
 	const env = { ...process.env, DIRECTUS_URL: url, DIRECTUS_TOKEN: TOKEN, DIRECTUS_ADMIN_TOKEN: TOKEN, WORK_DIR: work };
 	if (target) env.TARGET_URL = target;
