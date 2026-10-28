@@ -1,6 +1,6 @@
 ---
 name: directus-flows
-description: "Load first, before exploring code, when automating Directus with Flows: event, webhook, schedule, and manual triggers, the data chain and {{ }} templates, operations (condition, item CRUD, Run Script, request, mail), reusable utility flows and loops, and building or debugging flows over the API or MCP. Not for hook or operation extensions (directus-extensions) or promoting flows (directus-environment-sync)."
+description: 'Load first, before exploring code, when automating Directus with Flows: event, webhook, schedule, and manual triggers, the data chain and {{ }} templates, operations (condition, item CRUD, Run Script, request, mail), reusable utility flows and loops, and building or debugging flows over the API or MCP. Not for hook or operation extensions (directus-extensions) or promoting flows (directus-environment-sync).'
 metadata:
   author: directus
   directus-version: '12.6.0'
@@ -49,6 +49,8 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
   `message`). A failed `condition` gives a 400 `FAILED_VALIDATION` with field details but no message of yours; a
   throw in Run Script gives a 500. `throw-error` needs 11.10.1+. Older versions: Run Script returns a flag
   (`{ ok: false }`), then end on a `condition` over that flag.
+- **Never link Run Script straight to a `condition`'s reject.** It fails with `illegal access` before your code runs
+  (a 500 on every save down that path). Put another operation, such as `log`, between them.
 - **Event scopes need `collections`.** `items.create` with no `collections` registers nothing, silently.
 - **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow
   through a parent flow or a temporary manual wrapper.

@@ -1,7 +1,6 @@
 # Utility flows and loops
 
 - [Utility flows](#utility-flows)
-- [Common utilities](#common-utilities)
 - [Loops](#loops)
 - [Licensing](#licensing)
 - [Testing a utility](#testing-a-utility)
@@ -18,14 +17,7 @@ you need to run steps per item.
   starter writes `Utils -> Duplicate Page`).
 - Write the input and output in the flow's `description`: `In: { to, subject, html }. Out: { ok, error }`.
 - Keep each one to a single job. Put them in a `Utils` flow folder.
-- Return a status object, not just the last result, so callers can branch:
-
-```js
-// Last operation of the utility (Run Script), with the flow's options.return set to this key
-module.exports = async function (data) {
-	return { ok: true, id: data.create_item?.id ?? null };
-};
-```
+- Return a status object (`{ ok, id }`) from the last operation, not just its result, so callers can branch.
 
 **How the call works:**
 
@@ -39,19 +31,10 @@ module.exports = async function (data) {
   `{{ send.ok }}`. No `return`, or an inactive or deleted child (server warning only), means `null`. Utilities must
   stay `active`.
 
-## Common utilities
-
-| Utility | In | Body | Out |
-| --- | --- | --- | --- |
-| `Utils → Get Globals` | nothing | `item-read` on the `globals` singleton, `permissions: "$full"`, only the fields needed | the globals object |
-| `Utils → Render Template` | `{ template, data }` | `@directus-labs/liquidjs-operation` (uses `{# #}` for output tags, since `{{ }}` belongs to flows), or Run Script for simple string replacement | `{ html }` |
-| `Utils → Send Email` | `{ to, subject, html }` | `mail` with `type: "wysiwyg"`, `to: ["{{ $trigger.to }}"]` | `{ ok }` |
-| `Utils → Post to Slack` | `{ text }` | `request` to an incoming webhook URL from `$env`, reject branch returns `{ ok: false }` | `{ ok, status }` |
-
-Chain them: a form-notification flow reads the form, calls Render Template, then calls Send Email with the result.
-`mail` returns before delivery, so `Send Email` can only report that the send was queued. With
-`RATE_LIMITER_EMAIL_FLOWS_ENABLED=true`, every child shares the calling flow's mail budget (default 1 per 60 seconds),
-so a send loop stops after the first email ([operations.md](operations.md#mail)).
+Typical utilities: Get Globals, Render Template (`@directus-labs/liquidjs-operation`, which uses `{# #}` because
+`{{ }}` belongs to flows), Send Email, Post to Slack. `mail` returns before delivery, so Send Email can only report the
+send was queued. With `RATE_LIMITER_EMAIL_FLOWS_ENABLED=true`, every child shares the calling flow's mail budget
+(default 1 per 60 seconds), so a send loop stops after the first email ([operations.md](operations.md#mail)).
 
 ## Loops
 
@@ -68,21 +51,15 @@ array of the children's return values, in input order.
 ]
 ```
 
-| `iterationMode` | Runs | Use for |
-| --- | --- | --- |
-| `parallel` (default) | all children at once | a few items, cheap work |
-| `batch` (`batchSize`, default 10) | groups in parallel, groups one after another | email, external APIs, anything rate limited |
-| `serial` | one at a time | order matters, or each step depends on the last |
+`iterationMode`: `parallel` (default, all at once), `batch` (`batchSize`, default 10; use for email and external
+APIs), or `serial` (one at a time, when order matters).
 
 - **Don't loop when one write will do.** `item-create` takes an array payload, and `item-update` takes an array of
   objects that each include the primary key. Loop only when each item needs its own branch, request, or email.
-- **Shape the array first.** If each child needs more than the raw item, map it in Run Script and pass that key:
-  `return data.subscribers.map((s) => ({ to: s.email, name: s.name, site: data.globals.site_name }))`.
 - **Long loops block the caller.** A webhook or manual flow waits for every child. Set `async: true` on the trigger, or
   start the loop from an action event or schedule.
-- **Results are all in memory.** For thousands of items, page through with a schedule (`limit` + a "processed" flag)
-  instead of one huge array.
-- **A flow can trigger itself.** That's recursion with no depth limit. Don't.
+- **Results are all in memory**, and a flow can trigger itself with no depth limit. For thousands of items, page
+  through with a schedule (`limit` + a "processed" flag).
 
 ## Licensing
 

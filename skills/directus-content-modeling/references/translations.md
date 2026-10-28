@@ -28,7 +28,8 @@ collection → Translations). It creates `languages` if missing (seeded with 8 l
 
 1. Make sure `languages` exists: `code` (string PK, e.g. `en-US`), `name` (string), `direction` (string, `ltr`/`rtl`,
    `select-dropdown`). Seed the languages the user wants.
-2. Create `<collection>_translations`: UUID `id`, `meta.hidden: true`, `meta.group: "<collection>"`. Add
+2. Create `<collection>_translations`: UUID `id` with `meta.special: ["uuid"]` (without it nested translation writes
+   fail with 400 `Value is required`), `meta.hidden: true`, `meta.group: "<collection>"`. Add
    `<collection>` (FK named exactly like the parent collection, `posts` not `posts_id`, same type as its PK) and `languages_code` (`string`).
 3. Add the translated fields to the junction with the same names, types, and interfaces as on the parent.
 4. Create the alias on the parent:

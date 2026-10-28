@@ -23,7 +23,8 @@ _Verified against Directus v12.6.0 source (`api/src/permissions`, `api/src/servi
    `GET /policies?fields=id,name,admin_access,app_access,ip_access`, then
    `GET /permissions?filter[policy][_eq]=<id>&limit=-1` per policy. Extend the existing layout before inventing one.
 3. **Check the license.** `GET /license` (admin). Unlicensed v12 can't use item rules, field lists, validation, or
-   presets. That decides the whole design. See [licensing.md](references/licensing.md).
+   presets. That decides the whole design. See [licensing.md](references/licensing.md). Rules permissions can't
+   express there (who may set a status, approvals) go in a blocking filter Flow: load `directus-flows`.
 4. **List the audiences.** Public visitors, Studio staff by job, API integrations, agents. Each job becomes a policy.
 5. **Confirm risky changes.** Show the planned rows before anything that widens public access, touches `directus_*`
    write access, or removes access. Never touch the Administrator policy or the last admin.

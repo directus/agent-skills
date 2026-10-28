@@ -35,15 +35,12 @@ _Verified against Directus v12.6.0 (`api/src/ai/tools`, `api/src/services`) and 
 - **Change relations with `create` / `update` / `delete` and row ids,** not by re-sending whole arrays (that recreates
   rows and orphans the old ones). Edit a page-builder block in its own collection, not through the page. Payloads:
   `directus` (`references/rest-api.md`, relational writes).
-- **Publishing is a field value.** Set the status field to the project's published choice (read it; it may be
-  `published`, `active`, or something else). A Flow or validation can reject the save with a 400: show the user its
-  message instead of retrying around it.
+- **A 400 on save can be a Flow or validation rule.** Show the user its message instead of retrying around it.
 - **Match the text field's format.** `input-rich-text-html` stores HTML, `input-rich-text-md` stores Markdown,
   `input-block-editor` stores Editor.js JSON. Writing the wrong one saves fine and renders badly.
 - **Files are two steps.** Import first (MCP `files` with `action: "import"` and a `url`, or REST `POST /files/import`),
   with a `title`, `description`, and `folder`. Then set the image field to the new file's `id`.
 - **Deleting needs explicit confirmation,** item by item. Prefer the collection's archive value if it has one.
-- **Report what changed:** the item URL MCP returns, and each field you wrote.
 
 ## Go deeper
 

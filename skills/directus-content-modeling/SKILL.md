@@ -1,6 +1,6 @@
 ---
 name: directus-content-modeling
-description: "Load first, before exploring code, when designing or changing a Directus data model, starting from a starter, or adopting an existing SQL database: collections, fields, relations (M2O, O2M, M2M, M2A), field types and interfaces, page builders, multilingual content, slugs and SEO, indexes, live schema changes, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
+description: 'Load first, before exploring code, when designing or changing a Directus data model, starting from a starter, or adopting an existing SQL database: collections, fields, relations (M2O, O2M, M2M, M2A), field types and interfaces, page builders, multilingual content, slugs and SEO, indexes, live schema changes, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync).'
 metadata:
   author: directus
   directus-version: '12.6.0'
@@ -37,7 +37,8 @@ the existing schema says otherwise.
   relations `meta` (`one_field` on the parent side, `junction_field` pointing at the other FK). Without it the data
   saves but the Studio's M2M and translations interfaces can't use the junction. Copy the payloads in the references.
 - **The primary key type is permanent.** **Recommended:** UUID for every collection, except lookup tables keyed by a
-  natural string (`languages.code`, `navigation.id` slugs).
+  natural string (`languages.code`, `navigation.id` slugs). A UUID key needs `meta.special: ["uuid"]`, junctions
+  included; without it Directus doesn't generate ids and every create without one is a 400 `Value is required`.
 - **FK column type must match the target PK type.** M2O to a UUID-keyed collection is `type: "uuid"`; to `languages`
   it's `type: "string"`.
 - **O2M fields are aliases.** No column. The O2M field is the `meta.one_field` of the M2O relation on the other side.

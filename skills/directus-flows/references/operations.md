@@ -67,7 +67,7 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 
 ## Run Script
 
-Shape: `module.exports = async function (data) { ... }`, returning the result. Full example:
+Shape: `module.exports = async function (data) { ... }`, returning the result. Example:
 [recipes.md](recipes.md#slug-on-create).
 
 - Runs in an `isolated-vm` sandbox: no `require`, no file system, no network, no `fetch`. Use a `request` operation for

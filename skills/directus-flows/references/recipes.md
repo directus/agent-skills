@@ -17,23 +17,9 @@ runs on every write of a busy collection.
 
 ## Slug on create
 
-Event `filter`, scope `items.create`, collections `["posts"]`, `return: "slug"`. One Run Script, key `slug`:
-
-```js
-module.exports = async function (data) {
-	const p = data.$trigger.payload;
-	if (p.slug) return p;
-	const slug = String(p.title ?? '')
-		.toLowerCase()
-		.trim()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/(^-|-$)/g, '');
-	return { ...p, slug };
-};
-```
-
-A field default or the `input` interface's `slug` option covers this without a flow when editors type the title in the
-Studio.
+Event `filter`, scope `items.create`, collections `["posts"]`. One Run Script that returns the whole payload with
+`slug` added only when it's empty (`return { ...data.$trigger.payload, slug }`), and the flow's `return` set to that
+operation's key. Returning only the slug replaces the payload and drops every other field.
 
 ## Notify on publish
 
@@ -55,7 +41,7 @@ Event `action`, scope `items.update`, collections `["posts"]`:
 The CMS starter's "Form Submissions → Email Notifications": event `action` on `form_submissions` `items.create`, then
 read the form with its email settings (`$full`), shape the data in Run Script, render with the Liquid operation, check a
 `to` exists, send with `mail`. Split the render and send steps into utilities once a second flow needs them (see
-[utility-flows-and-loops.md](utility-flows-and-loops.md#common-utilities)).
+[utility-flows-and-loops.md](utility-flows-and-loops.md#utility-flows)).
 
 ## Redirect when a URL changes
 
