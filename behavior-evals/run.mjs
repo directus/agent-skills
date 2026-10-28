@@ -86,6 +86,13 @@ const CASES = {
 	'internal-tools-approvals': { seeds: ['orders'], maxTurns: 100 },
 	'existing-database': { sql: 'billing.sql' },
 	'existing-database-hard': { sql: 'billing-hard.sql', maxTurns: 80 },
+	'app-auth-notes': {
+		license: true,
+		// The agent's own test signups would use up the 5-per-minute registration limit before the check runs.
+		env: { WEBSOCKETS_ENABLED: 'true', RATE_LIMITER_REGISTRATION_ENABLED: 'false' },
+		maxTurns: 80,
+	},
+	'assets-partners': { license: true, seeds: ['assets'], maxTurns: 80 },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
