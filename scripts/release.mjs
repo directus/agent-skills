@@ -3,6 +3,7 @@
 // publishes a GitHub release with those files attached. directus.com/.well-known/agent-skills/* serves the latest
 // release's files. Skips publishing if the release already exists, since changesets/action runs this on every push
 // to main with no pending changesets.
+// Archives come from committed files (git archive HEAD), so a local dry run matches what CI publishes.
 // Usage: node scripts/release.mjs [--dry-run]   (--dry-run only builds dist/)
 
 import { execFileSync } from 'node:child_process';
@@ -20,7 +21,8 @@ const tag = `v${version}`;
 const run = (cmd, args, opts = {}) => execFileSync(cmd, args, { cwd: root, encoding: 'utf8', ...opts });
 
 function description(skillMd) {
-	const raw = skillMd.match(/^description:\s*(.*)$/m)[1];
+	const raw = skillMd.match(/^description:\s*(.*)$/m)?.[1];
+	if (!raw) throw new Error('SKILL.md has no description');
 	if (raw.startsWith('"')) return JSON.parse(raw);
 	if (raw.startsWith("'")) return raw.slice(1, -1).replaceAll("''", "'");
 	return raw;
@@ -29,18 +31,15 @@ function description(skillMd) {
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist);
 
-const skills = readdirSync(skillsDir).map((name) => {
-	const dir = join(skillsDir, name);
+const skills = readdirSync(skillsDir, { withFileTypes: true }).filter((d) => d.isDirectory()).map(({ name }) => {
 	const file = `${name}.tar.gz`;
-	// Files at the archive root, no wrapper directory, per the RFC.
-	run('tar', ['-czf', join(dist, file), '-C', dir, ...readdirSync(dir).filter((f) => f !== '.DS_Store')], {
-		env: { ...process.env, COPYFILE_DISABLE: '1' },
-	});
+	// A tree (not a commit) gives files at the archive root with no wrapper directory, per the RFC.
+	run('git', ['archive', '--format=tar.gz', '-o', join(dist, file), `HEAD:skills/${name}`]);
 
 	return {
 		name,
 		type: 'archive',
-		description: description(readFileSync(join(dir, 'SKILL.md'), 'utf8')),
+		description: description(run('git', ['show', `HEAD:skills/${name}/SKILL.md`])),
 		// Versioned so a cached index never points at a newer archive with a different digest.
 		url: `${tag}/${file}`,
 		digest: `sha256:${createHash('sha256').update(readFileSync(join(dist, file))).digest('hex')}`,
@@ -53,11 +52,17 @@ console.log(`dist/: index.json and ${skills.length} skill archives`);
 
 if (dryRun) process.exit(0);
 
+let existing;
 try {
-	run('gh', ['release', 'view', tag], { stdio: 'ignore' });
+	existing = JSON.parse(run('gh', ['release', 'view', tag, '--json', 'isDraft'], { stdio: ['ignore', 'pipe', 'ignore'] }));
+} catch {}
+
+// gh leaves a draft behind if an upload fails. Don't mistake it for a finished release.
+if (existing?.isDraft) throw new Error(`${tag} is a draft, likely a failed upload. Delete it and rerun.`);
+if (existing) {
 	console.log(`${tag} already released`);
 	process.exit(0);
-} catch {}
+}
 
 const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
 const notes = changelog.split(/^## /m).find((s) => s.startsWith(`${version}\n`));
