@@ -82,7 +82,7 @@ Keys mirror the command-line scope: `schema` (`false` = configuration-only), `co
 ([how-it-works.md](how-it-works.md#what-syncs)). Refused as contradictions: `"schema": false` with a collections scope,
 and an include plus an exclude list on the same axis.
 
-**House rule:** don't set `"mode": "mirror"` as a project default. Pass `--mode mirror` explicitly.
+**Recommended:** don't set `"mode": "mirror"` as a project default. Pass `--mode mirror` explicitly.
 
 ## First pull
 

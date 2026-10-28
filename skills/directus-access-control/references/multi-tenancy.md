@@ -27,7 +27,7 @@ collection limit (junctions and translations count too) and multiply every polic
 
 ## One project: data model
 
-- A `sites` collection (UUID key, name, domain or handle). **House rule:** one tenant word (`sites`, `brands`,
+- A `sites` collection (UUID key, name, domain or handle). **Recommended:** one tenant word (`sites`, `brands`,
   `clients`) used everywhere.
 - An M2O `site` on each top-level content collection (`pages`, `posts`, `navigation`, `forms`). Make it non-nullable
   (`schema.is_nullable: false`): a create without it then fails validation.

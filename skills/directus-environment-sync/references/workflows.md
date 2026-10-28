@@ -79,7 +79,7 @@ d6s sync push --to staging --mode mirror
 
 Mirror removes staging-only work in scope. Pull that work into a branch first, or use `merge` and clean up by hand.
 
-**House rule:** catch drift early: on a CI cron, `d6s sync pull --from production --json`, then commit or open a PR if
+**Recommended:** catch drift early: on a CI cron, `d6s sync pull --from production --json`, then commit or open a PR if
 `git status --porcelain directus/` is non-empty. A clean tree means no drift. Pulls are read-only on the source.
 
 ## Stand up a new environment
@@ -100,7 +100,7 @@ applying-schema.md) or a database restore.
 ## After a Directus upgrade
 
 Upgrade every instance in the chain to the same version (`directus-upgrade` skill), then `d6s sync pull` again from the
-source so the sync files record the new version. **House rule:** don't reach for `--allow-drift` to paper over a
+source so the sync files record the new version. **Recommended:** don't reach for `--allow-drift` to paper over a
 planned upgrade.
 
 ## Sources

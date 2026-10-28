@@ -81,7 +81,7 @@ the chain.
 
 `log` operations and Run Script `console.log` go to the **server** log, not here.
 
-**House rule:** keep `accountability: "all"` while building. For hot event flows in production, consider `"activity"`
+**Recommended:** keep `accountability: "all"` while building. For hot event flows in production, consider `"activity"`
 so you're not writing a revision with the full payload on every save.
 
 ## When a flow doesn't fire or misbehaves

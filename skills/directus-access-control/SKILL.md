@@ -9,7 +9,7 @@ metadata:
 # Directus access control
 
 Design access as small, focused policies stacked on roles and users. Permissions live on policies, never on roles. Lines
-marked **House rule** are Directus's recommended approach; the rest is product behavior.
+marked **Recommended** are Directus's recommended approach; the rest is product behavior.
 
 _Verified against Directus v12.6.0 source (`api/src/permissions`, `api/src/services/permissions.ts`) and the docs._
 
@@ -49,7 +49,7 @@ _Verified against Directus v12.6.0 source (`api/src/permissions`, `api/src/servi
 - **MCP can't manage access.** `items` refuses `directus_*`; schema tools (`collections`, `fields`, `relations`,
   `flows`, `operations`) are admin-only. Use REST as an admin.
 
-## House rules
+## Recommendations
 
 - **One policy per job, many policies per role.** The CMS starter is the recommended starting layout (one way, not the
   only way): [cms-starter-blueprint.md](references/cms-starter-blueprint.md). Its core template grants public read on

@@ -76,11 +76,11 @@ curl -X POST "$DIRECTUS_URL/access" -H "Authorization: Bearer $TOKEN" -H 'Conten
 Build access on dev, then move it with Environment Sync (`d6s`; flags, matching, and refusals are in the
 `directus-environment-sync` skill). Select `--roles`, which brings policies, access rows, and permissions with it.
 
-- **House rule:** never rename a role or policy in only one environment; they match by name.
+- **Recommended:** never rename a role or policy in only one environment; they match by name.
 - Attachments to users only travel when users are in scope.
 - Pulling from an unlicensed source hides custom-rule rows; `mirror` refuses that pull. License the source, or push
   with `merge`.
-- **House rule:** run it as a dedicated admin user per instance, with its own static token (the CLI refuses non-admin
+- **Recommended:** run it as a dedicated admin user per instance, with its own static token (the CLI refuses non-admin
   tokens). Keep the sync user out of synced users, or include it on purpose (a `mirror` push can delete the account it
   runs as).
 

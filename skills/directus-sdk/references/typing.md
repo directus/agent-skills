@@ -99,7 +99,7 @@ There is no official type generator in the Directus monorepo (12.6.0). Options:
 - **OpenAPI:** `GET /server/specs/oas` (SDK `readOpenApiSpec()`) works with any OpenAPI type tool, but is not shaped like the SDK Schema. From 12.6.0 list metadata is `#/components/schemas/Metadata` (was `x-metadata`).
 - `@directus/schema-builder` 2.0 has `types()`, but its readme marks it internal. Don't depend on it.
 
-**House rule:** regenerate types after every schema change and commit the output. Use the admin token only for generation, never at runtime.
+**Recommended:** regenerate types after every schema change and commit the output. Use the admin token only for generation, never at runtime.
 
 ## Common type errors
 

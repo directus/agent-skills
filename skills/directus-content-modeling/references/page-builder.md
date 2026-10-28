@@ -43,7 +43,7 @@ starter is the reference build. Naming follows [relationships.md](relationships.
 
 ## Designing blocks
 
-**House rules:**
+**Recommended:**
 
 - **Content on the block, placement on the junction.** Headline, image, and buttons go on `block_hero`. "Hide this
   block" and "background color" go on `page_blocks`, because the same block could be placed differently elsewhere.

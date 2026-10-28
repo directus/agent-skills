@@ -4,7 +4,7 @@
 
 | Pattern | Model | Use when |
 | --- | --- | --- |
-| **Permalink** | `pages.permalink`: the full path, leading `/` (`/`, `/about`, `/services/web-design`). Unique. | Pages whose URL editors control. **House rule** for pages. |
+| **Permalink** | `pages.permalink`: the full path, leading `/` (`/`, `/about`, `/services/web-design`). Unique. | Pages whose URL editors control. **Recommended** for pages. |
 | **Slug** | `posts.slug`: one segment. The frontend adds the prefix (`/blog/{slug}`). Unique. | Items that live under a fixed route (posts, products, events). |
 | **Nested pages** | M2O `pages.parent` → `pages`, O2M alias `children`, `sort`. The path comes from walking parents. | You need a real page tree (breadcrumbs, navigation built from the hierarchy, moving a section moves its URLs). |
 

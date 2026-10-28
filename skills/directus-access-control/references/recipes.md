@@ -91,7 +91,7 @@ the server.
 | `directus_files` | create | `*` | Preset `{"folder":"<uploads-folder>"}`, validation `{"filesize":{"_lte":"5000000"}}` |
 
 - Without read, a create returns 204 with no body. Granting read on `id` lets the caller get the new key back.
-- **House rule:** don't give the public policy create on submissions or files. Proxy through a server route with the
+- **Recommended:** don't give the public policy create on submissions or files. Proxy through a server route with the
   bot token.
 
 ## API and integration service users

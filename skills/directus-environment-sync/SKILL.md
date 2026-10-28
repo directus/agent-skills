@@ -34,7 +34,7 @@ _Verified against Directus v12.6.0 (CLI source `packages/cli`, `@directus/cli` 1
   It converts nothing between versions or vendors. Re-pull after upgrading the source.
 - **Admin token only.** Non-admin reads are silently permission-filtered and would write sync files that look complete
   but aren't, so the CLI refuses them. If it can't check (network error), it only warns ("Could not verify ...
-  admin access; continuing"): treat that warning as a stop. **House rule (strong):** a dedicated sync admin user per instance with its own
+  admin access; continuing"): treat that warning as a stop. **Strongly recommended:** a dedicated sync admin user per instance with its own
   static token, never a person's account (separate in the logs, revocable alone).
 - **Deletions only in `mirror`, behind their own consent, from freshly pulled files.** `merge` (default) and `add` never
   delete. `--yes` **never** authorizes a deletion (CI needs `--dangerously-allow-delete`). Stale or partially scoped

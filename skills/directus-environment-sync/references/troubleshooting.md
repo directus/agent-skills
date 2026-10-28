@@ -42,7 +42,7 @@ a token in a request body lands in the sync file as-is. The pull warns by operat
 with a query string or embedded credentials, or a body. It can't catch a secret in a plain URL path. Review `data/`
 operation files before committing.
 
-**House rule:** keep secrets out of flow operation options. Add the variable to `FLOWS_ENV_ALLOW_LIST` on each
+**Recommended:** keep secrets out of flow operation options. Add the variable to `FLOWS_ENV_ALLOW_LIST` on each
 instance and reference it as `{{$env.MY_API_KEY}}`, so the sync file holds the reference, not the value.
 
 ## Known limitations

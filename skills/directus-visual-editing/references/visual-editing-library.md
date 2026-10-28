@@ -29,7 +29,7 @@ Parsing rules (`EditableElement.editAttrToObject`):
 - The Studio filters the edit form to fields whose **top-level name** is in `fields`, plus fields inside a selected group. Dot paths match nothing, and when nothing matches the form shows **every** field. Omit `fields` to show all.
 - An element with an empty `item` never activates; `item: '+'` is rejected with an "item not found" dialog.
 
-**House rule:** render `data-directus` only inside the editor ([preview-security.md](preview-security.md#hide-attributes-from-the-public-site)). It exposes collection names and primary keys.
+**Recommended:** render `data-directus` only inside the editor ([preview-security.md](preview-security.md#hide-attributes-from-the-public-site)). It exposes collection names and primary keys.
 
 ## apply() lifecycle
 

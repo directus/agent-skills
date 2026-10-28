@@ -72,7 +72,7 @@ Off by default. Configured with `CACHE_*` env vars.
 - The schema cache (`CACHE_SCHEMA`, on by default) is separate from the data cache and is not affected by
   `CACHE_ENABLED`.
 
-**House rule:** for a public website, turn caching on with `CACHE_AUTO_PURGE=true` so edits show on the next request.
+**Recommended:** for a public website, turn caching on with `CACHE_AUTO_PURGE=true` so edits show on the next request.
 Only cache in a CDN or the browser with auto purge off and a `CACHE_TTL` the user accepts as staleness; with auto purge
 on, responses say `no-cache`. Tell the user which setup they have, because "I saved it but the site didn't change" is
 the usual symptom.

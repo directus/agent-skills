@@ -48,7 +48,7 @@ handled it, unless `EXTENSIONS_LOCATION` is set.
 
 Sharing one Redis between several Directus projects: give each project its own namespaces (`CACHE_NAMESPACE`,
 `SYNCHRONIZATION_NAMESPACE`, `REDIS_BUS_NAMESPACE`, `REDIS_LOCK_NAMESPACE`, and the rest listed in the synchronization
-docs). **House rule:** one Redis database per project is simpler.
+docs). **Recommended:** one Redis database per project is simpler.
 
 ## Load balancers and WebSockets
 

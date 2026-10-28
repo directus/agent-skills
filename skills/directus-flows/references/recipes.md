@@ -2,7 +2,7 @@
 
 ## Flow or extension?
 
-**House rule:** flows are glue: notifications, outbound webhooks, small transforms, and composing utility flows. Write
+**Recommended:** flows are glue: notifications, outbound webhooks, small transforms, and composing utility flows. Write
 a hook or endpoint (`directus-extensions` skill) once the logic branches heavily, needs npm packages, needs tests, or
 runs on every write of a busy collection.
 

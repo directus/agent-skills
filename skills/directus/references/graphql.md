@@ -3,7 +3,7 @@
 Directus generates a GraphQL schema per caller from the data model and their permissions. Same permissions, filter
 operators, and query params as REST, in GraphQL form.
 
-**House rule:** use REST (or the SDK) by default. It covers files, assets, versions, flow triggers, utilities, and
+**Recommended:** use REST (or the SDK) by default. It covers files, assets, versions, flow triggers, utilities, and
 `SEARCH`, has simpler error handling, and is what the MCP tools and most examples use. Pick GraphQL when the caller
 already has a GraphQL client and wants typed, nested selections in one request.
 

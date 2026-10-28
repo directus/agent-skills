@@ -35,7 +35,7 @@ the instance._
 4. **Grep the callers** with each file's patterns, plus the SDK table in
    [sdk-and-extensions](references/sdk-and-extensions.md) for every SDK major you cross (removed commands like
    `generateHash` only fail at runtime if you can't type check). Fix code before or alongside the server bump.
-5. **Upgrade the server.** **House rule:** one major at a time, stopping on the last release of each (9.26.0 → 10.13.4 →
+5. **Upgrade the server.** **Recommended:** one major at a time, stopping on the last release of each (9.26.0 → 10.13.4 →
    11.17.4 → 12.x target), booting each stop once so its migrations run. Skip 12.4.0 (use 12.4.1).
 6. **Run migrations.** Docker runs `directus bootstrap` on start. npm installs don't (`directus start` only logs
    `Database migrations have not all been run`): run `npx directus database migrate:latest` or `npx directus bootstrap`.

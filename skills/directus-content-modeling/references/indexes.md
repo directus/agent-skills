@@ -51,7 +51,7 @@ PATCH /fields/posts/slug            { "schema": { "is_unique": true } }
 
 ## When to index
 
-**House rule:**
+**Recommended:**
 
 - Index every field the frontend or a permission rule filters or sorts on in a collection that grows: `status`,
   `published_at`, category and author FKs, `user_created` when permissions filter on `$CURRENT_USER`.

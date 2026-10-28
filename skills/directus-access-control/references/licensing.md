@@ -106,7 +106,7 @@ Every permission you write on core is "whole collection, all fields, no validati
   Accept that only when drafts aren't sensitive.
 - **License the instance** when you need "own items only", "can't publish", field-level limits, or forced values.
   The core tier has no permission-level way to express them.
-- **Omit rather than flatten.** **House rule:** when a licensed rule exists to narrow a system collection, drop the
+- **Omit rather than flatten.** **Recommended:** when a licensed rule exists to narrow a system collection, drop the
   permission on core instead of flattening it to full access. Flattening widens. The CMS starter's core template does
   flatten; the fixes are at the top of [cms-starter-blueprint.md](cms-starter-blueprint.md).
 

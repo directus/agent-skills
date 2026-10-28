@@ -17,7 +17,7 @@ Rules for every skill in this repo. Read before editing.
 Skills are not a copy of the docs. An agent can already search the docs (docs MCP, `llms.txt`, raw markdown). Spend
 skill lines on what it gets wrong without being told:
 
-- **Keep in skills:** traps, decisions ("use X when, Y when"), house rules, copyable recipes that are safe as written,
+- **Keep in skills:** traps, decisions ("use X when, Y when"), recommendations, copyable recipes that are safe as written,
   corrections where the source disagrees with the docs, and the order to do things in.
 - **Link to docs:** exhaustive reference material (every flag, option, env var, endpoint parameter). Summarize the 3-5
   an agent actually needs and link the rest.
@@ -80,7 +80,7 @@ three.
   - Source files pinned to the tag: `https://github.com/directus/directus/blob/v12.6.0/<path>`.
   - Starters: `https://github.com/directus-labs/starters/tree/main/<path>`.
 - Facts vs opinions: house conventions (choices Directus would recommend but the product doesn't enforce) are marked
-  `**House rule:**` so an agent can tell them from hard product behavior.
+  `**Recommended:**` so an agent can tell them from hard product behavior.
 
 ## What to pin
 

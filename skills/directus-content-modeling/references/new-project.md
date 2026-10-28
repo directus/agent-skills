@@ -62,7 +62,7 @@ npx directus-template-cli@latest apply -p \
   `_scripts/`).
 - **A `custom_permission_rules_enabled` 403 during a core apply is expected.** The CLI probes licensed features.
 
-**House rule:** start from a starter with the template CLI, once, on dev. Then the dev instance is the source of truth:
+**Recommended:** start from a starter with the template CLI, once, on dev. Then the dev instance is the source of truth:
 track schema and config with `d6s sync pull` and promote with `d6s sync push`. Don't re-apply the template to staging
 or production.
 

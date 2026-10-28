@@ -40,7 +40,7 @@ Copy into the upgrade ticket or PR and tick off per stop (for example 10.13.4 â†
 
 ### Upgrade
 
-- [ ] Scale to one replica (House rule: one process runs the migrations)
+- [ ] Scale to one replica (Recommended: one process runs the migrations)
 - [ ] Bump Docker tag / `directus` package to the target (pinned, not `latest`)
 - [ ] Env changes from each hop file applied
 - [ ] Health checks point at `http://127.0.0.1:8055/server/ping` (12.x; not `localhost`)
@@ -94,13 +94,13 @@ Each hop file lists its env changes. Combined sweep:
   (decimals as strings, strict charset comparison; match `DB_CHARSET`).
 - Docker: pin a version tag. Images run `bootstrap` (migrations) on every start.
 - Redis: required for multiple replicas.
-- **House rule:** clear caches after each upgrade stop. With `CACHE_STORE=redis`: `node /directus/cli.js cache clear`
+- **Recommended:** clear caches after each upgrade stop. With `CACHE_STORE=redis`: `node /directus/cli.js cache clear`
   in the container (12.1+ images have no `npx`; the command doesn't exist in 10.13.4). With a memory cache the
   command refuses; restart instead.
 
 ## Rollback
 
-- **House rule:** treat database restore as the rollback path. `database migrate:down` reverts one migration at a time
+- **Recommended:** treat database restore as the rollback path. `database migrate:down` reverts one migration at a time
   and some migrations transform data (roles to policies in 11.0, webhooks table dropped in 11.14.1, comments moved in
   11.1.2), so stepping down a major is not reliable.
 - Steps: stop Directus, restore the DB dump and uploads backup taken before this stop, redeploy the previous image tag

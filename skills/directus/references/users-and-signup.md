@@ -21,7 +21,7 @@ If the registration role grants App Access, every signup takes a seat. Once the 
 returns 403 `LIMIT_EXCEEDED` (`extensions.category: "seats"`). The env limits `USERS_APP_ACCESS_LIMIT` and
 `USERS_API_ACCESS_LIMIT` (default unlimited) also count members if you set them.
 
-**House rule:** one `Customer` (or `Member`) role with a policy that has App Access off, holding only the member
+**Recommended:** one `Customer` (or `Member`) role with a policy that has App Access off, holding only the member
 permissions. Building that policy: `directus-access-control`. On core, permissions can't have item rules, so "members
 only see their own orders" needs a license. The Studio's recommended "update own user" permission is the exception that
 works on core.
@@ -93,7 +93,7 @@ Login, refresh, and logout are in [auth-and-access.md](auth-and-access.md). Pick
 | Browser, different site | `cookie` (refresh token in httpOnly cookie) plus CORS and `REFRESH_TOKEN_COOKIE_*` setup |
 | Server-rendered app (BFF, Next.js server) | `json` on the server; keep tokens in your own httpOnly session, never in JS |
 
-**House rule:** never put a refresh token in `localStorage`. SDK code for each mode: `directus-sdk`
+**Recommended:** never put a refresh token in `localStorage`. SDK code for each mode: `directus-sdk`
 (`references/setup-and-auth.md`).
 
 A member with no `directus_users` read permission still gets `GET /users/me` back, but only `{ "id": ... }`. Grant

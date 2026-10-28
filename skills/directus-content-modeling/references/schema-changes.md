@@ -83,7 +83,7 @@ unknown values), verify, switch, delete. Only `PATCH` the type in place on dev, 
 **Merge collections** (`news` into `posts`): add a discriminator (`type`) to `posts`, copy `news` items keeping their
 UUIDs, recreate relations that pointed at `news`, add redirects for old URLs (see
 [routing-and-seo.md](routing-and-seo.md)), switch, delete `news`. Integer keys from two collections collide; this is
-one reason for the UUID house rule.
+one reason for the UUID recommendation.
 
 ## Making a field required or unique
 

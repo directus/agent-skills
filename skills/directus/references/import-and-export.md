@@ -68,7 +68,7 @@ curl -X POST "$DIRECTUS_URL/utils/import?dryRun=true" -H "Authorization: Bearer 
 - Ids pointing at collections **not** in the payload pass through unchanged. Swap in new file ids yourself.
 - JSON bodies are capped by `MAX_PAYLOAD_SIZE` (1mb). For more, send the JSON as a multipart file (`IMPORT_MAX_FILE_SIZE`).
 
-**House rule:** run with `dryRun=true` first, show the user the counts, then run for real.
+**Recommended:** run with `dryRun=true` first, show the user the counts, then run for real.
 
 ## Upsert by a natural key
 

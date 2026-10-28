@@ -30,7 +30,7 @@ Draft-mode edits still land in the right place (the page's version), just less t
 
 ## Recommended pattern
 
-**House rule:** when the parent page is versioned, route every block edit through the parent, in both published and draft views, with `fields: ['blocks']`:
+**Recommended:** when the parent page is versioned, route every block edit through the parent, in both published and draft views, with `fields: ['blocks']`:
 
 ```ts
 export const setBlockAttr = (pageId: string) =>
@@ -46,7 +46,7 @@ If you want popovers on individual block fields and accept that those edits go l
 
 ## Translated blocks
 
-In `cms-i18n`, default-locale content sits on the block's own fields and other locales in `<block>_translations` (`languages_code`). The starter's attributes still name the base fields (`tagline`, `headline`), so on a non-default locale the editor opens the default-language value. **House rule:** when rendering a non-default locale, include `translations` in `fields` so the translations interface is in the form.
+In `cms-i18n`, default-locale content sits on the block's own fields and other locales in `<block>_translations` (`languages_code`). The starter's attributes still name the base fields (`tagline`, `headline`), so on a non-default locale the editor opens the default-language value. **Recommended:** when rendering a non-default locale, include `translations` in `fields` so the translations interface is in the form.
 
 ## Sources
 

@@ -57,14 +57,14 @@ beyond core.
 into an empty database**, and only if email and password are both set. Later changes are ignored. Leave them unset to
 use the Studio onboarding screen. Lost password: `node /directus/cli.js users passwd --email <e> --password <p>`.
 
-**House rule:** remove `ADMIN_PASSWORD` from the env after the first boot, and rotate the admin password and
+**Recommended:** remove `ADMIN_PASSWORD` from the env after the first boot, and rotate the admin password and
 `ADMIN_TOKEN` in the Studio.
 
 ## Proxies, CORS, cookies
 
 - **`IP_TRUST_PROXY`** (default `false`) is Express `trust proxy`. Accepts `true`, a hop count (`1`), or a
   comma-separated list of proxy IPs or CIDRs. With `false`, rate limits, policy `ip_access` allowlists, and activity
-  logs see the proxy's IP. **House rule:** use a hop count or the proxy's CIDR, not `true`; `true` trusts any
+  logs see the proxy's IP. **Recommended:** use a hop count or the proxy's CIDR, not `true`; `true` trusts any
   client-sent `X-Forwarded-For`, so a client can pick its own IP and dodge rate limits or allowlists.
 - A reverse proxy in front (nginx shown; Caddy and Traefik pass these by default) needs the forwarded headers,
   WebSocket upgrades if `WEBSOCKETS_ENABLED=true`, and a body limit at least as big as your largest upload:

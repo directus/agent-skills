@@ -45,7 +45,7 @@ curl -X POST "$DIRECTUS_URL/auth/login" \
 - One per user, never expires, stored in plain text in `directus_users.token`.
 - Generate in the Studio on the user page, or `PATCH /users/<id>` with `{ "token": "<random string>" }`
   (`GET /utils/random/string` makes one).
-- The token carries the user's full permissions. **House rule:** create a dedicated user with a scoped role for each
+- The token carries the user's full permissions. **Recommended:** create a dedicated user with a scoped role for each
   integration or agent, not a personal admin account.
 - Users without App Access or Admin Access are API-only and don't count as a licensed seat.
 

@@ -23,7 +23,7 @@ anything in them and they are refused. Applying the core template to an unlicens
 
 ## Policies
 
-**House rule:** one policy per job, then build each role from several policies. That gives reuse (`Content - Public`
+**Recommended:** one policy per job, then build each role from several policies. That gives reuse (`Content - Public`
 serves anonymous visitors and the Writer role), clean seats (only `Team - App Access` has `app_access`), one-offs
 without a new role (the Frontend Bot), and smaller Environment Sync diffs. Avoid one big policy per role; it duplicates
 rules across roles and drifts.
@@ -70,7 +70,7 @@ policies are easier to read.
    `directus_revisions`. The starter enables versioning on `pages` and `posts`, but none of its policies grant anything
    on `directus_versions`, and it isn't in the automatic Studio permissions. The versions service runs as the caller,
    so non-admin Editors can't create or save drafts until you add it.
-5. **House rule:** give the Live Preview policy to a dedicated preview user, not the Administrator role, if your
+5. **Recommended:** give the Live Preview policy to a dedicated preview user, not the Administrator role, if your
    frontend uses a non-admin token for drafts.
 
 Apply the starter to a fresh instance with `npx directus-template-cli@latest apply`.

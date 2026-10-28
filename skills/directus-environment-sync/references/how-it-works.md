@@ -25,7 +25,7 @@ directus/default/         # <directory>/<project>/
 - The CLI never checks git: a push applies uncommitted edits too. Keep the tree clean so disk matches the reviewed
   commit.
 - Output is deterministic; `git diff` after a pull shows only real instance changes.
-- Hand-edited or corrupt files stop the command with a named error. **House rule:** model in the Data Studio and pull.
+- Hand-edited or corrupt files stop the command with a named error. **Recommended:** model in the Data Studio and pull.
   Don't author sync files by hand.
 
 ## What syncs

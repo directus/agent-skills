@@ -93,7 +93,7 @@ rules on writes all have to pass.
   primary key and to every field used in the filter. Fields used in a filter, sort, or `deep` on any action are checked
   against **read** permissions.
 
-**House rule:** because validation is AND-ed across policies, put validation only in policies that also own the
+**Recommended:** because validation is AND-ed across policies, put validation only in policies that also own the
 permission it guards (for example, "can't publish" lives in the Writer's own policy), never in a shared baseline policy.
 
 ## Automatic Studio permissions

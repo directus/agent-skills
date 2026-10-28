@@ -9,7 +9,7 @@ metadata:
 # Directus content modeling
 
 Design schemas that hold up: predictable names, the right relationship type, and a Studio that editors like using. Facts
-are product behavior. Lines marked **House rule** are Directus's recommended conventions; follow them unless the user or
+are product behavior. Lines marked **Recommended** are Directus's recommended conventions; follow them unless the user or
 the existing schema says otherwise.
 
 ## First checks
@@ -20,7 +20,7 @@ the existing schema says otherwise.
    notes since 12.6.0 first.
 2. **Read the existing schema before proposing anything.** With MCP: `schema()` then `schema({ keys: [...] })`. Without
    it: `GET /collections`, `GET /fields/:collection`, `GET /relations`. Match the conventions already in use, even when
-   they differ from the house rules. Consistency inside a project beats our defaults.
+   they differ from our recommendations. Consistency inside a project beats our defaults.
 3. **Collections and collection folders share a namespace.** A `website` folder blocks a `website` collection.
 4. **Check the license tier.** Junction and `*_translations` collections count toward the collection limit. Plan the
    total before you build. See [conventions.md](references/conventions.md#plan-limits).
@@ -36,12 +36,12 @@ the existing schema says otherwise.
   `special`), then the relation. For M2M/M2A/translations, create the junction first, and give **both** junction
   relations `meta` (`one_field` on the parent side, `junction_field` pointing at the other FK). Without it the data
   saves but the Studio's M2M and translations interfaces can't use the junction. Copy the payloads in the references.
-- **The primary key type is permanent.** **House rule:** UUID for every collection, except lookup tables keyed by a
+- **The primary key type is permanent.** **Recommended:** UUID for every collection, except lookup tables keyed by a
   natural string (`languages.code`, `navigation.id` slugs).
 - **FK column type must match the target PK type.** M2O to a UUID-keyed collection is `type: "uuid"`; to `languages`
   it's `type: "string"`.
 - **O2M fields are aliases.** No column. The O2M field is the `meta.one_field` of the M2O relation on the other side.
-- **Set `on_delete` on every relation; the Studio defaults leave orphans.** **House rule:** M2M, files, and translations
+- **Set `on_delete` on every relation; the Studio defaults leave orphans.** **Recommended:** M2M, files, and translations
   `CASCADE` on both junction FKs. M2A `CASCADE` on the parent FK only: the `item` side is not a real FK
   (`schema: null`), so deleting a block leaves its junction row behind. M2O and O2M `SET NULL`. See
   [relationships.md](references/relationships.md#on_delete).
@@ -71,8 +71,8 @@ the existing schema says otherwise.
 ## Reference implementation
 
 The Directus CMS starter shows these conventions at scale (22 collections plus 2 folders, UUID keys, an M2A page
-builder, an i18n variant). Copy its shapes, not all of its settings. **Where the starter differs from the house rules,
-the house rules win:**
+builder, an i18n variant). Copy its shapes, not all of its settings. **Where the starter differs from our recommendations,
+our recommendations win:**
 
 - `page_blocks.page` (and the i18n variant's translation relations) use `SET NULL`; the rule is `CASCADE`.
 - `pages.permalink` is nullable and `posts.slug` isn't unique; make both required and unique.

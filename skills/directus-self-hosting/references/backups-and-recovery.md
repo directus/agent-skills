@@ -18,7 +18,7 @@
 
 Redis needs no backup: it holds caches, locks, and messages that Directus rebuilds.
 
-**House rule:** dump the database and copy the files at the same time, keep several days of history off the server,
+**Recommended:** dump the database and copy the files at the same time, keep several days of history off the server,
 and test a restore before you need one.
 
 ## What is not a backup

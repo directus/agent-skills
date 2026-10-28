@@ -141,7 +141,7 @@ The app half (`defineOperationApp`) and API half (`defineOperationApi`) must sha
   `skipTracking`. Other services take only options (`new CollectionsService({ schema, accountability })`); full list
   in [api/src/services](https://github.com/directus/directus/tree/v12.6.0/api/src/services).
 
-**House rule:** default to the caller's `accountability`. Use admin access only for system work the caller can't do
+**Recommended:** default to the caller's `accountability`. Use admin access only for system work the caller can't do
 themselves, and check authorization yourself before you do.
 
 ## Errors
@@ -158,7 +158,7 @@ throw new InvalidPayloadError({ reason: 'title is required' });
 - Directus recognizes errors by shape (`name === 'DirectusError'`), so a bundled copy of `@directus/errors` works.
   Other errors become a generic 500.
 - The docs say `@directus/errors` is available without installing, but the build only leaves `directus` and
-  `directus:api` external, and directus-labs extensions list it as a dependency. **House rule:**
+  `directus:api` external, and directus-labs extensions list it as a dependency. **Recommended:**
   `npm install @directus/errors` and let it bundle.
 
 ## Environment variables

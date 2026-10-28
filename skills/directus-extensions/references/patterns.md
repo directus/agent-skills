@@ -78,7 +78,7 @@ The source uses `forEach(async ...)` without awaiting; prefer `for...of` with `a
 ## Repo layout for many extensions
 
 - directus-labs: pnpm workspace, one package per extension under `packages/`, all scoped `@directus-labs/*`, `repository.directory` set per package, a shared `docker-compose.yml` that mounts the packages as extensions with auto reload.
-- **House rule:** for a project's own extensions, start with one `bundle` and add entries as you go. One build, one install, shared dependencies, and app parts can call their endpoints. Split into separate packages only for things you publish independently.
+- **Recommended:** for a project's own extensions, start with one `bundle` and add entries as you go. One build, one install, shared dependencies, and app parts can call their endpoints. Split into separate packages only for things you publish independently.
 
 ## Sources
 

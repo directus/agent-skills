@@ -40,7 +40,7 @@ await app.connect();
 - **Session cookies authenticate the upgrade.** If the browser sends `directus_session_token` with the WebSocket request (same site as Directus), the server authenticates from it in every server auth mode. `authentication('session')` has no bearer token, so `handshake` rejects `connect()`. Use `realtime({ authMode: 'public' })` on the client so the cookie does the work.
 - A `?access_token=` on the socket URL (what `strict` sends) is also accepted when the server mode is `handshake`.
 
-**House rule:** in browsers, authenticate realtime as the logged-in user. Never ship a static token for realtime.
+**Recommended:** in browsers, authenticate realtime as the logged-in user. Never ship a static token for realtime.
 
 ## Subscribe
 

@@ -188,7 +188,7 @@ Gaps to cover by hand:
 d6s sync push --to staging --mode mirror --yes --dangerously-allow-delete
 ```
 
-**House rule (from the docs):** reserve this for pipelines that rebuild disposable environments. Keep production on
+**Recommended (from the docs):** reserve this for pipelines that rebuild disposable environments. Keep production on
 `merge` unless a human reviewed the deletions in a mirror diff.
 
 ## Sources

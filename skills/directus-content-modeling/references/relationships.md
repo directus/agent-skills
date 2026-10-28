@@ -21,12 +21,12 @@
 | Child rows owned by one parent (menu items, pricing cards, form fields) | O2M (child has the M2O) | `child.parent` |
 | A shared list editors manage once and pick from (categories, product types, regions) | A small **config collection** + M2O or M2M to it |  |
 
-**House rule:** if the child rows only make sense inside one parent, use O2M, not M2M. M2M is for things that exist
+**Recommended:** if the child rows only make sense inside one parent, use O2M, not M2M. M2M is for things that exist
 independently and get reused (tags, categories, people).
 
 ## Naming
 
-**House rule:** name relational fields after the collection they point to, singular. No `_id` suffix. The API returns
+**Recommended:** name relational fields after the collection they point to, singular. No `_id` suffix. The API returns
 the related object under that key when you expand it (`post.author.name`, `page_block.page.title`), so the key should
 read like the thing.
 
@@ -126,7 +126,7 @@ frontend.
 
 ## on_delete
 
-**House rule:**
+**Recommended:**
 
 | Relation | `on_delete` (both sides of a junction) |
 | --- | --- |

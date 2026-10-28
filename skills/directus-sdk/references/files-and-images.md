@@ -23,7 +23,7 @@ export function assetUrl(file: string | { id: string } | null | undefined, param
 
 An `<img>` request carries no `Authorization` header. Directus authenticates it with Directus cookies (session mode on a shared site) or `?access_token=<token>` in the URL. Otherwise it runs as Public, so public site images need Public read on `directus_files` (scope it with a filter, for example by folder).
 
-**House rule:** don't put a static or admin token in `access_token` on public pages; it lands in HTML, logs, and caches. For private files, proxy through your server (`readAssetRaw` with a server token, streamed after your own auth check) or use the logged-in user's short-lived access token.
+**Recommended:** don't put a static or admin token in `access_token` on public pages; it lands in HTML, logs, and caches. For private files, proxy through your server (`readAssetRaw` with a server token, streamed after your own auth check) or use the logged-in user's short-lived access token.
 
 ## Transforms and presets
 
@@ -31,7 +31,7 @@ An `<img>` request carries no `Authorization` header. Directus authenticates it 
 - `format=auto` returns AVIF if `Accept` allows it, else WebP, else the source format (AVIF/WebP/TIFF sources come back as PNG). It never forces JPEG.
 - The SDK `AssetsQuery` type omits `avif` from `format`, though the API accepts it. Cast or use `auto`.
 
-**House rule:** define presets for the sizes your site uses and request `?key=card` style URLs. Each distinct param combination creates and stores a new derivative.
+**Recommended:** define presets for the sizes your site uses and request `?key=card` style URLs. Each distinct param combination creates and stores a new derivative.
 
 ## Framework image components
 
@@ -63,7 +63,7 @@ const imported = await directus.request(importFile('https://example.com/photo.jp
 - **Order matters.** The API reads multipart fields that arrive before each file; fields appended after the `file` part are not applied to it. The file part needs a filename; its field name is ignored (`file` by convention).
 - `storage` must be one of `STORAGE_LOCATIONS` exactly, or `INVALID_PAYLOAD`. Omit it to use the first location.
 - The SDK removes its `Content-Type` header for `FormData` so fetch sets the multipart boundary.
-- Uploading needs create on `directus_files`. **House rule:** for public forms, upload from a server route with a narrow-permission token, not from the browser with a privileged one (as the starters' form handlers do).
+- Uploading needs create on `directus_files`. **Recommended:** for public forms, upload from a server route with a narrow-permission token, not from the browser with a privileged one (as the starters' form handlers do).
 
 ## Sources
 

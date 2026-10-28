@@ -12,7 +12,7 @@
 
 Collection and field names become table and column names and API paths. You can't rename them cheaply.
 
-| Thing | **House rule** | Example |
+| Thing | **Recommended** | Example |
 | --- | --- | --- |
 | Collections | `snake_case`, plural | `posts`, `team_members` |
 | Singletons | `snake_case`, singular | `globals`, `site_settings` |
@@ -36,7 +36,7 @@ Collection and field names become table and column names and API paths. You can'
 Options: auto-increment integer, auto-increment big integer (Postgres/MySQL only), generated UUID, manually entered
 string. The type can't be changed after creation.
 
-**House rule:** UUID for every collection. UUIDs are safe to generate on the client and in seed data, so templates and
+**Recommended:** UUID for every collection. UUIDs are safe to generate on the client and in seed data, so templates and
 imports never collide. Environment Sync and template tooling match records across instances by key, where integer keys
 collide. They don't leak row counts or creation order in public URLs.
 
@@ -54,7 +54,7 @@ frontend references by a stable handle (the starter's `navigation.id` = `main`, 
 
 ## System fields
 
-**House rule:** every content collection gets the four tracking fields, hidden and read-only, at the bottom of the
+**Recommended:** every content collection gets the four tracking fields, hidden and read-only, at the bottom of the
 form:
 
 | Field | type | special | interface |
@@ -70,7 +70,7 @@ adds them to junctions too; skip them there only if the user asks for a minimal 
 
 ## Status, sort, archive
 
-**Status** (**House rule:** on anything with a publish lifecycle):
+**Status** (**Recommended:** on anything with a publish lifecycle):
 
 ```json
 {
@@ -106,7 +106,7 @@ items unless the caller filters.
 
 ## Collection settings
 
-| Setting | **House rule** |
+| Setting | **Recommended** |
 | --- | --- |
 | `icon` | Always set. Material Symbols name. |
 | `note` | One sentence saying what the collection is for. Shows in the data model and helps agents. |
@@ -122,7 +122,7 @@ its type ("Short phrase shown under the logo." not "A string field.").
 
 ## Organizing the Studio
 
-- **Folders** (collections with `schema: null`) group the sidebar and don't count toward plan limits. **House rule:**
+- **Folders** (collections with `schema: null`) group the sidebar and don't count toward plan limits. **Recommended:**
   one folder per domain (`website`, `blocks`, `forms`), with child collections nested via `meta.group`.
 - Nest dependent collections under their parent: `navigation_items` under `navigation`, `block_gallery_items` under
   `block_gallery`, `page_blocks` under `pages`.

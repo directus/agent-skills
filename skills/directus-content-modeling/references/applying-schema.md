@@ -11,7 +11,7 @@
 | Seeding content (demo data, fixtures, initial pages) | A seed script (see [Seeding content](#seeding-content)) |
 | Starting a new project from a Directus starter (schema + content + frontend) | `directus-template-cli` (`init` / `apply`) |
 
-**House rule:** model on a dev instance, promote with Environment Sync. Never hand-build schema on production.
+**Recommended:** model on a dev instance, promote with Environment Sync. Never hand-build schema on production.
 
 ## MCP
 
@@ -52,7 +52,7 @@ command against a shared instance. The traps that delete data:
 
 ## Seeding content
 
-**House rule:** seed content with scripts, not templates. A script runs anywhere (local, CI, against Cloud), is
+**Recommended:** seed content with scripts, not templates. A script runs anywhere (local, CI, against Cloud), is
 reviewable, and gives the same result every time. Environment Sync moves schema and config, not content.
 
 - One script per dataset, committed next to the sync files. Read `DIRECTUS_URL` and a token from env. Use

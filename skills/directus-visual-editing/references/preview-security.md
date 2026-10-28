@@ -15,7 +15,7 @@ Result: anyone who adds `?preview=true` (or `?version=draft` on Next.js) sees un
 
 ## Recommended setup
 
-**House rule:** for anything public, do all of these.
+**Recommended:** for anything public, do all of these.
 
 1. **Preview user and token.** A user (for example `preview-bot`) whose policy can only **read** the previewed collections, the related collections you expand (blocks, files, authors), and `directus_versions`. Store its static token server-side as `DIRECTUS_PREVIEW_TOKEN`. Never the admin token.
 2. **Separate preview secret.** A random string (`PREVIEW_SECRET`, 32+ bytes) that is **not** a Directus token, in the Preview URL and Visual Editor URLs:

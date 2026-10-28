@@ -12,7 +12,7 @@ A utility flow is a small flow with `trigger: "operation"` that other flows call
 work you'd otherwise copy into several flows (render a template, send an email, read globals), and as the loop body when
 you need to run steps per item.
 
-**House rules:**
+**Recommended:**
 
 - Name them `Utils → <Verb Noun>` (`Utils → Send Email`). Match the project if it already uses a variant (the CMS
   starter writes `Utils -> Duplicate Page`).

@@ -16,7 +16,7 @@ Built-in features need no build, no deploy, and survive upgrades.
 | Dashboard chart | Built-in Insights panels | The visualization or interaction doesn't exist (panel) |
 | Show a value differently in lists | Display templates and built-in displays | The rendering needs custom code (display) |
 
-**House rule:** prefer a hook or endpoint over a complex flow. Flows are great glue, but heavy branching, loops, libraries, and anything that needs tests belong in code.
+**Recommended:** prefer a hook or endpoint over a complex flow. Flows are great glue, but heavy branching, loops, libraries, and anything that needs tests belong in code.
 
 **Check hosting first:** Directus Cloud allows custom extensions only on the Enterprise tier, enabled by support ticket ([Cloud custom extensions](https://directus.com/docs/cloud/configuration/custom-extensions)). On other Cloud plans, use flows and sandboxed Marketplace extensions.
 
@@ -43,7 +43,7 @@ Types come from `@directus/constants` at v12.6.0 (`richtext` is new in 12.6.0).
 - **App** extensions run in the user's browser with that user's session and permissions. They can't hold secrets.
 - **API** extensions run in the Directus Node process with full access to services, the database (Knex), and `env`. A bug here can take down the server or leak data.
 
-**House rule:** if the Studio part needs a secret or a keyed third-party API, put the call in an endpoint (or operation), have the app extension call it with `useApi()`, and ship both in one bundle.
+**Recommended:** if the Studio part needs a secret or a keyed third-party API, put the call in an endpoint (or operation), have the app extension call it with `useApi()`, and ship both in one bundle.
 
 ## Common requests
 

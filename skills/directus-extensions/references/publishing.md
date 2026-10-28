@@ -50,7 +50,7 @@ npm publish --access public # scoped packages need --access public on first publ
 
 Bump `host` when you test against a new Directus major.
 
-**House rule:** match directus-labs conventions for public packages: README with screenshots, `license` file, explicit `host` range, and `sandbox` enabled for API extensions whenever the scopes allow it.
+**Recommended:** match directus-labs conventions for public packages: README with screenshots, `license` file, explicit `host` range, and `sandbox` enabled for API extensions whenever the scopes allow it.
 
 ## Sources
 

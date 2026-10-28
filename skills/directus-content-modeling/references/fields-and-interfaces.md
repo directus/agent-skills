@@ -54,13 +54,13 @@ Use `json` + `list` (Repeater) when the rows are small, owned by one item, and r
 `globals`, feature bullets on a pricing card). Set the `list` edit mode to `inline` for short rows. It also saves a
 collection against plan limits.
 
-**House rule: config collections.** When several items share a set of values editors should manage (product
+**Recommended: config collections.** When several items share a set of values editors should manage (product
 categories, regions, event types), make a small config collection and relate to it (M2O or M2M). Don't hard-code
 `choices` on a dropdown, and don't copy the values into JSON on every item.
 
 ## Rich text
 
-- **House rule:** `input-rich-text-html` (WYSIWYG) for editor-facing long-form content (posts, rich text blocks).
+- **Recommended:** `input-rich-text-html` (WYSIWYG) for editor-facing long-form content (posts, rich text blocks).
   Editors expect WYSIWYG, and the frontend renders HTML directly.
 - From 12.6.0, `richtext` extensions add editor features to `input-rich-text-html` through `meta.options.extensions`
   (ids) and `extensionOptions`. None are on by default. Building one: `directus-extensions`.
@@ -80,7 +80,7 @@ categories, regions, event types), make a small config collection and relate to 
 - Presentation (`special: ["alias", "no-data"]`): `presentation-divider`, `presentation-notice` (tell editors what a
   section does), `header` (section header with action links), `presentation-links` (buttons to the live page or docs).
 
-**House rule:** a collection with more than ~8 editor-facing fields gets tabs (the CMS starter splits pages and posts
+**Recommended:** a collection with more than ~8 editor-facing fields gets tabs (the CMS starter splits pages and posts
 into "Content" and "SEO"). Name presentation and group fields with a `meta_` prefix so they're easy to spot in the API
 and the field list.
 
@@ -99,7 +99,7 @@ and the field list.
 
 ## Marketplace interfaces
 
-**House rule:** core interfaces first. Several interfaces the CMS starter originally pulled from `@directus-labs` are
+**Recommended:** core interfaces first. Several interfaces the CMS starter originally pulled from `@directus-labs` are
 core at 12.5.1: `super-header` (`@directus-labs/super-header-interface`) is now `header`, and
 `inline-repeater-interface` is `list` with edit mode `inline`.
 

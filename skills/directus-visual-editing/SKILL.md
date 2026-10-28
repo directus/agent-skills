@@ -39,7 +39,7 @@ the monorepo package._
 - **`directusUrl` in `apply()` must be the Studio's exact origin.** The library drops messages from any other origin,
   and the Studio drops messages from any origin but the iframe's. A mismatch fails silently.
 - **`?preview=true` is not auth.** The Nuxt, SvelteKit, and Astro starters swap in an admin token on bare
-  `?preview=true`; the Next.js starter reads with the admin token on every request. **House rule:** gate preview with a
+  `?preview=true`; the Next.js starter reads with the admin token on every request. **Recommended:** gate preview with a
   server-checked secret that is not a Directus token, and read drafts with a least-privilege preview token. See
   [preview-security.md](references/preview-security.md).
 - **`readItem` with a version the item doesn't have returns 403**, not the published item. Catch it and fall back with

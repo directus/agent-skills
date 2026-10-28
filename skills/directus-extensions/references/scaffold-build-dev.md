@@ -46,7 +46,7 @@ npx create-directus-extension@latest hook my-hook --no-install
 // "source": { "app": "src/app.ts",  "api": "src/api.ts" }
 ```
 
-- `host` is only read by the Marketplace. The scaffold writes `^10.10.0` (the SDK's `LAST_BREAKING_RELEASE`), or `^12.6.0` for `richtext`; a bundle takes the highest of its entries. **House rule:** set `host` to the range you actually tested, for example `"^12.0.0"` on a v12 project.
+- `host` is only read by the Marketplace. The scaffold writes `^10.10.0` (the SDK's `LAST_BREAKING_RELEASE`), or `^12.6.0` for `richtext`; a bundle takes the highest of its entries. **Recommended:** set `host` to the range you actually tested, for example `"^12.0.0"` on a v12 project.
 - Optional `hidden` (boolean). `sandbox`: see [sandbox-and-security.md](sandbox-and-security.md).
 - `"type": "module"` makes the API build output ESM; without it the API output is CJS. App output is always ESM.
 

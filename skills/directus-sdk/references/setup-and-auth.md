@@ -34,9 +34,9 @@
 | Server holds the user's tokens (BFF, mobile, CLI) | `authentication('json', { storage })` with your own storage. |
 | SSO (Google, GitHub, OIDC, SAML) | Redirect to `/auth/login/<provider>?redirect=...`, then `client.refresh()` on return. `login()` does not work for redirect providers. |
 
-**House rule:** never put an admin token or any static token in browser code. `PUBLIC_*` includes Astro/SvelteKit `$env/static/public`.
+**Recommended:** never put an admin token or any static token in browser code. `PUBLIC_*` includes Astro/SvelteKit `$env/static/public`.
 
-**Server vs browser.** `authentication()` and `staticToken().setToken()` keep the token in the client closure, so a module-level client in Next.js, Nuxt (Nitro), SvelteKit, or Astro SSR is shared by every request. For per-user calls on the server, create a client per request or use `withToken()`. A module-level client with a fixed server token or no token is fine; all four CMS starters do this. Their `DIRECTUS_SERVER_TOKEN` is an admin static token. **House rule:** for production, mint a token for a dedicated user whose policy reads only what the site needs (including `directus_versions` if you preview drafts).
+**Server vs browser.** `authentication()` and `staticToken().setToken()` keep the token in the client closure, so a module-level client in Next.js, Nuxt (Nitro), SvelteKit, or Astro SSR is shared by every request. For per-user calls on the server, create a client per request or use `withToken()`. A module-level client with a fixed server token or no token is fine; all four CMS starters do this. Their `DIRECTUS_SERVER_TOKEN` is an admin static token. **Recommended:** for production, mint a token for a dedicated user whose policy reads only what the site needs (including `directus_versions` if you preview drafts).
 
 ## `authentication()` in detail
 
@@ -74,7 +74,7 @@ const storage = {
 const client = createDirectus<Schema>(url).with(authentication('json', { storage })).with(rest());
 ```
 
-**House rule:** prefer `cookie` or `session` mode in browsers so the refresh token stays httpOnly. `localStorage` storage in `json` mode exposes the refresh token to any script on the page.
+**Recommended:** prefer `cookie` or `session` mode in browsers so the refresh token stays httpOnly. `localStorage` storage in `json` mode exposes the refresh token to any script on the page.
 
 ## Static and per-request tokens
 

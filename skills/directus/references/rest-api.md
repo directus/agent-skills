@@ -32,7 +32,7 @@ array. The non-obvious forms:
 - Batch mutations are transactional: all succeed or all fail. `MAX_BATCH_MUTATION` caps the batch size (default
   unlimited); over it fails with `INVALID_PAYLOAD`.
 
-**House rule:** delete by explicit keys. Read the matching keys first, confirm the count with the user, then delete.
+**Recommended:** delete by explicit keys. Read the matching keys first, confirm the count with the user, then delete.
 
 ## Responses
 

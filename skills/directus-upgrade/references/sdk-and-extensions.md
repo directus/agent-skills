@@ -15,7 +15,7 @@ In grep patterns inside tables, `\|` is an escaped pipe: type a plain `|` in you
 
 ## Version map
 
-Versions in the monorepo at each release tag. **House rule:** pin the SDK major that shipped with your server version,
+Versions in the monorepo at each release tag. **Recommended:** pin the SDK major that shipped with your server version,
 and bump both together.
 
 | Directus | `@directus/sdk` | `@directus/extensions-sdk` | Node (`directus` engines) |
