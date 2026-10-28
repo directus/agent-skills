@@ -17,6 +17,17 @@ Rows marked **licensed** need a license on v12; on the core tier, see
 
 ## Public read of published content
 
+Two valid setups. Ask which one the project uses, or pick with the user:
+
+| Setup | How | Good for | Cost |
+| --- | --- | --- | --- |
+| **Public API** | Browsers call Directus with no token; the public policy grants read with the rules below | Static or client-rendered sites, simple stacks, the SDK in the browser | Every exposed collection and field is open to anyone, so rules and field lists must be right |
+| **Server-side only** (backend-for-frontend) | The frontend's server routes (Next.js route handlers, Nuxt server routes, Astro endpoints, SvelteKit `+server`) call Directus with a server token | Sites that want the content API unreachable, or need rules core can't express | Every data request goes through your server |
+
+Either way, expose the fewest collections and fields the site needs. **Assets usually stay direct** in both setups:
+serve them from Directus `/assets` so image bytes don't flow through (and get billed on) the frontend server. That
+needs public read on `directus_files`, scoped to the `public` folder below.
+
 Attach to the public policy. **Licensed** for the filters.
 
 Every row applies the full publication predicate (`status` is `published` and `published_at <= $NOW`) to the page
@@ -28,7 +39,7 @@ the row hangs off. A block rule that checks only `status` leaks blocks of pages 
 | `page_blocks` | read | `{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}` | `*` |
 | each block in the M2A | read | `{"$FOLLOW(page_blocks,item,collection)":{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}}` | `*` |
 | child of a block (M2O to it) | read | e.g. on `block_pricing_cards`: `{"pricing":{"$FOLLOW(page_blocks,item,collection)":{"page":{"_and":[{"status":{"_eq":"published"}},{"published_at":{"_lte":"$NOW"}}]}}}}` | `*` |
-| `directus_files` | read | `{"folder":{"_eq":"<public-folder-id>"}}` | `*` |
+| `directus_files` | read | `{"_or":[{"folder":{"_eq":"<public-folder-id>"}},{"folder":{"parent":{"_eq":"<public-folder-id>"}}}]}` | `id,title,description,type,filesize,width,height` |
 | `directus_users` | read | `{"posts":{"_nnull":true}}` (authors only) | `id,first_name,last_name,avatar` |
 
 - **Block collections leak without their own rule.** Filtering `page_blocks` hides the link, not the block:
@@ -43,8 +54,18 @@ the row hangs off. A block rule that checks only `status` leaks blocks of pages 
   version instead of a draft page: version edits live in `directus_versions` and don't create block rows until
   promote.
 - Every collection the frontend reaches through a relation needs its own read row, or the request 403s.
-- Never grant public read on `directus_files` without a folder rule: it also opens `/assets` for every file, including
+- **Public files live in one folder.** **Recommended:** a top-level folder named `public`, with subfolders at most two
+  levels deep (`public/blog`, `public/pages`). The rule above covers `public` and its direct children; add a
+  `{"folder":{"parent":{"parent":{"_eq":...}}}}` branch only if you really need a second level. Match the folder by
+  id, not name. Point every public-facing file field at it (content-modeling `relationships.md#files`), or editors
+  upload to the root and the image 403s on the live site.
+- **Limit file fields.** `*` exposes `uploaded_by`, `filename_disk`, and `metadata` (photo EXIF, which can include GPS).
+  `/assets` serves the file with the short field list above.
+- Never grant public read on `directus_files` without the folder rule: it opens `/assets` for every file, including
   exports saved to the File Library. Never grant public create, update, or delete on a `directus_*` collection.
+- **On core** neither the folder rule nor the field list is allowed, so public file read means **every** file. Do it
+  only if nothing private ever goes in the File Library (no form uploads, exports, or internal docs). Otherwise
+  proxy assets through the frontend server, or license the instance.
 
 ## Authors edit their own items
 

@@ -123,6 +123,9 @@ frontend.
 - Many: junction `<singular parent>_<field>` (e.g. `block_gallery_items`) with `<singular parent>` + `directus_file`
   (+ `sort`), alias `special: ["files"]`, `interface: "files"`, both relations `CASCADE`. Deleting the parent removes
   the junction rows, not the files.
+- **Recommended:** on collections a public site renders (pages, posts, blocks), set the file field's `options.folder`
+  (the `file`, `file-image`, and `files` interfaces all have it) to the `public` folder's id, or a subfolder of it.
+  Uploads then land where the public policy can serve them. See `directus-access-control` recipes.
 
 ## on_delete
 

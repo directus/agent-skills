@@ -3,6 +3,13 @@
 Files are rows in `directus_files` (metadata) plus the binary in a storage location. `/files` manages both;
 `/assets/<id>` serves the binary, optionally transformed.
 
+## Contents
+
+- [Upload and import](#upload-and-import)
+- [Metadata and folders](#metadata-and-folders)
+- [Serving and transforming assets](#serving-and-transforming-assets)
+- [Linking files to items](#linking-files-to-items)
+
 ## Upload and import
 
 `POST /files` with `multipart/form-data`. Metadata fields first, the `file` part **last**. Several `file` parts upload
@@ -51,7 +58,8 @@ curl -X POST "$DIRECTUS_URL/files/import" -H "Authorization: Bearer $TOKEN" -H '
 ```
 
 - Access follows read permission on `directus_files`. The browser session cookie works; otherwise add
-  `?access_token=<token>`. Public assets need public read on `directus_files`. Always go through `/assets`, not the
+  `?access_token=<token>`. Public assets need public read on `directus_files`, scoped to a `public` folder (`directus-access-control`
+  recipes). Always go through `/assets`, not the
   storage bucket, so permissions and transforms apply. `?download` sets `Content-Disposition: attachment`.
 - Params: `width`, `height`, `fit` (`cover` default, `contain`, `inside`, `outside`), `quality` (1-100), `format`,
   `focal_point_x`/`focal_point_y` (override for this crop), `withoutEnlargement`, `transforms` (Sharp chain as JSON:
