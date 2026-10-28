@@ -108,7 +108,7 @@ Each hop file lists its env changes. Combined sweep:
 - 12.x: deactivate a license activated on a throwaway rehearsal instance (**Settings > License**) before destroying it.
 - Keep the pre-upgrade snapshot with the pre-upgrade backup; apply it only to an instance restored to that same version.
   `POST /schema/diff` refuses a mismatch, but CLI `directus schema apply` checks neither version nor vendor. Details:
-  `directus-environment-sync` (how-it-works.md).
+  `directus-environment-sync` ("Schema snapshot and apply").
 
 ## Sources
 

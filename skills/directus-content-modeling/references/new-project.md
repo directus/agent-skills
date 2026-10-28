@@ -82,7 +82,7 @@ from there with `d6s sync pull` (`directus-environment-sync`) and seed later con
 - `DIRECTUS_SERVER_TOKEN` (server-only) is, per the starter READMEs, the admin user's static token: Users Directory,
   open the user, generate a token, **Save** (unsaved tokens give "Invalid token"). Fine on a local dev instance. Before
   deploying, use a non-admin user instead: the Next.js README names one with only `Content - Live Preview` and
-  `Forms - Submission` (licensed). Why it matters: `directus-sdk` (references/frameworks.md) and
+  `Forms - Submission` (licensed). Why it matters: `directus-sdk` and
   `directus-visual-editing`.
 - `DIRECTUS_ADMIN_TOKEN` is only for `pnpm run generate:types`. Never put either token in `NEXT_PUBLIC_*`, `PUBLIC_*`,
   or Nuxt public runtime config. After a database reset, regenerate both and restart the dev server (symptom: 401).

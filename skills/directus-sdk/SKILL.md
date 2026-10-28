@@ -55,6 +55,11 @@ SDK 22.0.0. If the instance disagrees, trust the instance._
 - **`withOptions(cmd, { headers })` drops auth.** The object form replaces the headers holding `Authorization` and
   `Content-Type`; the request runs as Public. Merge instead:
   `withOptions(cmd, (init) => ({ ...init, headers: { ...init.headers, 'X-Foo': '1' } }))`.
+- **Auth mode by where the code runs.** Browser on another site: `authentication('cookie', { credentials: 'include' })`
+  and `rest({ credentials: 'include' })`, plus CORS. Server holding a user's tokens: `authentication('json', { storage })`
+  with one client per user session. SSO: redirect to `/auth/login/<provider>`, then `client.refresh()`; `login()` can't do it.
+- **The Next.js CMS starter reads everything as admin.** Its fetchers fall back to `DIRECTUS_SERVER_TOKEN` (an admin
+  token). Remove the fallback and read publicly or with a least-privilege token before deploying.
 - **Drafts and preview aren't SDK topics** beyond `readItem(c, id, { version: 'draft' })`. Use
   `directus-visual-editing`, and don't copy starter preview code (it leaks the admin server token).
 
@@ -78,15 +83,6 @@ const posts = await directus.request(
 	}),
 );
 ```
-
-## References
-
-- Composables, login/refresh/logout, `json`/`cookie`/`session` modes, token storage, SSO, CORS and cross-site cookies, custom fetch, polyfills → [setup-and-auth.md](references/setup-and-auth.md)
-- Writing or fixing the `Schema` type: singletons, M2O/O2M/M2M/M2A, `directus_users` custom fields, `'datetime'`/`'json'` markers, output inference, type generation, TS errors → [typing.md](references/typing.md)
-- CRUD signatures, query keys the SDK sends, response unwrapping, counting and pagination, `withToken`/`withOptions`/`withSearch`/`customEndpoint`, `isDirectusError`, GraphQL → [queries.md](references/queries.md)
-- Subscribing to changes, WebSocket auth modes, reconnects, raw messages → [realtime.md](references/realtime.md)
-- Next.js App Router, Nuxt, Astro, SvelteKit: client placement, env vars, caching and revalidation, M2A page fetching, starter file map → [frameworks.md](references/frameworks.md)
-- Asset URLs, private files, transform params in URLs, framework image config, uploads → [files-and-images.md](references/files-and-images.md)
 
 ## Go deeper
 

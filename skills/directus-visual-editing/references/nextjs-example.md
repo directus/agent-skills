@@ -35,7 +35,7 @@ Run `npm install @directus/sdk @directus/visual-editing server-only`.
 ## Server code
 
 ```ts
-// lib/directus-schema.ts (minimal; full typing: the directus-sdk skill, references/typing.md)
+// lib/directus-schema.ts (minimal; full typing: the directus-sdk skill)
 export interface Post {
 	id: number; // match your primary key type
 	slug: string;

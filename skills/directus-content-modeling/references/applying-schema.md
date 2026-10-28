@@ -40,7 +40,7 @@ Admin token required. Read back with `GET /fields/:collection` and `GET /relatio
 ## Snapshot and Environment Sync
 
 Both are owned by the **`directus-environment-sync`** skill (setup, push modes, CI, rollback; the snapshot comparison,
-`force`, and version checks are in its how-it-works.md). Load it before applying a snapshot or running any `d6s`
+`force`, and version checks are in its "Schema snapshot and apply" section). Load it before applying a snapshot or running any `d6s`
 command against a shared instance. The traps that delete data:
 
 - `POST /schema/diff` defaults to `mode=mirror`; applying that diff drops everything on the target that isn't in the

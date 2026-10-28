@@ -93,8 +93,7 @@ Login, refresh, and logout are in [auth-and-access.md](auth-and-access.md). Pick
 | Browser, different site | `cookie` (refresh token in httpOnly cookie) plus CORS and `REFRESH_TOKEN_COOKIE_*` setup |
 | Server-rendered app (BFF, Next.js server) | `json` on the server; keep tokens in your own httpOnly session, never in JS |
 
-**Recommended:** never put a refresh token in `localStorage`. SDK code for each mode: `directus-sdk`
-(`references/setup-and-auth.md`).
+**Recommended:** never put a refresh token in `localStorage`. SDK code for each mode: `directus-sdk`.
 
 A member with no `directus_users` read permission still gets `GET /users/me` back, but only `{ "id": ... }`. Grant
 read on their own user (fields they need) to show a profile.

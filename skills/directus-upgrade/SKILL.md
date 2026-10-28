@@ -57,7 +57,7 @@ the instance._
 - **`IP_TRUST_PROXY` defaults to `false` on 12.x.** Behind a proxy, rate limits, IP access, and logs see the proxy IP.
 - **Only REST checks snapshot versions.** `POST /schema/diff` refuses another version or vendor unless `force`; CLI
   `directus schema apply` applies silently. Fresh snapshot after each stop. Details: `directus-environment-sync`
-  (how-it-works.md, "Schema snapshot and apply").
+  ("Schema snapshot and apply").
 - **Docker 12.1+ images have no `npm` or `npx`.** Use `docker compose exec directus node /directus/cli.js <command>`
   (every image) and install extensions at build time.
 - **Node 26 from 12.6.0** (Node 22 from 11.4.0). `node:26` build stages have no Corepack. `@directus/sdk` 27.1 still

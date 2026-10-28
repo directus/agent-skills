@@ -22,10 +22,7 @@ _Verified against Directus v12.6.0 (CLI source `packages/cli`, `@directus/cli` 1
    notes since 12.6.0 first.
 2. **Versions and vendor.** `GET /server/info` on source and target: same exact version (patch included), same DB
    vendor, both 12.2.0+.
-3. **Admin tokens.** One per instance. `d6s profile test-connection <name>` prints who the token is.
-4. **Installed CLI.** `npm i -g @directus/cli@12` (9.x is the deprecated old client CLI), then `d6s --version`. Node
-   22+. Pin an exact version in CI.
-5. **Sync files present?** If the repo has `directus.config.json` and `directus/<project>/`, pull from the agreed
+3. **Sync files present?** If the repo has `directus.config.json` and `directus/<project>/`, pull from the agreed
    source, not whatever instance is handy.
 
 ## Critical traps
@@ -60,22 +57,37 @@ _Verified against Directus v12.6.0 (CLI source `packages/cli`, `@directus/cli` 1
 | Start a new project from a Directus starter, including content and files | `directus-template-cli` (`init` / `apply`) |
 | Seed content (items, files) | A seed script; see `directus-content-modeling` (applying-schema.md) |
 
-Schema snapshot/apply checks (the CLI apply has **no** version or vendor check; REST does) and tradeoffs:
-[references/how-it-works.md](references/how-it-works.md#schema-snapshot-and-apply).
+## Commands
 
-## Routing
+```bash
+npm i -g @directus/cli@12                   # Node 22+; 9.x is the old client CLI; pin the exact version in CI
+d6s profile add dev --url <url> --token <admin-token>   # also: production; saves the token to the OS credential store
+d6s profile test-connection production      # prints who the token is
+d6s sync pull --from dev                    # writes directus/<project>/; commit it
+d6s sync diff --to production               # applies nothing; read every change
+d6s sync push --to production               # merge mode; --yes in CI
+```
 
-- Installing, profiles, `directus.config.json`, credentials, `.env`, test-connection, projects → [setup.md](references/setup.md)
-- What syncs, settings, record identity and ID map, push phases, modes, compatibility, core-tier targets, `directus schema` / `/schema/*` → [how-it-works.md](references/how-it-works.md)
-- Promote dev to prod, ship only ready work, adopt on an existing project, roll back, rebase, new instance → [workflows.md](references/workflows.md)
-- CI: non-interactive rules, `DIRECTUS_<PROFILE>_TOKEN`, `--json` reports, GitHub Actions pipeline → [ci.md](references/ci.md)
-- Command cheat sheet, flag rules that refuse, error codes → [reference.md](references/reference.md)
-- Errors, refusals, incomplete pulls, secrets blind spot, duplicated panels, known limitations → [troubleshooting.md](references/troubleshooting.md)
+- Keep each environment's own settings: `"excludeResources": ["settings"]` on the project in `directus.config.json`
+  (or pull with `--no-settings`), and delete any settings file an earlier pull wrote.
+- Ship only part of dev: `d6s sync pull --from dev --collections posts`.
+- In CI the token comes from `DIRECTUS_<PROFILE>_TOKEN` (profile name uppercased); `sync` commands have no token flag.
+- Records match across instances by `id_map.json`, then by name (roles, policies), `name` + `folder` (flows), and
+  `flow` + `key` (operations). Panels match by ID map only.
 
-## Related skills
+## Schema snapshot and apply
 
-`directus-content-modeling` (designing the collections, fields, and relations you sync) · `directus-upgrade` (moving
-instances to a new version, then re-pulling) · `directus` (day-to-day instance work)
+The schema-only tools don't share Environment Sync's guards:
+
+| Path | Version + vendor check | Hash check | Deletes |
+| --- | --- | --- | --- |
+| CLI `directus schema apply <file>` | **None** | None | Everything the snapshot lacks, minus `--ignoreRules` |
+| `POST /schema/diff` | Yes; `force=true` bypasses | n/a | `mode` defaults to `mirror`; pass `mode=merge` to plan no deletes |
+| `POST /schema/apply` (body: the diff) | No | Yes; `force=true` bypasses | Whatever the diff contains |
+
+- Compare the snapshot's `directus` and `vendor` keys with the target yourself before a CLI apply, and `--dry-run` it.
+- A valueless `?force` counts as `true` on 12.2+. `/schema/*` is admin-only. SDK: `schemaDiff(snapshot, { force, mode })`.
+- Docker 12.1+ images have no `npx`: `docker compose exec directus node /directus/cli.js schema apply ...`.
 
 ## Go deeper
 
