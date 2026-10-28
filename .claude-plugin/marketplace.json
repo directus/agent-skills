@@ -6,7 +6,7 @@
 	},
 	"metadata": {
 		"description": "Official Directus agent skills: API and MCP, Flows, Insights, access control, content modeling, Environment Sync, SDK frontends, visual editing, extensions, self-hosting, and upgrades.",
-		"version": "0.1.0"
+		"version": "0.2.0"
 	},
 	"plugins": [
 		{
