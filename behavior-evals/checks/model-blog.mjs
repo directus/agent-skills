@@ -5,19 +5,19 @@ for (const c of ['posts', 'tags', 'authors']) check(names.includes(c), `collecti
 
 for (const c of ['posts', 'tags', 'authors']) {
 	const pk = (await fields(c)).find((f) => f.schema?.is_primary_key);
-	check(pk?.type === 'uuid', `${c} primary key is uuid`, pk?.type);
+	check(pk?.type === 'uuid', `${c} primary key is uuid`, pk?.type, { recommended: true });
 }
 
 const rels = (await api('/relations')).data ?? [];
 const author = rels.find((r) => r.collection === 'posts' && r.related_collection === 'authors');
-check(author?.field === 'author', 'posts → authors FK is named `author`', author?.field);
-check(author?.schema?.on_delete === 'SET NULL', 'author FK on_delete SET NULL', author?.schema?.on_delete);
+check(author?.field === 'author', 'posts → authors FK is named `author`', author?.field, { recommended: true });
+check(author?.schema?.on_delete === 'SET NULL', 'author FK on_delete SET NULL', author?.schema?.on_delete, { recommended: true });
 
 const toTags = rels.find((r) => r.related_collection === 'tags' && r.meta?.junction_field);
 const junction = toTags?.collection;
-check(junction === 'post_tags', 'M2M junction is named `post_tags`', junction);
+check(junction === 'post_tags', 'M2M junction is named `post_tags`', junction, { recommended: true });
 const toPosts = rels.find((r) => r.collection === junction && r.related_collection === 'posts');
-check(toPosts?.field === 'post' && toTags?.field === 'tag', 'junction FKs are `post` and `tag`', `${toPosts?.field}, ${toTags?.field}`);
+check(toPosts?.field === 'post' && toTags?.field === 'tag', 'junction FKs are `post` and `tag`', `${toPosts?.field}, ${toTags?.field}`, { recommended: true });
 check(
 	toPosts?.schema?.on_delete === 'CASCADE' && toTags?.schema?.on_delete === 'CASCADE',
 	'junction FKs on_delete CASCADE',

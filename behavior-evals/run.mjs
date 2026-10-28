@@ -3,8 +3,9 @@
 // Each run gets a new Directus container (--image, default the version the skills are verified against) unless the case
 // only writes files. Arms: `with` loads this repo as a plugin, `without` doesn't.
 //
-//   node behavior-evals/run.mjs [--case <name,...>] [--arms with,without] [--runs 1] [--model haiku] [--lanes 2]
-//     [--image directus/directus:<tag>] [--clean]
+//   node behavior-evals/run.mjs [--case <name,...>] [--arms with,without] [--runs 1] [--model haiku[,sonnet]]
+//     [--lanes 2] [--image directus/directus:<tag>] [--clean]
+// Release read: --model haiku,sonnet --runs 3 (Haiku is the floor we support).
 
 import { spawn, execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -98,9 +99,11 @@ const CASES = {
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
 const cases = args.case ? args.case.split(',') : allCases;
 const arms = args.arms.split(',');
+const models = args.model.split(',');
 const jobs = [];
 for (const c of cases)
-	for (const arm of arms) for (let i = 1; i <= Number(args.runs); i++) jobs.push({ case: c, arm, run: i });
+	for (const model of models)
+		for (const arm of arms) for (let i = 1; i <= Number(args.runs); i++) jobs.push({ case: c, model, arm, run: i });
 
 const stamp = new Date().toISOString().replace(/[:.]/g, '-');
 const outDir = join(here, 'results', stamp);
@@ -233,7 +236,7 @@ async function runJob(job, lane) {
 		'-p',
 		prompt,
 		'--model',
-		args.model,
+		job.model,
 		'--output-format',
 		'stream-json',
 		'--verbose',
@@ -285,11 +288,16 @@ async function runJob(job, lane) {
 	const check = await runProcess('node', [join(here, 'checks', `${job.case}.mjs`)], { env });
 	const lines = check.out.split('\n').filter((l) => /^(PASS|FAIL) /.test(l));
 	const passed = lines.filter((l) => l.startsWith('PASS')).length;
+	const functional = lines.filter((l) => !l.includes(' (recommended) '));
+	const recommended = lines.filter((l) => l.includes(' (recommended) '));
 
 	const result = {
 		...job,
 		passed,
 		total: lines.length,
+		functional: { passed: functional.filter((l) => l.startsWith('PASS')).length, total: functional.length },
+		recommended: { passed: recommended.filter((l) => l.startsWith('PASS')).length, total: recommended.length },
+		skillLoaded: skills.some((name) => /directus/.test(name ?? '')),
 		checks: lines,
 		info: check.out.split('\n').filter((l) => l.startsWith('INFO')),
 		skills,
@@ -306,11 +314,11 @@ async function runJob(job, lane) {
 					: null,
 	};
 	writeFileSync(
-		join(outDir, `${job.case}.${job.arm}.${job.run}.json`),
+		join(outDir, `${job.case}.${job.model}.${job.arm}.${job.run}.json`),
 		JSON.stringify({ ...result, transcript: events }, null, 2),
 	);
 	console.log(
-		`${job.case} [${job.arm} #${job.run}] ${passed}/${lines.length} checks, $${(final.total_cost_usd ?? 0).toFixed(2)}, skills: ${skills.join(', ') || 'none'}`,
+		`${job.case} [${job.model} ${job.arm} #${job.run}] ${passed}/${lines.length} checks, $${(final.total_cost_usd ?? 0).toFixed(2)}, skills: ${skills.join(', ') || 'none'}`,
 	);
 	return result;
 }
@@ -324,8 +332,8 @@ await Promise.all(
 			try {
 				results.push(await runJob(job, lane));
 			} catch (error) {
-				console.log(`${job.case} [${job.arm} #${job.run}] ERROR ${error.message}`);
-				results.push({ ...job, passed: 0, total: 0, error: error.message });
+				console.log(`${job.case} [${job.model} ${job.arm} #${job.run}] ERROR ${error.message}`);
+				results.push({ ...job, passed: 0, total: 0, functional: { passed: 0, total: 0 }, recommended: { passed: 0, total: 0 }, error: error.message });
 			}
 		}
 		for (const name of [`directus-skills-evals-${lane}`, `directus-skills-evals-${lane}-target`]) {
@@ -336,31 +344,56 @@ await Promise.all(
 	}),
 );
 
-const rows = cases.map((c) => {
-	const cell = (arm) => {
-		const rs = results.filter((r) => r.case === c && r.arm === arm);
-		if (!rs.length) return '';
-		const p = rs.reduce((s, r) => s + r.passed, 0);
-		const t = rs.reduce((s, r) => s + r.total, 0);
-		return `${p}/${t}${rs.some((r) => r.error) ? " (error)" : ""}`;
-	};
-	return `| ${c} | ${arms.map(cell).join(' | ')} |`;
-});
+// Every run of a case is scored against the most functional checks any run of it produced, so a check script that stops
+// early counts its missing checks as failures. A run passes when every functional check passes and nothing errored.
 const cost = results.reduce((s, r) => s + (r.costUsd ?? 0), 0);
+const tied = [];
+const section = (model) => {
+	const rows = cases.map((c) => {
+		const all = results.filter((r) => r.case === c && r.model === model);
+		const width = Math.max(0, ...all.map((r) => r.functional.total));
+		const recWidth = Math.max(0, ...all.map((r) => r.recommended.total));
+		const runPassed = (r) => !r.error && width > 0 && r.functional.passed === width;
+		const cells = arms.map((arm) => {
+			const rs = all.filter((r) => r.arm === arm);
+			if (!rs.length) return ['', '', ''];
+			const passedRuns = rs.filter(runPassed).length;
+			const checks = `${rs.reduce((s, r) => s + r.functional.passed, 0)}/${width * rs.length}`;
+			const rec = recWidth ? `${rs.reduce((s, r) => s + r.recommended.passed, 0)}/${recWidth * rs.length}` : '';
+			const loaded = arm === 'with' ? ` (skill ${rs.filter((r) => r.skillLoaded).length}/${rs.length})` : '';
+			return [`**${passedRuns}/${rs.length}**${loaded}${rs.some((r) => r.error) ? ' error' : ''}`, checks, rec];
+		});
+		const without = all.filter((r) => r.arm === 'without');
+		if (without.length && without.every(runPassed)) tied.push(`${c} (${model})`);
+		return `| ${c} | ${cells.map((cell) => cell.join(' | ')).join(' | ')} |`;
+	});
+	return [
+		`## ${model}`,
+		'',
+		`| Case | ${arms.map((a) => `${a}: runs passed | ${a}: checks | ${a}: recommended`).join(' | ')} |`,
+		`| --- | ${arms.map(() => '--- | --- | ---').join(' | ')} |`,
+		...rows,
+		'',
+	];
+};
+const sections = models.flatMap(section);
 const report = [
 	`# Behavior evals ${stamp}`,
 	'',
-	`Image: ${IMAGE}. Model: ${args.model}. Runs per arm: ${args.runs}. Cost: $${cost.toFixed(2)}.`,
+	`Image: ${IMAGE}. Models: ${models.join(', ')}. Runs per arm: ${args.runs}. Cost: $${cost.toFixed(2)}.`,
 	'',
-	`| Case | ${arms.join(' | ')} |`,
-	`| --- | ${arms.map(() => '---').join(' | ')} |`,
-	...rows,
+	'A run passes when all its functional checks pass. "checks" counts functional checks; "recommended" counts checks',
+	'of our Recommended conventions (naming, key types, on_delete) separately. "skill" is how many plugin runs loaded a',
+	'directus skill.',
+	'',
+	...sections,
+	tied.length ? `**Without the plugin, every run passed:** ${tied.join(', ')}. Cut candidates unless the case guards security.` : '',
 	'',
 ].join('\n');
 writeFileSync(join(outDir, 'summary.md'), report);
 writeFileSync(join(outDir, 'results.json'), JSON.stringify(results, null, 2));
 console.log(`\n${report}\nResults: ${outDir}`);
 
-// Fail when the plugin arm misses a check or any run errored. The `without` arm is a baseline and may fail.
-const failed = results.some((r) => r.error || (r.arm === 'with' && r.passed < r.total));
+// Fail when a plugin run misses a functional check or any run errored. The `without` arm is a baseline and may fail.
+const failed = results.some((r) => r.error || (r.arm === 'with' && r.functional.passed < r.functional.total));
 process.exit(failed ? 1 : 0);

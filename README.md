@@ -146,6 +146,7 @@ are taken.
 
 ```bash
 node behavior-evals/run.mjs                       # every case, both arms, Haiku, 1 run
+node behavior-evals/run.mjs --model haiku,sonnet --runs 3   # release read: Haiku is the floor we support
 node behavior-evals/run.mjs --case model-blog --runs 3 --model opus
 node behavior-evals/run.mjs --case flows-publish-guard --image directus/directus:11.9.3   # an older version
 ```
@@ -160,6 +161,15 @@ authenticates with a `claude setup-token` token from `CLAUDE_CODE_OAUTH_TOKEN` o
 Cases marked `license: true` run on a licensed instance. Put the key in `~/.config/directus-skills-evals/license-key`
 (or `DIRECTUS_EVALS_LICENSE_KEY`); it reaches Docker through the environment and never lands in results. Without it,
 those cases error and the rest run on the unlicensed core tier.
+
+The report scores each case per model and arm:
+
+- **runs passed:** runs where every functional check passed. Each run is scored against the most checks any run of
+  the case produced, so a check that stopped early counts as failed.
+- **checks** and **recommended** are separate: checks test that the build works, recommended checks test our
+  **Recommended:** conventions (naming, key types, `on_delete`). Mark those with `check(ok, label, detail, { recommended: true })`.
+- **skill:** how many plugin runs loaded a directus skill.
+- Cases where every run passed without the plugin are listed as cut candidates.
 
 Results land in `behavior-evals/results/` (git-ignored). Add a case as `cases/<name>.md` (the task) plus
 `checks/<name>.mjs` (exit 1 on any failed check). Seeds, extra shell commands, starting files (`fixtures/`), a second

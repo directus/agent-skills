@@ -27,8 +27,10 @@ export async function api(path, { method = 'GET', body, token = TOKEN, base = UR
 	return { status: res.status, data: json?.data, errors: json?.errors };
 }
 
-export function check(ok, label, detail = '') {
-	console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${detail && !ok ? `: ${detail}` : ''}`);
+// `recommended: true` marks a check of our Recommended conventions (naming, key types, on_delete), not of whether
+// the build works. The harness scores those separately.
+export function check(ok, label, detail = '', { recommended = false } = {}) {
+	console.log(`${ok ? 'PASS' : 'FAIL'} ${recommended ? '(recommended) ' : ''}${label}${detail && !ok ? `: ${detail}` : ''}`);
 	if (!ok) failures.push(label);
 	return ok;
 }
