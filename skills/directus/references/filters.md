@@ -4,6 +4,15 @@ One filter syntax everywhere: the `filter` and `deep[*][_filter]` query params, 
 rules, presets, Flow condition operations, and the MCP `items` tool. Full operator list:
 https://directus.com/docs/guides/connect/filter-rules.
 
+## Contents
+
+- [Shape and operators](#shape-and-operators)
+- [Dynamic variables](#dynamic-variables)
+- [Relational filters](#relational-filters)
+- [Functions](#functions)
+- [JSON fields](#json-fields)
+- [Where filters show up](#where-filters-show-up)
+
 ## Shape and operators
 
 ```json
@@ -24,7 +33,8 @@ Operators that trip agents up:
 - `_between` is inclusive: `[min, max]`. `_in` / `_nin` take an array.
 - `_some` / `_none` work only on one-to-many and many-to-many fields.
 - `_regex` works only in validation rules. Escape backslashes.
-- `_json` compares a value inside a JSON field; `_intersects` and the `_bbox` forms are for geometry fields (GeoJSON).
+- `_json` compares values inside a JSON field ([JSON fields](#json-fields)); `_intersects` and the `_bbox` forms are
+  for geometry fields (GeoJSON).
 
 ## Dynamic variables
 
@@ -74,6 +84,28 @@ Wrap a field (in `fields`, `filter`, `sort`, `groupBy`, `aggregate`): `year`, `m
 
 GraphQL uses `<field>_func: { year: { _eq: 2024 } }` instead.
 
+## JSON fields
+
+Filter inside a JSON field with `_json` (12.0+). Each key is a flat path, dots for objects and `[n]` for array items.
+Keys are AND-ed; `_and` / `_or` arrays work inside `_json`.
+
+```json
+{ "specs": { "_json": { "color": { "_eq": "red" }, "dims.w": { "_gt": 20 }, "rating": { "_null": true } } } }
+```
+
+- **Numbers only compare as numbers when the value is a JSON number.** Send the filter as JSON
+  (`?filter={...}`, URL-encoded), not bracket params: `filter[specs][_json][rating][_gt]=8` sends the string `"8"` and
+  compares text, so on Postgres `10` is not greater than `8` and on SQLite nothing matches. Same for `"8"` in JSON.
+- **Paths are flat.** `{ "dims": { "w": { ... } } }` is rejected (`INVALID_QUERY`); write `"dims.w"`. No `*`, `..`,
+  `$`, or negative indexes. Depth is capped by `MAX_JSON_QUERY_DEPTH` (default 10).
+- A missing key is `{ "_null": true }`.
+- **Select or sort with `json(field, path)`** (11.16+): `fields=json(specs,dims.w)` comes back as `specs_dims_w_json`.
+  Name it with an alias: `alias[width]=json(specs,dims.w)&fields=name,width`. `json()` doesn't work in `filter` or
+  `aggregate`.
+- **Sorting by a JSON number is text order on Postgres** (`9` sorts after `10`); SQLite sorts numerically. Store values
+  you sort or aggregate by in a real field.
+- On the field itself (outside `_json`), only `_null` / `_nnull` / `_empty` / `_nempty` work; `_contains` is rejected.
+
 ## Where filters show up
 
 | Context                  | Behavior                                                                                                                                    |
@@ -94,3 +126,5 @@ GraphQL uses `<field>_func: { year: { _eq: 2024 } }` instead.
 - https://github.com/directus/directus/blob/v12.6.0/api/src/database/run-ast/lib/apply-query/filter/operator.ts
 - https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/items/prompt.md
 - https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/operations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/validate-query.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/database/helpers/fn/json/parse-function.ts

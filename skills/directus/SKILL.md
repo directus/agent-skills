@@ -70,7 +70,7 @@ _Verified against Directus v12.6.0. If the instance behaves differently, trust t
 | Load when                                                                                    | Reference                                                            |
 | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | Calling REST: endpoints, envelopes, query params, aggregates, relational writes, error codes | [references/rest-api.md](references/rest-api.md)                     |
-| Writing filters: operators, dynamic variables, relational and logical filters, functions     | [references/filters.md](references/filters.md)                       |
+| Writing filters: operators, dynamic variables, relational and logical filters, functions, JSON | [references/filters.md](references/filters.md)                       |
 | Logging in, tokens, cookies, SSO, inspecting a caller                                        | [references/auth-and-access.md](references/auth-and-access.md)       |
 | Connecting an AI client to `/mcp`, choosing a tool mode, tool workflow, MCP errors           | [references/mcp.md](references/mcp.md)                               |
 | Uploading or importing files, folders, `/assets` transforms and presets                      | [references/files-and-assets.md](references/files-and-assets.md)     |

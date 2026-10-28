@@ -61,7 +61,8 @@ system endpoints too.
 | `backlink`               | `backlink=false` drops reverse relations from `*.*` expansion only.                                                                       |
 
 To pull a value out of a JSON field use `json(field, path)` in `fields` (not in `filter`; use the `_json` operator
-there). Date and `count` functions: [filters.md](filters.md#functions).
+there). It returns `<field>_<path>_json` unless you alias it. Traps (numbers in bracket params compare as text):
+[filters.md](filters.md#json-fields). Date and `count` functions: [filters.md](filters.md#functions).
 
 ```
 # posts that have at least one approved comment (filters parents)

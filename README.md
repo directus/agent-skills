@@ -139,10 +139,11 @@ claude plugin eval . --case 'access-*' --runs 1 --ablation none --no-publish   #
 by default), seeds it, gives a headless `claude -p` the task with and without this plugin, then checks the instance over the API
 (naming, `on_delete`, keys, and that nested writes, flows, and permissions really work). Code cases also check the files
 the agent wrote: they run the SDK script, call the endpoint extension it built (mounted into the instance), and parse
-its compose file with `docker compose config`. The sync case adds a second instance as the target.
+its compose file with `docker compose config`. The sync cases add a second instance as the target, and `json-filters`
+runs on Postgres (JSON comparisons and sorts differ from SQLite).
 
 ```bash
-node behavior-evals/run.mjs                       # every case, both arms, Sonnet, 1 run
+node behavior-evals/run.mjs                       # every case, both arms, Haiku, 1 run
 node behavior-evals/run.mjs --case model-blog --runs 3 --model opus
 node behavior-evals/run.mjs --case flows-publish-guard --image directus/directus:11.9.3   # an older version
 ```
@@ -156,7 +157,7 @@ authenticates with a `claude setup-token` token from `CLAUDE_CODE_OAUTH_TOKEN` o
 
 Results land in `behavior-evals/results/` (git-ignored). Add a case as `cases/<name>.md` (the task) plus
 `checks/<name>.mjs` (exit 1 on any failed check). Seeds, extra shell commands, starting files (`fixtures/`), a second
-instance, or no instance at all go in the `CASES` table in `run.mjs`.
+instance, Postgres, instance env, a turn limit, or no instance at all go in the `CASES` table in `run.mjs`.
 
 ## Contributing
 

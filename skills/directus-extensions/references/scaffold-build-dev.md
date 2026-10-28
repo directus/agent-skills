@@ -71,6 +71,9 @@ Directus discovers extensions from:
 
 Docker: bind mount `./extensions:/directus/extensions` and set `EXTENSIONS_AUTO_RELOAD: 'true'`. Develop with the extension folder **inside** `./extensions` (for example `./extensions/my-endpoint/`) and run `npm run dev` there.
 
+- **The first build doesn't load.** The watcher sees the scaffold's `package.json` before `dist/` exists, logs `Cannot find module .../dist/index.js`, and never reloads when `dist/` appears (12.6.0). After the first build, `touch package.json` in the extension folder (or restart Directus). Later rebuilds reload normally.
+- **Docker Desktop bind mounts may not deliver file events** to the container: nothing reloads at all. Add `CHOKIDAR_USEPOLLING: 'true'` to the Directus service.
+
 Beyond the reload rules in SKILL.md: a changed `docker-compose.yml` env needs a container restart, and a Windows host also needs `CHOKIDAR_USEPOLLING=true` for auto reload.
 
 `npm run link -- <path-to-directus-extensions-folder>` symlinks the extension into that folder under its package name (scoped `/` flattened to `-`). A symlink pointing outside a Docker bind mount won't resolve inside the container, so for Docker put the source in the mounted folder.

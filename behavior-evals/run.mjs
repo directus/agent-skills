@@ -3,7 +3,7 @@
 // Each run gets a new Directus container (--image, default the version the skills are verified against) unless the case
 // only writes files. Arms: `with` loads this repo as a plugin, `without` doesn't.
 //
-//   node behavior-evals/run.mjs [--case <name,...>] [--arms with,without] [--runs 1] [--model sonnet] [--lanes 2]
+//   node behavior-evals/run.mjs [--case <name,...>] [--arms with,without] [--runs 1] [--model haiku] [--lanes 2]
 //     [--image directus/directus:<tag>] [--clean]
 
 import { spawn, execFileSync } from 'node:child_process';
@@ -21,7 +21,7 @@ const { values: args } = parseArgs({
 		case: { type: 'string' },
 		arms: { type: 'string', default: 'with,without' },
 		runs: { type: 'string', default: '1' },
-		model: { type: 'string', default: 'sonnet' },
+		model: { type: 'string', default: 'haiku' },
 		lanes: { type: 'string', default: '2' },
 		'max-turns': { type: 'string', default: '40' },
 		clean: { type: 'boolean', default: false },
@@ -44,7 +44,9 @@ const IMAGE = args.image;
 const TOKEN = 'skills-evals-admin-token';
 // Per-case setup. seeds: run against the instance in order. target: start a second instance with these seeds.
 // tools: shell commands allowed besides curl and jq. fixture: copied from fixtures/ into the work dir.
-// extensions: mount <work>/extensions into the instance with auto reload. instance: false for file-only cases.
+// extensions: mount <work>/extensions into the instance with auto reload. env: extra instance env vars.
+// postgres: run on Postgres instead of SQLite (some queries behave differently). maxTurns: overrides --max-turns.
+// instance: false for file-only cases.
 const CASES = {
 	translations: { seeds: ['posts'] },
 	'access-public': { seeds: ['posts'] },
@@ -57,12 +59,22 @@ const CASES = {
 	'access-editor-role': { seeds: ['posts'] },
 	'insights-author-dashboard': { seeds: ['posts', 'authors'] },
 	'model-indexes': { seeds: ['posts', 'authors'] },
-	'sdk-latest-posts': { seeds: ['posts', 'authors'], tools: ['npm', 'node'] },
+	'sdk-latest-posts': { seeds: ['posts', 'authors'], tools: ['npm', 'node', 'env'] },
 	'visual-editing-preview': { seeds: ['posts'] },
 	'extensions-endpoint': { seeds: ['posts'], tools: ['npm', 'npx', 'node', 'ls'], extensions: true },
 	'sync-schema': { seeds: ['posts', 'authors'], target: ['signups'] },
 	'selfhost-compose': { instance: false, tools: ['openssl'] },
 	'upgrade-project': { instance: false, fixture: 'upgrade-project', tools: ['npm view'] },
+	'sdk-session': { seeds: ['posts', 'users'], tools: ['npm', 'node', 'env'], env: { ACCESS_TOKEN_TTL: '5s' } },
+	'extensions-hook-audit': {
+		seeds: ['posts', 'users', 'audit'],
+		tools: ['npm', 'npx', 'node', 'ls'],
+		extensions: true,
+		maxTurns: 60,
+	},
+	'sync-partial': { seeds: ['posts', 'authors', 'events'], target: ['posts', 'signups'] },
+	'selfhost-scale': { instance: false, tools: ['openssl'] },
+	'json-filters': { seeds: ['products'], postgres: true },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
@@ -78,29 +90,45 @@ mkdirSync(outDir, { recursive: true });
 
 const sh = (cmd, cmdArgs, opts = {}) => execFileSync(cmd, cmdArgs, { encoding: 'utf8', ...opts });
 
-async function startDirectus(lane, { target = false, extensionsDir } = {}) {
+// A throwaway Postgres that publishes Directus's port; Directus joins its network namespace and reaches it on
+// 127.0.0.1. No docker network needed (machines with many networks run out of address pools).
+async function startPostgres(name, port) {
+	const db = `${name}-pg`;
+	try {
+		sh('docker', ['rm', '-f', db], { stdio: 'ignore' });
+	} catch {}
+	sh('docker', ['run', '-d', '--name', db, '-p', `127.0.0.1:${port}:8055`, '--tmpfs', '/var/lib/postgresql/data',
+		'-e', 'POSTGRES_USER=directus', '-e', 'POSTGRES_PASSWORD=directus', '-e', 'POSTGRES_DB=directus', 'postgres:16-alpine']);
+	for (let i = 0; i < 60; i++) {
+		try {
+			sh('docker', ['exec', db, 'pg_isready', '-U', 'directus', '-h', '127.0.0.1'], { stdio: 'ignore' });
+			break;
+		} catch {}
+		await new Promise((r) => setTimeout(r, 1000));
+	}
+	return ['--network', `container:${db}`, '-e', 'DB_CLIENT=pg', '-e', 'DB_HOST=127.0.0.1', '-e', 'DB_PORT=5432',
+		'-e', 'DB_DATABASE=directus', '-e', 'DB_USER=directus', '-e', 'DB_PASSWORD=directus'];
+}
+
+async function startDirectus(lane, { target = false, extensionsDir, env = {}, postgres = false } = {}) {
 	const name = `directus-skills-evals-${lane}${target ? '-target' : ''}`;
 	const port = (target ? 18355 : 18255) + lane;
 	try {
-		sh('docker', ['rm', '-f', name], { stdio: 'ignore' });
+		sh('docker', ['rm', '-f', name, `${name}-pg`], { stdio: 'ignore' });
 	} catch {}
 	sh('docker', [
 		'run',
 		'-d',
 		'--name',
 		name,
-		'-p',
-		`127.0.0.1:${port}:8055`,
+		...(postgres ? await startPostgres(name, port) : ['-p', `127.0.0.1:${port}:8055`]),
 		'--tmpfs',
 		'/directus/database:uid=1000,gid=1000',
 		'-e',
 		'KEY=skills-evals-key',
 		'-e',
 		'SECRET=skills-evals-secret-not-for-production-use',
-		'-e',
-		'DB_CLIENT=sqlite3',
-		'-e',
-		'DB_FILENAME=/directus/database/data.db',
+		...(postgres ? [] : ['-e', 'DB_CLIENT=sqlite3', '-e', 'DB_FILENAME=/directus/database/data.db']),
 		'-e',
 		'ADMIN_EMAIL=admin@example.com',
 		'-e',
@@ -115,6 +143,7 @@ async function startDirectus(lane, { target = false, extensionsDir } = {}) {
 		...(extensionsDir
 			? ['-v', `${extensionsDir}:/directus/extensions`, '-e', 'EXTENSIONS_AUTO_RELOAD=true', '-e', 'CHOKIDAR_USEPOLLING=true']
 			: []),
+		...Object.entries(env).flatMap(([k, v]) => ['-e', `${k}=${v}`]),
 		IMAGE,
 	]);
 	const url = `http://127.0.0.1:${port}`;
@@ -129,7 +158,7 @@ async function startDirectus(lane, { target = false, extensionsDir } = {}) {
 
 function runProcess(cmd, cmdArgs, opts) {
 	return new Promise((resolve) => {
-		const child = spawn(cmd, cmdArgs, opts);
+		const child = spawn(cmd, cmdArgs, { stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 		let out = '';
 		let err = '';
 		child.stdout.on('data', (d) => (out += d));
@@ -140,7 +169,8 @@ function runProcess(cmd, cmdArgs, opts) {
 
 const RULES = (tools) =>
 	`The only shell commands available are ${tools.join(', ')}; anything else is blocked, so run one command at a ` +
-	`time. You can't ask me questions: make reasonable choices and finish the task, then summarize what you did.\n\nTask: `;
+	`time.${tools.includes('env') ? ' To set environment variables for a command, prefix it with env (env NAME=value node script.mjs).' : ''} ` +
+	`You can't ask me questions: make reasonable choices and finish the task, then summarize what you did.\n\nTask: `;
 
 const PREAMBLE = (url, target, tools) =>
 	!url
@@ -160,7 +190,8 @@ async function runJob(job, lane) {
 	const extensionsDir = config.extensions ? join(work, 'extensions') : undefined;
 	if (extensionsDir) mkdirSync(extensionsDir);
 
-	const url = config.instance === false ? undefined : await startDirectus(lane, { extensionsDir });
+	const url =
+		config.instance === false ? undefined : await startDirectus(lane, { extensionsDir, env: config.env, postgres: config.postgres });
 	const target = config.target ? await startDirectus(lane, { target: true }) : undefined;
 	const env = { ...process.env, DIRECTUS_URL: url, DIRECTUS_TOKEN: TOKEN, DIRECTUS_ADMIN_TOKEN: TOKEN, WORK_DIR: work };
 	if (target) env.TARGET_URL = target;
@@ -177,7 +208,7 @@ async function runJob(job, lane) {
 		'stream-json',
 		'--verbose',
 		'--max-turns',
-		args['max-turns'],
+		String(config.maxTurns ?? args['max-turns']),
 		'--permission-mode',
 		'acceptEdits',
 		'--allowedTools',
@@ -267,10 +298,11 @@ await Promise.all(
 				results.push({ ...job, passed: 0, total: 0, error: error.message });
 			}
 		}
-		for (const name of [`directus-skills-evals-${lane}`, `directus-skills-evals-${lane}-target`])
+		for (const name of [`directus-skills-evals-${lane}`, `directus-skills-evals-${lane}-target`]) {
 			try {
-				sh('docker', ['rm', '-f', name], { stdio: 'ignore' });
+				sh('docker', ['rm', '-f', name, `${name}-pg`], { stdio: 'ignore' });
 			} catch {}
+		}
 	}),
 );
 

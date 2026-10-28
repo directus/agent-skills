@@ -41,7 +41,9 @@ the current docs. If the instance or its logs disagree, trust the instance._
 - **Endpoints: Express 4, public, after core.** Async errors hang the request unless you `try/catch` and
   `next(error)`. Every caller reaches the route: check `req.accountability`. An `id` matching a core route is shadowed.
 - **Nothing reloads by magic.** Rebuild, then restart Directus or set `EXTENSIONS_AUTO_RELOAD=true` and hard-refresh.
-  New modules must also be enabled in the module bar setting.
+  Auto reload misses the first build of an extension scaffolded inside the watched folder (it saw `package.json`
+  before `dist/` existed): after that first build, touch its `package.json` or restart. New modules must also be
+  enabled in the module bar setting.
 - **App runtime is shared.** `vue`, `vue-router`, `vue-i18n`, `pinia`, `@directus/extensions-sdk`, and Tiptap come
   from the Studio (Vue 3.5 on 12.x). Use the matching `defineX` (docs examples wrongly reuse `defineInterface`). Studio
   components (`VButton`, `VInput`, `PrivateView`) are global, no imports. Style with `--theme--*` variables (v12
