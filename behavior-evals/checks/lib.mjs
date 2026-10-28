@@ -88,3 +88,19 @@ export function rangeIncludes(range, version) {
 		.split('||')
 		.some((part) => part.trim().replace(/(>=|<=|>|<|=|\^|~)\s+/g, '$1').split(/\s+/).every(test));
 }
+
+// A user in `roleId` with this static token. Core tier caps Studio seats, so when the agent already used them up,
+// reuse one of its users in that role instead of creating ours.
+export async function userWithToken(roleId, token) {
+	const created = await api('/users', {
+		method: 'POST',
+		body: { email: `${token}@example.com`, password: 'Check-password-123!', role: roleId, token },
+	});
+	if (created.status === 200) return true;
+	const existing = (await api(`/users?filter[role][_eq]=${roleId}&fields=id&limit=1`)).data?.[0];
+	if (!existing) {
+		console.log(`INFO no user for role ${roleId}: ${created.status} ${JSON.stringify(created.errors)}`);
+		return false;
+	}
+	return (await api(`/users/${existing.id}`, { method: 'PATCH', body: { token, status: 'active' } })).status === 200;
+}

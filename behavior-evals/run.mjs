@@ -45,7 +45,8 @@ const TOKEN = 'skills-evals-admin-token';
 // Per-case setup. seeds: run against the instance in order. target: start a second instance with these seeds.
 // tools: shell commands allowed besides curl and jq. fixture: copied from fixtures/ into the work dir.
 // extensions: mount <work>/extensions into the instance with auto reload. env: extra instance env vars.
-// postgres: run on Postgres instead of SQLite (some queries behave differently). maxTurns: overrides --max-turns.
+// postgres: run on Postgres instead of SQLite (some queries behave differently). sql: a file in seeds/sql/ run on that
+// Postgres before Directus first boots (an existing database). maxTurns: overrides --max-turns.
 // instance: false for file-only cases.
 const CASES = {
 	translations: { seeds: ['posts'] },
@@ -75,7 +76,8 @@ const CASES = {
 	'sync-partial': { seeds: ['posts', 'authors', 'events'], target: ['posts', 'signups'] },
 	'selfhost-scale': { instance: false, tools: ['openssl'] },
 	'json-filters': { seeds: ['products'], postgres: true },
-	'internal-tools-approvals': { seeds: ['orders'], maxTurns: 60 },
+	'internal-tools-approvals': { seeds: ['orders'], maxTurns: 100 },
+	'existing-database': { sql: 'billing.sql' },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
@@ -93,7 +95,7 @@ const sh = (cmd, cmdArgs, opts = {}) => execFileSync(cmd, cmdArgs, { encoding: '
 
 // A throwaway Postgres that publishes Directus's port; Directus joins its network namespace and reaches it on
 // 127.0.0.1. No docker network needed (machines with many networks run out of address pools).
-async function startPostgres(name, port) {
+async function startPostgres(name, port, sql) {
 	const db = `${name}-pg`;
 	try {
 		sh('docker', ['rm', '-f', db], { stdio: 'ignore' });
@@ -107,11 +109,12 @@ async function startPostgres(name, port) {
 		} catch {}
 		await new Promise((r) => setTimeout(r, 1000));
 	}
+	if (sql) sh('docker', ['exec', '-i', db, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'directus', '-d', 'directus'], { input: readFileSync(join(here, 'seeds', 'sql', sql), 'utf8') });
 	return ['--network', `container:${db}`, '-e', 'DB_CLIENT=pg', '-e', 'DB_HOST=127.0.0.1', '-e', 'DB_PORT=5432',
 		'-e', 'DB_DATABASE=directus', '-e', 'DB_USER=directus', '-e', 'DB_PASSWORD=directus'];
 }
 
-async function startDirectus(lane, { target = false, extensionsDir, env = {}, postgres = false } = {}) {
+async function startDirectus(lane, { target = false, extensionsDir, env = {}, postgres = false, sql } = {}) {
 	const name = `directus-skills-evals-${lane}${target ? '-target' : ''}`;
 	const port = (target ? 18355 : 18255) + lane;
 	try {
@@ -122,7 +125,7 @@ async function startDirectus(lane, { target = false, extensionsDir, env = {}, po
 		'-d',
 		'--name',
 		name,
-		...(postgres ? await startPostgres(name, port) : ['-p', `127.0.0.1:${port}:8055`]),
+		...(postgres ? await startPostgres(name, port, sql) : ['-p', `127.0.0.1:${port}:8055`]),
 		'--tmpfs',
 		'/directus/database:uid=1000,gid=1000',
 		'-e',
@@ -192,10 +195,13 @@ async function runJob(job, lane) {
 	if (extensionsDir) mkdirSync(extensionsDir);
 
 	const url =
-		config.instance === false ? undefined : await startDirectus(lane, { extensionsDir, env: config.env, postgres: config.postgres });
+		config.instance === false
+			? undefined
+			: await startDirectus(lane, { extensionsDir, env: config.env, postgres: config.postgres || !!config.sql, sql: config.sql });
 	const target = config.target ? await startDirectus(lane, { target: true }) : undefined;
 	const env = { ...process.env, DIRECTUS_URL: url, DIRECTUS_TOKEN: TOKEN, DIRECTUS_ADMIN_TOKEN: TOKEN, WORK_DIR: work };
 	if (target) env.TARGET_URL = target;
+	if (config.postgres || config.sql) env.PG_CONTAINER = `directus-skills-evals-${lane}-pg`;
 	for (const seed of config.seeds ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env });
 	for (const seed of config.target ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env: { ...env, DIRECTUS_URL: target } });
 

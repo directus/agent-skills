@@ -1,4 +1,4 @@
-import { api, check, done } from './lib.mjs';
+import { api, check, done, userWithToken } from './lib.mjs';
 
 const wait = () => new Promise((r) => setTimeout(r, 800));
 const roles = (await api('/roles?fields=id,name,policies.policy.admin_access,policies.policy.app_access&limit=-1')).data ?? [];
@@ -13,11 +13,8 @@ check(studio(ops), 'an Ops role with Studio access and no admin access', JSON.st
 check(studio(manager), 'a Manager role with Studio access and no admin access', JSON.stringify(manager ?? null));
 if (!ops || !manager) done();
 
-for (const [r, token] of [
-	[ops, 'ops-check-token'],
-	[manager, 'manager-check-token'],
-])
-	await api('/users', { method: 'POST', body: { email: `${token}@example.com`, password: 'check-password-123', role: r.id, token } });
+await userWithToken(ops.id, 'ops-check-token');
+await userWithToken(manager.id, 'manager-check-token');
 const as = (token) => (path, opts = {}) => api(path, { ...opts, token });
 const asOps = as('ops-check-token');
 const asManager = as('manager-check-token');
@@ -51,8 +48,23 @@ check(created.status >= 400 && created.status < 500, 'Ops cannot create an order
 const createdApproved = await asOps('/items/orders', { method: 'POST', body: { customer: 'Sneaky', total: 700, status: 'approved' } });
 check(createdApproved.status >= 400 && createdApproved.status < 500, 'Ops cannot create an order as approved', `status ${createdApproved.status}`);
 
-const approve = await asManager(`/items/orders/${big}`, { method: 'PATCH', body: { status: 'approved' } });
-check(approve.status === 200, 'a Manager can approve', `status ${approve.status} ${JSON.stringify(approve.errors ?? '')}`);
+// Approving by editing the status, or through a manual "Approve" flow on orders, are both fine.
+let approve = await asManager(`/items/orders/${big}`, { method: 'PATCH', body: { status: 'approved' } });
+if (approve.status !== 200) {
+	const manual = ((await api('/flows?filter[trigger][_eq]=manual&fields=id,name,options&limit=-1')).data ?? []).filter((f) =>
+		(f.options?.collections ?? []).includes('orders'),
+	);
+	for (const flow of manual) {
+		const run = await asManager(`/flows/trigger/${flow.id}`, { method: 'POST', body: { collection: 'orders', keys: [big] } });
+		await wait();
+		if (run.status < 300 && (await statusOf(big)) === 'approved') {
+			approve = run;
+			console.log(`INFO approved through the manual flow "${flow.name}"`);
+			break;
+		}
+	}
+}
+check(approve.status < 300 && (await statusOf(big)) === 'approved', 'a Manager can approve', `status ${approve.status} ${JSON.stringify(approve.errors ?? '')}`);
 await wait();
 const approved = (await api(`/items/orders/${big}?fields=status,approved_by,approved_at`)).data ?? {};
 check(approved.approved_by === managerId, 'approved_by records the manager', JSON.stringify(approved));
