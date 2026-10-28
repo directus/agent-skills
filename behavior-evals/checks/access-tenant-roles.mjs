@@ -11,8 +11,7 @@ const login = async (name) =>
 
 const orgs = Object.fromEntries(((await api('/items/orgs?fields=id,name')).data ?? []).map((o) => [o.name, o.id]));
 const tickets = (await api('/items/tickets?fields=id,title,org&limit=-1&sort=id')).data ?? [];
-const ticketIn = (org) => tickets.find((t) => t.org === orgs[org] && /^\w+: /.test(t.title));
-const titles = (rows) => new Set(rows.map((t) => t.title.split(':')[0]));
+const ticketIn = (org) => tickets.find((t) => t.org === orgs[org]);
 const read = async (id) => (await api(`/items/tickets/${id}?fields=title,org`)).data;
 const tokens = { alice: await login('alice'), bob: await login('bob'), carol: await login('carol') };
 for (const [name, token] of Object.entries(tokens)) check(!!token, `${name} can log in`);
@@ -20,10 +19,14 @@ for (const [name, token] of Object.entries(tokens)) check(!!token, `${name} can 
 // Denied means the API refused (4xx or 5xx) and nothing changed. A filter Flow that throws answers 500.
 const denied = (r) => r.status >= 400;
 const clean = (r) => r.status >= 400 && r.status < 500;
+// Which orgs a user's visible tickets belong to, looked up as admin so renamed tickets and narrow field grants don't matter.
+const orgName = Object.fromEntries(Object.entries(orgs).map(([name, id]) => [id, name]));
 const sees = async (name, expected) => {
-	const r = await api('/items/tickets?fields=title&limit=-1', { token: tokens[name] });
-	const got = titles(r.data ?? []);
-	check(r.status === 200 && [...expected].every((o) => got.has(o)) && got.size === expected.length, `${name} sees exactly ${expected.join(' + ')} tickets`, `status ${r.status}: ${[...got].join(', ')}`);
+	const r = await api('/items/tickets?fields=id&limit=-1', { token: tokens[name] });
+	const ids = (r.data ?? []).map((t) => t.id);
+	const rows = ids.length ? ((await api(`/items/tickets?filter[id][_in]=${ids.join(',')}&fields=org&limit=-1`)).data ?? []) : [];
+	const got = new Set(rows.map((t) => orgName[t.org]));
+	check(r.status === 200 && expected.every((o) => got.has(o)) && got.size === expected.length, `${name} sees exactly ${expected.join(' + ')} tickets`, `status ${r.status}: ${[...got].join(', ')}`);
 };
 await sees('alice', ['Acme', 'Globex']);
 await sees('bob', ['Acme']);

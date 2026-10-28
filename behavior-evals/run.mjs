@@ -183,6 +183,25 @@ async function startPostgres(name, port, sql) {
 	];
 }
 
+// The license server answers "unavailable" when several instances activate at once, so licensed instances start one
+// at a time and retry on a fresh container.
+let licenseQueue = Promise.resolve();
+function startLicensed(lane, opts) {
+	const attempt = async () => {
+		for (let i = 1; ; i++) {
+			try {
+				return await startDirectus(lane, opts);
+			} catch (error) {
+				if (!error.license || i === 3) throw error;
+				await new Promise((r) => setTimeout(r, 15_000 * i));
+			}
+		}
+	};
+	const started = licenseQueue.then(attempt);
+	licenseQueue = started.catch(() => {});
+	return started;
+}
+
 async function startDirectus(
 	lane,
 	{ target = false, extensionsDir, env = {}, postgres = false, sql, license = false } = {},
@@ -308,7 +327,7 @@ async function runJob(job, lane) {
 	const url =
 		config.instance === false
 			? undefined
-			: await startDirectus(lane, {
+			: await (config.license ? startLicensed : startDirectus)(lane, {
 					extensionsDir,
 					env: config.env,
 					postgres: config.postgres || !!config.sql,
