@@ -1,0 +1,1 @@
+The source instance has the content model we built in development. The target is production: it already has a `newsletter_signups` collection with real data. Copy the source's schema (collections, fields, relations) to the target. Don't copy content items, and don't lose anything on production.

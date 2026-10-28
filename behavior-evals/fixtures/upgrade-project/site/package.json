@@ -1,0 +1,14 @@
+{
+	"name": "acme-site",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@directus/sdk": "^20.0.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.8.3"
+	}
+}

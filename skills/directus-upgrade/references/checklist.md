@@ -43,7 +43,7 @@ Copy into the upgrade ticket or PR and tick off per stop (for example 10.13.4 â†
 - [ ] Scale to one replica (House rule: one process runs the migrations)
 - [ ] Bump Docker tag / `directus` package to the target (pinned, not `latest`)
 - [ ] Env changes from each hop file applied
-- [ ] Health checks point at `/server/ping` (12.x)
+- [ ] Health checks point at `http://127.0.0.1:8055/server/ping` (12.x; not `localhost`)
 - [ ] Start; migrations ran (Docker: bootstrap on start; npm: `database migrate:latest`)
 - [ ] No "Database migrations have not all been run" warning in logs
 - [ ] Extensions loaded (no load errors in logs)

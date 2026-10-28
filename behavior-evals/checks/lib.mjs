@@ -1,15 +1,24 @@
 // Shared helpers for behavior checks. Each check prints PASS/FAIL lines and exits 1 on any failure.
 export const URL = process.env.DIRECTUS_URL ?? 'http://127.0.0.1:18255';
+export const TARGET_URL = process.env.TARGET_URL;
+export const WORK_DIR = process.env.WORK_DIR;
 const TOKEN = process.env.DIRECTUS_ADMIN_TOKEN ?? 'skills-evals-admin-token';
 
 const failures = [];
 
-export async function api(path, { method = 'GET', body, token = TOKEN } = {}) {
-	const res = await fetch(URL + path, {
-		method,
-		headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), 'Content-Type': 'application/json' },
-		body: body === undefined ? undefined : JSON.stringify(body),
-	});
+export async function api(path, { method = 'GET', body, token = TOKEN, base = URL } = {}) {
+	let res;
+	try {
+		res = await fetch(base + path, {
+			signal: AbortSignal.timeout(15_000),
+			method,
+			headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), 'Content-Type': 'application/json' },
+			body: body === undefined ? undefined : JSON.stringify(body),
+		});
+	} catch (error) {
+		// Status 0: no response (hung or refused).
+		return { status: 0, errors: [{ message: error.message }] };
+	}
 	const text = await res.text();
 	let json = null;
 	try {
@@ -53,4 +62,29 @@ export async function requiredStub(collection) {
 export function done() {
 	console.log(failures.length ? `\n${failures.length} check(s) failed` : '\nall checks passed');
 	process.exit(failures.length ? 1 : 0);
+}
+
+// Whether a semver range (^, ~, >=, <, ||, *) includes a version. Enough for extension `host` fields.
+export function rangeIncludes(range, version) {
+	const parse = (v) => v.replace(/^v/, '').split('.').map((n) => Number(n) || 0);
+	const cmp = (a, b) => {
+		for (let i = 0; i < 3; i++) if ((a[i] ?? 0) !== (b[i] ?? 0)) return (a[i] ?? 0) - (b[i] ?? 0);
+		return 0;
+	};
+	const v = parse(version);
+	const test = (c) => {
+		const [, op, raw] = c.match(/^(\^|~|>=|<=|>|<|=)?\s*(.*)$/);
+		if (raw === '*' || raw === 'x' || raw === '') return true;
+		const r = parse(raw);
+		if (op === '^') return cmp(v, r) >= 0 && v[0] === r[0];
+		if (op === '~') return cmp(v, r) >= 0 && v[0] === r[0] && v[1] === r[1];
+		if (op === '>=') return cmp(v, r) >= 0;
+		if (op === '<=') return cmp(v, r) <= 0;
+		if (op === '>') return cmp(v, r) > 0;
+		if (op === '<') return cmp(v, r) < 0;
+		return cmp(v, r) === 0;
+	};
+	return String(range)
+		.split('||')
+		.some((part) => part.trim().replace(/(>=|<=|>|<|=|\^|~)\s+/g, '$1').split(/\s+/).every(test));
 }

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // Behavior evals: give a fresh headless Claude a Directus task, then check the instance over the API.
-// Each run gets a new Directus container (--image, default the version the skills are verified against). Arms: `with` loads this repo as a plugin, `without` doesn't.
+// Each run gets a new Directus container (--image, default the version the skills are verified against) unless the case
+// only writes files. Arms: `with` loads this repo as a plugin, `without` doesn't.
 //
 //   node behavior-evals/run.mjs [--case <name,...>] [--arms with,without] [--runs 1] [--model sonnet] [--lanes 2]
 //     [--image directus/directus:<tag>] [--clean]
 
 import { spawn, execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,18 +42,27 @@ if (args.clean && !oauthToken) {
 
 const IMAGE = args.image;
 const TOKEN = 'skills-evals-admin-token';
-const SEEDS = {
-	translations: ['posts'],
-	'access-public': ['posts'],
-	'flows-slug': ['posts'],
-	'flows-publish': ['posts'],
-	'flows-duplicate': ['posts'],
-	insights: ['posts'],
-	'flows-publish-guard': ['posts'],
-	'flows-newsletter-fanout': ['subscribers'],
-	'access-editor-role': ['posts'],
-	'insights-author-dashboard': ['posts', 'authors'],
-	'model-indexes': ['posts', 'authors'],
+// Per-case setup. seeds: run against the instance in order. target: start a second instance with these seeds.
+// tools: shell commands allowed besides curl and jq. fixture: copied from fixtures/ into the work dir.
+// extensions: mount <work>/extensions into the instance with auto reload. instance: false for file-only cases.
+const CASES = {
+	translations: { seeds: ['posts'] },
+	'access-public': { seeds: ['posts'] },
+	'flows-slug': { seeds: ['posts'] },
+	'flows-publish': { seeds: ['posts'] },
+	'flows-duplicate': { seeds: ['posts'] },
+	insights: { seeds: ['posts'] },
+	'flows-publish-guard': { seeds: ['posts'] },
+	'flows-newsletter-fanout': { seeds: ['subscribers'] },
+	'access-editor-role': { seeds: ['posts'] },
+	'insights-author-dashboard': { seeds: ['posts', 'authors'] },
+	'model-indexes': { seeds: ['posts', 'authors'] },
+	'sdk-latest-posts': { seeds: ['posts', 'authors'], tools: ['npm', 'node'] },
+	'visual-editing-preview': { seeds: ['posts'] },
+	'extensions-endpoint': { seeds: ['posts'], tools: ['npm', 'npx', 'node', 'ls'], extensions: true },
+	'sync-schema': { seeds: ['posts', 'authors'], target: ['signups'] },
+	'selfhost-compose': { instance: false, tools: ['openssl'] },
+	'upgrade-project': { instance: false, fixture: 'upgrade-project', tools: ['npm view'] },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
@@ -68,9 +78,9 @@ mkdirSync(outDir, { recursive: true });
 
 const sh = (cmd, cmdArgs, opts = {}) => execFileSync(cmd, cmdArgs, { encoding: 'utf8', ...opts });
 
-async function startDirectus(lane) {
-	const name = `directus-skills-evals-${lane}`;
-	const port = 18255 + lane;
+async function startDirectus(lane, { target = false, extensionsDir } = {}) {
+	const name = `directus-skills-evals-${lane}${target ? '-target' : ''}`;
+	const port = (target ? 18355 : 18255) + lane;
 	try {
 		sh('docker', ['rm', '-f', name], { stdio: 'ignore' });
 	} catch {}
@@ -101,6 +111,10 @@ async function startDirectus(lane) {
 		`PUBLIC_URL=http://127.0.0.1:${port}`,
 		'-e',
 		'TELEMETRY=false',
+		// Bind mounts on Docker Desktop don't deliver file events, so the extension watcher polls.
+		...(extensionsDir
+			? ['-v', `${extensionsDir}:/directus/extensions`, '-e', 'EXTENSIONS_AUTO_RELOAD=true', '-e', 'CHOKIDAR_USEPOLLING=true']
+			: []),
 		IMAGE,
 	]);
 	const url = `http://127.0.0.1:${port}`;
@@ -124,20 +138,36 @@ function runProcess(cmd, cmdArgs, opts) {
 	});
 }
 
-const PREAMBLE = (url) =>
-	`A throwaway Directus test instance is running at ${url}. Use this admin static token for every request: ` +
-	`${TOKEN} (it's a local test token, fine to use inline). Do the work directly against this instance using curl ` +
-	`(the only shell commands available are curl and jq; scripts, files run with sh, and other commands are blocked, ` +
-	`so send one curl per command, optionally piped to jq). You can't ask me questions: make reasonable choices and finish the ` +
-	`task, then summarize what you built.\n\nTask: `;
+const RULES = (tools) =>
+	`The only shell commands available are ${tools.join(', ')}; anything else is blocked, so run one command at a ` +
+	`time. You can't ask me questions: make reasonable choices and finish the task, then summarize what you did.\n\nTask: `;
+
+const PREAMBLE = (url, target, tools) =>
+	!url
+		? `Work in the current directory. ${RULES(tools)}`
+		: (target
+				? `Two throwaway Directus test instances are running: the source at ${url} and the target at ${target}. `
+				: `A throwaway Directus test instance is running at ${url}. `) +
+			`Use this admin static token for every request${target ? ' to either' : ''}: ${TOKEN} (it's a local test token, ` +
+			`fine to use inline). Work in the current directory. Do the Directus work directly against the instance with curl. ` +
+			RULES(['curl', 'jq', ...tools]);
 
 async function runJob(job, lane) {
-	const url = await startDirectus(lane);
-	const env = { ...process.env, DIRECTUS_URL: url, DIRECTUS_TOKEN: TOKEN, DIRECTUS_ADMIN_TOKEN: TOKEN };
-	for (const seed of SEEDS[job.case] ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env });
-
+	const config = CASES[job.case] ?? {};
+	const tools = config.tools ?? [];
 	const work = mkdtempSync(join(tmpdir(), `skills-eval-${job.case}-`));
-	const prompt = PREAMBLE(url) + readFileSync(join(here, 'cases', `${job.case}.md`), 'utf8');
+	if (config.fixture) cpSync(join(here, 'fixtures', config.fixture), work, { recursive: true });
+	const extensionsDir = config.extensions ? join(work, 'extensions') : undefined;
+	if (extensionsDir) mkdirSync(extensionsDir);
+
+	const url = config.instance === false ? undefined : await startDirectus(lane, { extensionsDir });
+	const target = config.target ? await startDirectus(lane, { target: true }) : undefined;
+	const env = { ...process.env, DIRECTUS_URL: url, DIRECTUS_TOKEN: TOKEN, DIRECTUS_ADMIN_TOKEN: TOKEN, WORK_DIR: work };
+	if (target) env.TARGET_URL = target;
+	for (const seed of config.seeds ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env });
+	for (const seed of config.target ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env: { ...env, DIRECTUS_URL: target } });
+
+	const prompt = PREAMBLE(url, target, tools) + readFileSync(join(here, 'cases', `${job.case}.md`), 'utf8');
 	const claudeArgs = [
 		'-p',
 		prompt,
@@ -151,8 +181,8 @@ async function runJob(job, lane) {
 		'--permission-mode',
 		'acceptEdits',
 		'--allowedTools',
-		'Bash(curl:*)',
-		'Bash(jq:*)',
+		...(url ? ['Bash(curl:*)', 'Bash(jq:*)'] : []),
+		...tools.map((t) => `Bash(${t}:*)`),
 		'Read',
 		'Write',
 		'Edit',
@@ -237,9 +267,10 @@ await Promise.all(
 				results.push({ ...job, passed: 0, total: 0, error: error.message });
 			}
 		}
-		try {
-			sh('docker', ['rm', '-f', `directus-skills-evals-${lane}`], { stdio: 'ignore' });
-		} catch {}
+		for (const name of [`directus-skills-evals-${lane}`, `directus-skills-evals-${lane}-target`])
+			try {
+				sh('docker', ['rm', '-f', name], { stdio: 'ignore' });
+			} catch {}
 	}),
 );
 

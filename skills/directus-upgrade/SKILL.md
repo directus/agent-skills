@@ -32,7 +32,9 @@ the instance._
    (`npx directus schema snapshot ./snapshot.yaml`, or `node /directus/cli.js` in Docker), and the env file.
 3. **Load the hop files** from the routing table and read each release you cross. Patches break too (10.6.3, 10.13.2,
    11.1.2, 11.14.1).
-4. **Grep the callers** with each file's patterns. Fix code before or alongside the server bump.
+4. **Grep the callers** with each file's patterns, plus the SDK table in
+   [sdk-and-extensions](references/sdk-and-extensions.md) for every SDK major you cross (removed commands like
+   `generateHash` only fail at runtime if you can't type check). Fix code before or alongside the server bump.
 5. **Upgrade the server.** **House rule:** one major at a time, stopping on the last release of each (9.26.0 → 10.13.4 →
    11.17.4 → 12.x target), booting each stop once so its migrations run. Skip 12.4.0 (use 12.4.1).
 6. **Run migrations.** Docker runs `directus bootstrap` on start. npm installs don't (`directus start` only logs
@@ -50,7 +52,8 @@ the instance._
 - **v11 moved permissions from roles to policies.** `admin_access`, `app_access`, `enforce_tfa`, `ip_access` left
   `directus_roles`; `directus_permissions.role` became `policy`.
 - **`/server/health` needs a token on 12.x** (403). Point probes at `/server/ping` before deploying, or an orchestrator
-  may roll you back.
+  may roll you back. Use `127.0.0.1`, not `localhost`: the image's `wget` tries `::1` and fails (seen on 12.5.1 and
+  12.6.0).
 - **`IP_TRUST_PROXY` defaults to `false` on 12.x.** Behind a proxy, rate limits, IP access, and logs see the proxy IP.
 - **Only REST checks snapshot versions.** `POST /schema/diff` refuses another version or vendor unless `force`; CLI
   `directus schema apply` applies silently. Fresh snapshot after each stop. Details: `directus-environment-sync`
