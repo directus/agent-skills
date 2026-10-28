@@ -1,6 +1,6 @@
 ---
 name: directus-content-modeling
-description: "Use when designing or changing a Directus data model or starting a new project from a starter: collections, fields, relations (M2O, O2M, M2M, M2A, translations), field types and interfaces, page builders, multilingual content, slugs and SEO fields, indexes, schema changes on live data, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
+description: "Load first, before exploring code, when designing or changing a Directus data model or starting a new project from a starter: collections, fields, relations (M2O, O2M, M2M, M2A, translations), field types and interfaces, page builders, multilingual content, slugs and SEO fields, indexes, schema changes on live data, and seeding. Not for querying (directus), permissions (directus-access-control), or promoting schema (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.6.0'

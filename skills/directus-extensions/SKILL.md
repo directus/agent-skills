@@ -1,6 +1,6 @@
 ---
 name: directus-extensions
-description: "Use when building, debugging, or publishing custom Directus extensions (interfaces, displays, layouts, modules, panels, hooks, endpoints, operations, bundles), or deciding whether a Flow is enough. Covers create-directus-extension, the extensions SDK, services and accountability, local dev with Docker, the sandbox, and the Marketplace. Not for calling the API (directus), Flows (directus-flows), or frontend SDK code (directus-sdk)."
+description: "Load first, before exploring code, when building, debugging, or publishing custom Directus extensions (interfaces, displays, layouts, modules, panels, hooks, endpoints, operations, bundles), or deciding whether a Flow is enough. Covers create-directus-extension, the extensions SDK, services, local dev with Docker, the sandbox, and the Marketplace. Not for calling the API (directus), Flows (directus-flows), or frontend SDK code (directus-sdk)."
 metadata:
   author: directus
   directus-version: '12.6.0'

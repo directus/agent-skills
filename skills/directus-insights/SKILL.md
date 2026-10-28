@@ -1,6 +1,6 @@
 ---
 name: directus-insights
-description: "Use when building Directus Insights dashboards and panels: metrics, lists, time series, bar, line, and pie charts, meters, labels, variables, layout, and dashboard access, including creating them over the API. Not for aggregate queries from code (directus) or custom panel extensions (directus-extensions)."
+description: "Load first, before exploring code, when building Directus Insights dashboards and panels: metrics, lists, time series, bar, line, and pie charts, meters, labels, variables, layout, and dashboard access, including creating them over the API. Not for aggregate queries from code (directus) or custom panel extensions (directus-extensions)."
 metadata:
   author: directus
   directus-version: '12.6.0'

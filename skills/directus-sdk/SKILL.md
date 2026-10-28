@@ -1,6 +1,6 @@
 ---
 name: directus-sdk
-description: "Use when writing JavaScript or TypeScript with @directus/sdk: client setup (rest, graphql, realtime), auth and tokens, typed schemas, reading and writing items, files and asset URLs, CORS and cookies, and data fetching in Next.js, Nuxt, Astro, or SvelteKit. Load directus alongside for complex queries. Not for live preview or drafts (directus-visual-editing) or SDK version migrations (directus-upgrade)."
+description: "Load first, before exploring code, when writing JavaScript or TypeScript with @directus/sdk: client setup (rest, graphql, realtime), auth and tokens, typed schemas, reading and writing items, files and asset URLs, CORS and cookies, and data fetching in Next.js, Nuxt, Astro, or SvelteKit. Load directus alongside for complex queries. Not for live preview or drafts (directus-visual-editing) or SDK version migrations (directus-upgrade)."
 metadata:
   author: directus
   directus-version: '12.6.0'

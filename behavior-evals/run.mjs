@@ -75,6 +75,7 @@ const CASES = {
 	'sync-partial': { seeds: ['posts', 'authors', 'events'], target: ['posts', 'signups'] },
 	'selfhost-scale': { instance: false, tools: ['openssl'] },
 	'json-filters': { seeds: ['products'], postgres: true },
+	'internal-tools-approvals': { seeds: ['orders'], maxTurns: 60 },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));

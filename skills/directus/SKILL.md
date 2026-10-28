@@ -1,6 +1,6 @@
 ---
 name: directus
-description: "Use when calling a running Directus instance over REST, GraphQL, WebSockets, or /mcp: reading and writing items, filters and relations, auth, error codes, slow queries and caching, files, content versions, import and export, revisions, signup, AI settings, and older Directus versions. Also for an unexplained 403 or 400, or calling Directus from Python or PHP. Other directus-* skills own SDK code, schema, permissions, Flows, and hosting."
+description: "Load first, before exploring code, when calling a running Directus instance over REST, GraphQL, WebSockets, or /mcp: items, filters and relations, auth, error codes, slow queries and caching, files, content versions, import and export, revisions, signup, AI settings, and older Directus versions. Also an unexplained 403 or 400, or Directus from Python or PHP. Other directus-* skills own SDK code, schema, permissions, Flows, and hosting."
 metadata:
   author: directus
   directus-version: '12.6.0'

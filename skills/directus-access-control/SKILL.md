@@ -1,6 +1,6 @@
 ---
 name: directus-access-control
-description: "Use when deciding who can do what in Directus or debugging access: roles, policies, permissions, the public policy, item and field rules, an unexpected 403 or missing field, editors who can't publish, multi-tenant setups, and licensing: license keys, core-tier limits, RESOURCE_RESTRICTED, lockdown. Not for login and tokens (directus) or promoting permissions (directus-environment-sync)."
+description: "Load first, before exploring code, when deciding who can do what in Directus or debugging access: roles, policies, permissions, the public policy, item and field rules, an unexpected 403 or missing field, editors who can't publish, multi-tenant setups, and licensing: license keys, core-tier limits, RESOURCE_RESTRICTED, lockdown. Not for login and tokens (directus) or promoting permissions (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.6.0'

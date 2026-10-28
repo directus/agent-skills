@@ -1,6 +1,6 @@
 ---
 name: directus-self-hosting
-description: "Use when deploying or running a Directus server: Docker Compose, Postgres and Redis, hosting platforms, env vars, email, file storage, reverse proxies, health checks, running several instances, caching and stale data, rate limits, backups and restores, and Directus Cloud differences. Not for version upgrades (directus-upgrade), moving config between instances (directus-environment-sync), or licensing (directus-access-control)."
+description: "Load first, before exploring code, when deploying or running a Directus server: Docker Compose, Postgres and Redis, hosting platforms, env vars, email, file storage, proxies, health checks, several instances, caching and stale data, rate limits, backups, and Directus Cloud. Not for version upgrades (directus-upgrade), moving config between instances (directus-environment-sync), or licensing (directus-access-control)."
 metadata:
   author: directus
   directus-version: '12.6.0'

@@ -1,6 +1,6 @@
 ---
 name: directus-flows
-description: "Use when automating Directus with Flows: event, webhook, schedule, and manual triggers, the data chain and {{ }} templates, operations (condition, item CRUD, Run Script, request, mail), reusable utility flows and loops, and building or debugging flows over the API or MCP. Not for hook or operation extensions (directus-extensions) or promoting flows (directus-environment-sync)."
+description: "Load first, before exploring code, when automating Directus with Flows: event, webhook, schedule, and manual triggers, the data chain and {{ }} templates, operations (condition, item CRUD, Run Script, request, mail), reusable utility flows and loops, and building or debugging flows over the API or MCP. Not for hook or operation extensions (directus-extensions) or promoting flows (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.6.0'

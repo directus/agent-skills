@@ -50,14 +50,16 @@ Each topic has one home skill. Others get one line and a pointer. Current owners
 ```yaml
 ---
 name: directus-sdk # must match the folder name, lowercase + hyphens
-description: 'Use when ... Not for ...' # third person, trigger words, <= 450 chars
+description: 'Load first, before exploring code, when ... Not for ...' # trigger words, <= 450 chars
 metadata:
   author: directus
   directus-version: '12.6.0'
 ---
 ```
 
-The description is the only thing an agent sees before deciding to load the skill. Lead with the tasks and the words
+The description is the only thing an agent sees before deciding to load the skill. Open with "Load first, before
+exploring code, when": without it, Haiku explores the repo first and loads the skill late or never (22 of 37 trigger
+cases passed on Haiku; 33 to 34 with it, Sonnet unchanged at 37). Then lead with the tasks and the words
 a user would type (package names, feature names). Add a "Not for" clause when a sibling skill owns the neighbor topic.
 Keep it under 450 characters: name tasks, not every option or env var (the router and references carry those).
 

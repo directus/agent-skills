@@ -1,6 +1,6 @@
 ---
 name: directus-upgrade
-description: "Use when upgrading Directus (v9, v10, v11, or 12.x) or the code that calls it: picking the path, backups, bumping the Docker tag or package, migrations, and fixing what breaks in frontends, SDK clients, extensions, and flows. Also errors and licensing lockdown after an upgrade, and matching @directus/sdk or extensions-sdk versions. Not for moving schema between instances (directus-environment-sync)."
+description: "Load first, before exploring code, when upgrading Directus (v9, v10, v11, or 12.x) or the code that calls it: picking the path, backups, bumping the Docker tag or package, migrations, and fixing what breaks in frontends, SDK clients, extensions, and flows. Also errors and licensing lockdown after an upgrade, and matching @directus/sdk or extensions-sdk versions. Not for moving schema between instances (directus-environment-sync)."
 metadata:
   author: directus
   directus-version: '12.6.0'
