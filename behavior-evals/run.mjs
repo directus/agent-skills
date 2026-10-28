@@ -94,6 +94,7 @@ const CASES = {
 		maxTurns: 80,
 	},
 	'assets-partners': { license: true, seeds: ['assets'], maxTurns: 80 },
+	'content-editing': { seeds: ['posts', 'editorial'] },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));

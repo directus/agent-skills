@@ -34,6 +34,7 @@ Each topic has one home skill. Others get one line and a pointer. Current owners
 | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | REST/GraphQL query syntax, filters, error codes, versions API                             | `directus`                                                   |
 | Insights dashboards and panels (add `references/mcp.md` when the MCP Insights tool ships) | `directus-insights`                                          |
+| Editing content in an existing project (MCP `items`/`files`, translations rows, blocks, publishing) | `directus-content` |
 | Flows: triggers, operations, utility flows, loops, flow vs hook                           | `directus-flows`                                             |
 | Roles, policies, permissions, license keys and core-tier limits                           | `directus-access-control`                                    |
 | CORS and cookie env vars (server side)                                                    | `directus-self-hosting`; `directus-sdk` owns the client side |

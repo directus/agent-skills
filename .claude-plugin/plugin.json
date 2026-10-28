@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"description": "Official Directus skills: query the API and MCP, automate with Flows, build Insights dashboards, design access control and content models, promote schema with Environment Sync, build SDK frontends with visual editing, write extensions, self-host and scale Directus, and upgrade between versions. Bundles the Directus docs MCP server.",
+	"description": "Official Directus skills: query the API and MCP, edit content, automate with Flows, build Insights dashboards, design access control and content models, promote schema with Environment Sync, build SDK frontends with visual editing, write extensions, self-host and scale Directus, and upgrade between versions. Bundles the Directus docs MCP server.",
 	"version": "0.1.0",
 	"author": {
 		"name": "Directus",
