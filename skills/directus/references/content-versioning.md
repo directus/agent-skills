@@ -35,14 +35,14 @@ GET /items/posts?version=draft&fields=id,title
 
 ## Version API
 
-| Purpose       | Request                                                            | Body / notes                                                                                                                                                                                        |
-| ------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| List versions | `GET /versions?filter[collection][_eq]=posts&filter[item][_eq]=42` |                                                                                                                                                                                                     |
-| Create        | `POST /versions`                                                   | `{ "key": "draft", "collection": "posts", "item": "42", "name": "Draft" }`. `item: null` only with `key: "draft"`. Fails if the collection isn't versioned or the key already exists for that item. |
-| Save changes  | `POST /versions/<version-id>/save`                                 | Partial item payload, merged into the delta. Required fields are only validated on promote.                                                                                                         |
-| Compare       | `GET /versions/<version-id>/compare`                               | Returns `outdated`, `mainHash`, `current` (delta), `main` (published item).                                                                                                                         |
-| Promote       | `POST /versions/<version-id>/promote`                              | `{ "mainHash": "<from compare>", "fields": ["title"] }`. `mainHash` is required when the version has an item; `fields` limits what gets applied.                                                    |
-| Delete        | `DELETE /versions/<version-id>`                                    | Discards the version.                                                                                                                                                                               |
+| Purpose | Request | Body / notes |
+| --- | --- | --- |
+| List versions | `GET /versions?filter[collection][_eq]=posts&filter[item][_eq]=42` |  |
+| Create | `POST /versions` | `{ "key": "draft", "collection": "posts", "item": "42", "name": "Draft" }`. `item: null` only with `key: "draft"`. Fails if the collection isn't versioned or the key already exists for that item. |
+| Save changes | `POST /versions/<version-id>/save` | Partial item payload, merged into the delta. Required fields are only validated on promote. |
+| Compare | `GET /versions/<version-id>/compare` | Returns `outdated`, `mainHash`, `current` (delta), `main` (published item). |
+| Promote | `POST /versions/<version-id>/promote` | `{ "mainHash": "<from compare>", "fields": ["title"] }`. `mainHash` is required when the version has an item; `fields` limits what gets applied. |
+| Delete | `DELETE /versions/<version-id>` | Discards the version. |
 
 Promote flow:
 
@@ -56,13 +56,26 @@ Promote flow:
 Promote checks `update` permission on the item (or `create` for an item-less draft) and fires `items.promote` filter
 and action events.
 
+### Page builders (M2A) in a version
+
+Block edits go in the parent's delta, through the junction row (verified on 12.6.0):
+
+```json
+{ "blocks": { "update": [{ "id": "<page_blocks id>", "collection": "block_hero", "item": { "id": "<block id>", "headline": "New" } }] } }
+```
+
+- **Send `collection` on every junction row.** Save accepts the delta without it, but every later read of the page in
+  that version fails with 400 `Can't update nested record "page_blocks.item" without field "page_blocks.collection"`.
+- **Select the junction's `collection` when reading a version:** `?version=draft&fields=blocks.collection,blocks.item:block_hero.headline`.
+  Without it, 400 `INVALID_QUERY` ("has to be selected when using versioning and m2a relations").
+
 ## Permissions
 
-| Collection               | Editors need                                            | Read-only frontends need |
-| ------------------------ | ------------------------------------------------------- | ------------------------ |
-| The versioned collection | Read, Create, Update                                    | Read                     |
-| `directus_versions`      | Read, Create, Update, Delete (all fields, no item rule) | Read                     |
-| `directus_revisions`     | Read (scope by `collection`)                            | none                     |
+| Collection | Editors need | Read-only frontends need |
+| --- | --- | --- |
+| The versioned collection | Read, Create, Update | Read |
+| `directus_versions` | Read, Create, Update, Delete (all fields, no item rule) | Read |
+| `directus_revisions` | Read (scope by `collection`) | none |
 
 Missing pieces show up as a disabled Create button, a read-only form, or FORBIDDEN on publish. Clearing
 `directus_revisions` by hand can break versions still in use.
@@ -74,8 +87,8 @@ Missing pieces show up as a disabled Create button, a read-only form, or FORBIDD
 - https://directus.com/docs/guides/connect/query-parameters
 - https://directus.com/docs/api/versions
 - https://directus.com/docs/releases/breaking-changes/version-12
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/versions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/versions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/versioning/handle-version.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/constants/src/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/versioning/handle-version.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/constants/src/versions.ts
 - https://github.com/directus-labs/starters/tree/main/cms

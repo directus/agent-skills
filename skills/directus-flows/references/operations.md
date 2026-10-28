@@ -18,20 +18,20 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 
 ## Operation table
 
-| `type`                                                      | Does                 | Notes                                                                                                                  |
-| ----------------------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `condition`                                                 | Branch on a filter   | Resolves with `null` when the filter passes, rejects when it fails. See below.                                         |
-| `item-create` / `item-read` / `item-update` / `item-delete` | CRUD                 | `collection`, `key` or `query` (not both), `payload`, `permissions`, `emitEvents`. See below.                          |
-| `exec`                                                      | Run Script           | Sandboxed JS. See below.                                                                                               |
-| `request`                                                   | HTTP call            | Rejects on non-2xx. See below.                                                                                         |
-| `mail`                                                      | Send email           | Fire and forget. See below.                                                                                            |
-| `notification`                                              | In-app notification  | `recipient` (user id, array, or comma-separated ids), `subject`, `message`                                                                    |
-| `transform`                                                 | Build JSON           | `json` with `{{ }}` values. Use it to shape a payload or a return value.                                               |
-| `trigger`                                                   | Run another flow     | `flow` (UUID), `payload`, `iterationMode`, `batchSize`. See [utility-flows-and-loops.md](utility-flows-and-loops.md).  |
-| `json-web-token`                                            | Sign, verify, decode | Keep secrets in `$env`                                                                                                 |
-| `sleep`                                                     | Wait                 | `milliseconds`                                                                                                         |
-| `log`                                                       | Write to server log  | `message`. Goes to the server log at `info`, not the flow log. Secrets in `headers` and `payload` are redacted.        |
-| `throw-error`                                               | Fail on purpose      | `code`, `status`, `message`. Use at the end of a branch to cancel a filter event or fail a webhook with a real status. |
+| `type` | Does | Notes |
+| --- | --- | --- |
+| `condition` | Branch on a filter | Resolves with `null` when the filter passes, rejects when it fails. See below. |
+| `item-create` / `item-read` / `item-update` / `item-delete` | CRUD | `collection`, `key` or `query` (not both for update and delete; read takes both), `payload`, `permissions`, `emitEvents`. See below. |
+| `exec` | Run Script | Sandboxed JS. See below. |
+| `request` | HTTP call | Rejects on non-2xx. See below. |
+| `mail` | Send email | Fire and forget. See below. |
+| `notification` | In-app notification | `recipient` (user id, array, or comma-separated ids), `subject`, `message` |
+| `transform` | Build JSON | `json` with `{{ }}` values. Use it to shape a payload or a return value. |
+| `trigger` | Run another flow | `flow` (UUID), `payload`, `iterationMode`, `batchSize`. See [utility-flows-and-loops.md](utility-flows-and-loops.md). |
+| `json-web-token` | Sign, verify, decode | Keep secrets in `$env` |
+| `sleep` | Wait | `milliseconds` |
+| `log` | Write to server log | `message`. Goes to the server log at `info`, not the flow log. Secrets in `headers` and `payload` are redacted. |
+| `throw-error` | Fail on purpose | `code`, `status`, `message`. Use at the end of a branch to cancel a filter event or fail a webhook with a real status. |
 
 ## Condition
 
@@ -49,13 +49,13 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 
 ## Item operations
 
-| Option        | Meaning                                                                                                                                              |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `key`         | One key or an array. Use it or `query`, not both.                                                                                                    |
-| `query`       | A normal query (`filter`, `fields`, `limit`, `sort`). For update and delete, no `key` and no `query` returns `null` instead of touching every item; to hit all, use `{"limit": -1}`. A read with neither returns the first page.    |
-| `payload`     | Object, or an **array** for `item-create` (creates many) and `item-update` (batch update; each object carries its primary key, no `key` or `query`). |
-| `permissions` | `$trigger` (default), `$public`, `$full`, or a role UUID                                                                                             |
-| `emitEvents`  | Default `false`. When `true`, the write fires hooks and event flows.                                                                                 |
+| Option | Meaning |
+| --- | --- |
+| `key` | One key or an array. Update and delete reject `key` with `query`; read applies `query` to the keyed items. |
+| `query` | A normal query (`filter`, `fields`, `limit`, `sort`). For update and delete, no `key` and no `query` returns `null` instead of touching every item; to hit all, use `{"limit": -1}`. A read with neither returns the first page. |
+| `payload` | Object, or an **array** for `item-create` (creates many) and `item-update` (batch update; each object carries its primary key, no `key` or `query`). |
+| `permissions` | `$trigger` (default), `$public`, `$full`, or a role UUID |
+| `emitEvents` | Default `false`. When `true`, the write fires hooks and event flows. |
 
 - **`$trigger` permissions** run as the trigger's caller
   ([who the flow runs as](triggers-and-data-chain.md#who-the-flow-runs-as)). An anonymous webhook usually reads nothing.
@@ -67,7 +67,7 @@ An unknown operation `type` (a missing extension) ends the run with only a serve
 
 ## Run Script
 
-Shape: `module.exports = async function (data) { ... }`, returning the result. Full example:
+Shape: `module.exports = async function (data) { ... }`, returning the result. Example:
 [recipes.md](recipes.md#slug-on-create).
 
 - Runs in an `isolated-vm` sandbox: no `require`, no file system, no network, no `fetch`. Use a `request` operation for
@@ -91,7 +91,8 @@ Shape: `module.exports = async function (data) { ... }`, returning the result. F
 
 - `headers` is an array of `{ header, value }`. `Content-Type: application/json` is added when the body is JSON.
 - Resolves with `{ status, statusText, headers, data }`. Use `{{ call_api.data.id }}` downstream.
-- Rejects on non-2xx with the same shape, so the reject branch can read `{{ call_api.status }}`.
+- Rejects on non-2xx with the same shape, so the reject branch can read `{{ call_api.status }}`. A network error,
+  timeout, or deny-list block rejects with a plain error and no `status`, so don't branch only on `status`.
 - Outbound requests go through the same IP deny list as file imports (`IMPORT_IP_DENY_LIST`, which blocks `0.0.0.0` and
   the cloud metadata address by default).
 
@@ -105,7 +106,10 @@ Shape: `module.exports = async function (data) { ... }`, returning the result. F
   `template` and `data`). Templates on disk aren't an option on Directus Cloud; render the HTML in the flow instead.
 - It resolves before the email is sent. Check SMTP config with a test run, not by branching on the result.
 - For one email per person instead of one shared email, loop (see [utility-flows-and-loops.md](utility-flows-and-loops.md#loops)).
-- `RATE_LIMITER_EMAIL_FLOWS_ENABLED` (default `false`) caps mail per flow. When it trips, the operation rejects.
+- `RATE_LIMITER_EMAIL_FLOWS_ENABLED` (default `false`) caps mail per flow: `RATE_LIMITER_EMAIL_FLOWS_POINTS` (`1`) per
+  `RATE_LIMITER_EMAIL_FLOWS_DURATION` (`60` seconds). The key is the **outermost** flow, so every `mail` in its
+  utility children shares one budget: with the defaults, a loop sends one email and the rest reject. Raise the points
+  or send a single email with all recipients when the limiter is on.
 
 ## Marketplace operations
 
@@ -118,9 +122,9 @@ Check `GET /extensions` before using one; a flow pushed to an instance without i
 
 - https://directus.com/docs/guides/flows/operations
 - https://directus.com/docs/configuration/flows
-- https://github.com/directus/directus/tree/v12.5.1/api/src/operations
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/generate-joi.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/utils/shared/apply-options-data.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/tree/v12.6.0/api/src/operations
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/generate-joi.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/utils/shared/apply-options-data.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts
 - https://github.com/directus-labs/extensions/tree/main/packages

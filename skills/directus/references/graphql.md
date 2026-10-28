@@ -3,7 +3,7 @@
 Directus generates a GraphQL schema per caller from the data model and their permissions. Same permissions, filter
 operators, and query params as REST, in GraphQL form.
 
-**House rule:** use REST (or the SDK) by default. It covers files, assets, versions, flow triggers, utilities, and
+**Recommended:** use REST (or the SDK) by default. It covers files, assets, versions, flow triggers, utilities, and
 `SEARCH`, has simpler error handling, and is what the MCP tools and most examples use. Pick GraphQL when the caller
 already has a GraphQL client and wants typed, nested selections in one request.
 
@@ -16,15 +16,15 @@ already has a GraphQL client and wants typed, nested selections in one request.
 - Authenticate with `Authorization: Bearer <token>` like REST. A locked-down instance returns 403
   `RESOURCE_RESTRICTED` on `/graphql` (see `directus-access-control`).
 
-| Operation | Field for a collection `posts`                                                                        |
-| --------- | ----------------------------------------------------------------------------------------------------- |
-| List      | `posts(filter:, sort:, limit:, offset:, page:, search:)`                                              |
-| One       | `posts_by_id(id: 1, version: "draft")`                                                                |
-| Aggregate | `posts_aggregated(groupBy: [...]) { count { id } sum { views } countAll }`                            |
-| Version   | `posts_by_version(id: 1, version: "draft")`                                                           |
-| Create    | `create_posts_item(data:)`, `create_posts_items(data: [])`                                            |
-| Update    | `update_posts_item(id:, data:)`, `update_posts_items(ids: [], data:)`, `update_posts_batch(data: [])` |
-| Delete    | `delete_posts_item(id:)`, `delete_posts_items(ids: [])`                                               |
+| Operation | Field for a collection `posts` |
+| --- | --- |
+| List | `posts(filter:, sort:, limit:, offset:, page:, search:)` |
+| One | `posts_by_id(id: 1, version: "draft")` |
+| Aggregate | `posts_aggregated(groupBy: [...]) { count { id } sum { views } countAll }` |
+| Version | `posts_by_version(id: 1, version: "draft")` |
+| Create | `create_posts_item(data:)`, `create_posts_items(data: [])` |
+| Update | `update_posts_item(id:, data:)`, `update_posts_items(ids: [], data:)`, `update_posts_batch(data: [])` |
+| Delete | `delete_posts_item(id:)`, `delete_posts_items(ids: [])` |
 
 Singletons have no `_by_id`, `_aggregated`, create, or delete; update uses `update_<singleton>(data:)`.
 
@@ -69,7 +69,7 @@ query {
 - https://directus.com/docs/configuration/general
 - https://directus.com/docs/configuration/security-limits
 - https://directus.com/docs/licensing/overview
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/graphql.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/graphql/schema/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/server.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/graphql.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/graphql/schema/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/server.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts

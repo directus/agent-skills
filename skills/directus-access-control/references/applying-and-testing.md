@@ -76,11 +76,11 @@ curl -X POST "$DIRECTUS_URL/access" -H "Authorization: Bearer $TOKEN" -H 'Conten
 Build access on dev, then move it with Environment Sync (`d6s`; flags, matching, and refusals are in the
 `directus-environment-sync` skill). Select `--roles`, which brings policies, access rows, and permissions with it.
 
-- **House rule:** never rename a role or policy in only one environment; they match by name.
+- **Recommended:** never rename a role or policy in only one environment; they match by name.
 - Attachments to users only travel when users are in scope.
 - Pulling from an unlicensed source hides custom-rule rows; `mirror` refuses that pull. License the source, or push
   with `merge`.
-- **House rule:** run it as a dedicated admin user per instance, with its own static token (the CLI refuses non-admin
+- **Recommended:** run it as a dedicated admin user per instance, with its own static token (the CLI refuses non-admin
   tokens). Keep the sync user out of synced users, or include it on purpose (a `mirror` push can delete the account it
   runs as).
 
@@ -113,21 +113,21 @@ Checklist per role:
 
 ## Reading failures
 
-| Symptom                                                 | Likely cause                                                                                                |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 403 "...for collection X or it does not exist"          | No policy grants that action, the collection name is wrong, or (unlicensed) the row has a custom rule       |
-| 403 naming a field                                      | Field not in any allowed list (explicitly requested, written, filtered, or sorted)                          |
-| 403 on a nested `fields` path                           | No read permission on the related collection; fails the whole request                                       |
-| 200 with fewer rows than expected                       | Item rule filtering (a single item by key outside the rule is a 403). Check the rule and its variables      |
-| 200, fields missing from a `fields=*` response          | Partial field list; forbidden fields are dropped silently                                                   |
-| Field is `null` on some rows                            | Another policy grants the field only for rows matching its own rule                                         |
-| 204 on create or update                                 | Write allowed, read not. Grant read (even just `id`)                                                        |
-| 400 `FAILED_VALIDATION`                                 | A permission validation rule (from any policy) or field validation failed                                   |
-| 403 `RESOURCE_RESTRICTED` on saving a permission        | Unlicensed instance and the row has a custom rule, or `fields: ["*"]` missing from the payload              |
-| Works from one network, not another                     | `ip_access` on a policy, which drops the whole policy for other IPs. Behind a proxy, check `IP_TRUST_PROXY` |
-| Editor can't create or save a draft, or publish         | No read/create/update on `directus_versions`, or no update on the versioned collection                      |
-| 403 `RESOURCE_RESTRICTED` on `/items`, `/files`, login  | Instance locked down over core limits, not a permission. See [licensing.md](licensing.md)                   |
-| `/permissions/me` looks right but a request still fails | Update/delete by query needs read on the filtered fields; filters and sorts check read permissions          |
+| Symptom | Likely cause |
+| --- | --- |
+| 403 "...for collection X or it does not exist" | No policy grants that action, the collection name is wrong, or (unlicensed) the row has a custom rule |
+| 403 naming a field | Field not in any allowed list (explicitly requested, written, filtered, or sorted) |
+| 403 on a nested `fields` path | No read permission on the related collection; fails the whole request |
+| 200 with fewer rows than expected | Item rule filtering (a single item by key outside the rule is a 403). Check the rule and its variables |
+| 200, fields missing from a `fields=*` response | Partial field list; forbidden fields are dropped silently |
+| Field is `null` on some rows | Another policy grants the field only for rows matching its own rule |
+| 204 on create or update | Write allowed, read not. Grant read (even just `id`) |
+| 400 `FAILED_VALIDATION` | A permission validation rule (from any policy) or field validation failed |
+| 403 `RESOURCE_RESTRICTED` on saving a permission | Unlicensed instance and the row has a custom rule, or `fields: ["*"]` missing from the payload |
+| Works from one network, not another | `ip_access` on a policy, which drops the whole policy for other IPs. Behind a proxy, check `IP_TRUST_PROXY` |
+| Editor can't create or save a draft, or publish | No read/create/update on `directus_versions`, or no update on the versioned collection |
+| 403 `RESOURCE_RESTRICTED` on `/items`, `/files`, login | Instance locked down over core limits, not a permission. See [licensing.md](licensing.md) |
+| `/permissions/me` looks right but a request still fails | Update/delete by query needs read on the filtered fields; filters and sorts check read permissions |
 
 ## Sources
 
@@ -136,14 +136,14 @@ Checklist per role:
 - https://directus.com/docs/guides/environment-sync/reference
 - https://directus.com/docs/guides/environment-sync/secrets-and-limitations
 - https://directus.com/docs/guides/ai/mcp/troubleshooting
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/policies.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/roles.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/access.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/permissions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/policies.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/access.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/roles.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/items/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/relations/relations.yaml
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/create/policies.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/policies.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/roles.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/access.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/policies.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/access.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/roles.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/items/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/relations/relations.yaml
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/create/policies.ts

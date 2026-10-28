@@ -1,0 +1,2 @@
+# Prettier pads markdown tables; skill files keep them compact (scripts/compact-tables.mjs).
+skills/**/*.md

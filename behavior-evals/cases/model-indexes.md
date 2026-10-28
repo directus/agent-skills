@@ -1,0 +1,1 @@
+Our website lists published posts filtered by status and author, sorted by date_published, and looks single posts up by slug. As the posts table grows these queries are getting slow. Make the database side fast for these queries.

@@ -1,0 +1,58 @@
+services:
+  database:
+    image: postgres:16
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: directus
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: directus
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'directus']
+      interval: 10s
+
+  directus:
+    image: directus/directus:11.9.3
+    command: sh -c "npx directus bootstrap && npx directus start"
+    volumes:
+      - ./uploads:/directus/uploads
+      - ./extensions:/directus/extensions
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      SECRET: ${SECRET}
+      PUBLIC_URL: https://cms.acme.test
+      DB_CLIENT: pg
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: directus
+      DB_USER: directus
+      DB_PASSWORD: ${DB_PASSWORD}
+      CACHE_ENABLED: 'true'
+      CACHE_AUTO_PURGE: 'true'
+      CACHE_STORE: memory
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:8055/server/health || exit 1']
+      interval: 15s
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.directus.rule=Host(`cms.acme.test`)
+      - traefik.http.routers.directus.entrypoints=websecure
+      - traefik.http.routers.directus.tls.certresolver=letsencrypt
+      - traefik.http.services.directus.loadbalancer.server.port=8055
+
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.email=ops@acme.test
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    ports:
+      - '443:443'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data/letsencrypt:/letsencrypt

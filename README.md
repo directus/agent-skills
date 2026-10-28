@@ -9,7 +9,7 @@
 
 <p align="center">
   Teach your AI coding agent to work with Directus: the API and MCP server, Flows, Insights, access control, content modeling,
-  Environment Sync, the SDK and visual editing, extensions, and upgrades.
+  Environment Sync, the SDK and visual editing, extensions, self-hosting, and upgrades.
 </p>
 
 <p align="center">
@@ -21,22 +21,24 @@
 
 The official [Agent Skills](https://agentskills.io) bundle for [Directus](https://directus.com). Each skill is a short
 router that loads only the reference an agent needs for the task, plus the traps it would otherwise get wrong. Verified
-against **Directus 12.5.1**.
+against **Directus 12.6.0**.
 
 ## Skills
 
-| Skill                                                           | Use it for                                                                                                                                                                                       |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`directus`](skills/directus)                                   | Working with a running instance: REST and GraphQL queries, filters, auth, files, realtime, content versions, and the Directus MCP server                                                  |
+| Skill | Use it for |
+| --- | --- |
+| [`directus`](skills/directus) | Working with a running instance: REST and GraphQL queries, filters, auth, files, realtime, content versions, and the Directus MCP server |
 | [`directus-flows`](skills/directus-flows) | Automating with Flows: triggers, the data chain, operations, reusable utility flows, loops, email, building and debugging flows over the API or MCP |
 | [`directus-insights`](skills/directus-insights) | Building Insights dashboards: panel types and options, variables, layout, and who can see them |
-| [`directus-access-control`](skills/directus-access-control)     | Designing who can do what: roles, policies, permissions, the public policy, stacking rules, core-tier licensing limits, the CMS starter layout, and testing access                               |
-| [`directus-content-modeling`](skills/directus-content-modeling) | Designing schemas: collections, fields, relationships, page builders (M2A), translations, and promoting schema between environments. Includes Directus's house conventions.                      |
-| [`directus-environment-sync`](skills/directus-environment-sync) | Moving schema and configuration between instances through git with the Directus CLI (`d6s`): setup, promote dev to prod, CI, rollback                                                            |
-| [`directus-sdk`](skills/directus-sdk)                           | Building frontends and apps with `@directus/sdk`: setup, auth, typing, Next.js / Nuxt / Astro / SvelteKit data fetching                                                                          |
-| [`directus-visual-editing`](skills/directus-visual-editing)     | Wiring a site to Live Preview, the Visual Editor, and content versions with `@directus/visual-editing`: Directus config, CSP, draft reads, editable page builder blocks, and safe preview tokens |
-| [`directus-extensions`](skills/directus-extensions)             | Building extensions: picking a type, scaffolding, app and API extension APIs, sandboxing, and publishing to the marketplace                                                                      |
-| [`directus-upgrade`](skills/directus-upgrade)                   | Upgrading a project across versions (v9 to 12.x), with the breaking changes and how to find affected code                                                                                        |
+| [`directus-content`](skills/directus-content) | Editing content as an editor would, over MCP or the API: pages, page-builder blocks, translations, drafts and publishing, images |
+| [`directus-access-control`](skills/directus-access-control) | Designing who can do what: roles, policies, permissions, the public policy, stacking rules, core-tier licensing limits, the CMS starter layout, and testing access |
+| [`directus-content-modeling`](skills/directus-content-modeling) | Designing schemas: collections, fields, relationships, page builders (M2A), translations, indexes, and starting a project from a starter. Includes Directus's house conventions. |
+| [`directus-environment-sync`](skills/directus-environment-sync) | Moving schema and configuration between instances through git with the Directus CLI (`d6s`): promote dev to prod, keep per-environment settings, schema snapshots |
+| [`directus-sdk`](skills/directus-sdk) | The traps in `@directus/sdk`: client setup, auth modes on server and browser, counts, headers |
+| [`directus-visual-editing`](skills/directus-visual-editing) | Wiring a site to Live Preview, the Visual Editor, and content versions with `@directus/visual-editing`: Directus config, CSP, draft reads, editable page builder blocks, and safe preview tokens |
+| [`directus-extensions`](skills/directus-extensions) | Building extensions: picking a type, scaffolding, app and API extension APIs, sandboxing, and publishing to the marketplace |
+| [`directus-self-hosting`](skills/directus-self-hosting) | Deploying and running Directus: Docker Compose, configuration, file storage and email, scaling past one instance, backups, and what differs on Directus Cloud |
+| [`directus-upgrade`](skills/directus-upgrade) | Upgrading a project across versions (v9 to 12.x), with the breaking changes and how to find affected code |
 
 ## Install
 
@@ -78,9 +80,9 @@ The skills work without MCP, but they're better with it. Two servers:
 - **Directus docs** is bundled with the Claude Code plugin and connects automatically on install.
 - **Your instance** can't be bundled (every URL and token is different). Add it yourself with the snippet below.
 
-| Server        | URL                             | Auth                      |
-| ------------- | ------------------------------- | ------------------------- |
-| Directus docs | `https://directus.com/docs/mcp` | none                      |
+| Server | URL | Auth |
+| --- | --- | --- |
+| Directus docs | `https://directus.com/docs/mcp` | none |
 | Your instance | `https://YOUR_DIRECTUS_URL/mcp` | static token or MCP OAuth |
 
 Enable your instance's server in **Settings → AI → Model Context Protocol** (Directus 11.12+). Use a token for a user
@@ -134,21 +136,46 @@ claude plugin eval . --case 'access-*' --runs 1 --ablation none --no-publish   #
 
 ## Behavior evals
 
-`behavior-evals/` checks what an agent actually builds. Each case starts a fresh Directus 12.5.1 container (Docker),
-seeds it, gives a headless `claude -p` the task with and without this plugin, then checks the instance over the API
-(naming, `on_delete`, keys, and that nested writes, flows, and permissions really work).
+`behavior-evals/` checks what an agent actually builds. Each case starts a fresh Directus container in Docker (12.6.0
+by default), seeds it, gives a headless `claude -p` the task with and without this plugin, then checks the instance over the API
+(naming, `on_delete`, keys, and that nested writes, flows, and permissions really work). Code cases also check the files
+the agent wrote: they run the SDK script, call the endpoint extension it built (mounted into the instance), and parse
+its compose file with `docker compose config`. The sync cases add a second instance as the target, and `json-filters`
+runs on Postgres (JSON comparisons and sorts differ from SQLite). Cases with `mcp: true` connect the agent to the
+instance's MCP server and give it no shell, the way an editor's AI client works. `existing-database` creates an app's tables in
+Postgres before Directus first boots. Checks that need their own users reuse the agent's when the core tier's 3 seats
+are taken.
 
 ```bash
-node behavior-evals/run.mjs                       # every case, both arms, Sonnet, 1 run
+node behavior-evals/run.mjs                       # every case, both arms, Haiku, 1 run
+node behavior-evals/run.mjs --model haiku,sonnet --runs 3   # release read: Haiku is the floor we support
 node behavior-evals/run.mjs --case model-blog --runs 3 --model opus
+node behavior-evals/run.mjs --case flows-publish-guard --image directus/directus:11.9.3   # an older version
 ```
+
+Run a few cases on an older image too. That checks that agents read the version notes and adapt (on 11.9.3 there is
+no `throw-error` operation, so the publish guard has to use a different pattern).
 
 Add `--clean` to run each agent with an empty Claude config (no personal skills, `CLAUDE.md`, or plugins). It
 authenticates with a `claude setup-token` token from `CLAUDE_CODE_OAUTH_TOKEN` or
 `~/.config/directus-skills-evals/oauth-token`.
 
+Cases marked `license: true` run on a licensed instance. Put the key in `~/.config/directus-skills-evals/license-key`
+(or `DIRECTUS_EVALS_LICENSE_KEY`); it reaches Docker through the environment and never lands in results. Without it,
+those cases error and the rest run on the unlicensed core tier.
+
+The report scores each case per model and arm:
+
+- **runs passed:** runs where every functional check passed. Each run is scored against the most checks any run of
+  the case produced, so a check that stopped early counts as failed.
+- **checks** and **recommended** are separate: checks test that the build works, recommended checks test our
+  **Recommended:** conventions (naming, key types, `on_delete`). Mark those with `check(ok, label, detail, { recommended: true })`.
+- **skill:** how many plugin runs loaded a directus skill.
+- Cases where every run passed without the plugin are listed as cut candidates.
+
 Results land in `behavior-evals/results/` (git-ignored). Add a case as `cases/<name>.md` (the task) plus
-`checks/<name>.mjs` (exit 1 on any failed check).
+`checks/<name>.mjs` (exit 1 on any failed check). Seeds, extra shell commands, starting files (`fixtures/`), a second
+instance, Postgres, instance env, a turn limit, or no instance at all go in the `CASES` table in `run.mjs`.
 
 ## Contributing
 

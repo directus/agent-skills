@@ -6,7 +6,8 @@ Rules for every skill in this repo. Read before editing.
 
 - `skills/<name>/SKILL.md` is a **router**. It loads every time the skill triggers, so keep it under ~100 lines.
   It holds: frontmatter, a 2-3 sentence scope, a short "first checks" list, at most ~8 critical traps that an agent
-  would get wrong without being told, a routing table (`Load when` → `reference`), and a "Go deeper" section.
+  would get wrong without being told, a routing list (`- <load when> → [file.md](references/file.md)`), and a "Go
+  deeper" section.
 - `skills/<name>/references/*.md` hold the depth. One level deep (SKILL.md links to references, references don't chain
   to other references except a "See also" line). Any reference over 100 lines starts with a short table of contents.
 - One topic per reference. Name files by topic (`filters.md`, not `misc.md`).
@@ -16,7 +17,7 @@ Rules for every skill in this repo. Read before editing.
 Skills are not a copy of the docs. An agent can already search the docs (docs MCP, `llms.txt`, raw markdown). Spend
 skill lines on what it gets wrong without being told:
 
-- **Keep in skills:** traps, decisions ("use X when, Y when"), house rules, copyable recipes that are safe as written,
+- **Keep in skills:** traps, decisions ("use X when, Y when"), recommendations, copyable recipes that are safe as written,
   corrections where the source disagrees with the docs, and the order to do things in.
 - **Link to docs:** exhaustive reference material (every flag, option, env var, endpoint parameter). Summarize the 3-5
   an agent actually needs and link the rest.
@@ -29,33 +30,39 @@ recipe, not in another file.
 
 Each topic has one home skill. Others get one line and a pointer. Current owners:
 
-| Topic | Owner |
-| --- | --- |
-| REST/GraphQL query syntax, filters, error codes, versions API | `directus` |
-| Insights dashboards and panels | `directus-insights` |
-| Flows: triggers, operations, utility flows, loops, flow vs hook | `directus-flows` |
-| Roles, policies, permissions, licensing effects on access | `directus-access-control` |
-| Schema design, naming, relationships, seeding | `directus-content-modeling` |
-| Schema snapshot/apply and Environment Sync (`d6s`) | `directus-environment-sync` |
-| `@directus/sdk` usage | `directus-sdk` |
-| Live Preview, Visual Editor, reading drafts in a frontend | `directus-visual-editing` |
-| Extensions | `directus-extensions` |
-| Version-to-version changes | `directus-upgrade` |
+| Topic                                                                                     | Owner                                                        |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| REST/GraphQL query syntax, filters, error codes, versions API                             | `directus`                                                   |
+| Insights dashboards and panels (add `references/mcp.md` when the MCP Insights tool ships) | `directus-insights`                                          |
+| Editing content in an existing project (MCP `items`/`files`, translations rows, blocks, publishing) | `directus-content` |
+| Flows: triggers, operations, utility flows, loops, flow vs hook                           | `directus-flows`                                             |
+| Roles, policies, permissions, license keys and core-tier limits                           | `directus-access-control`                                    |
+| CORS and cookie env vars (server side)                                                    | `directus-self-hosting`; `directus-sdk` owns the client side |
+| Schema design, naming, relationships, seeding                                             | `directus-content-modeling`                                  |
+| Schema snapshot/apply and Environment Sync (`d6s`)                                        | `directus-environment-sync`                                  |
+| `@directus/sdk` usage                                                                     | `directus-sdk`                                               |
+| Live Preview, Visual Editor, reading drafts in a frontend                                 | `directus-visual-editing`                                    |
+| Extensions                                                                                | `directus-extensions`                                        |
+| Deploying, configuring, scaling, and backing up an instance                               | `directus-self-hosting`                                      |
+| Version-to-version changes                                                                | `directus-upgrade`                                           |
 
 ## Frontmatter
 
 ```yaml
 ---
 name: directus-sdk # must match the folder name, lowercase + hyphens
-description: "Use when ... Not for ..." # third person, trigger words, <= 1024 chars
+description: 'Load first, before exploring code, when ... Not for ...' # trigger words, <= 450 chars
 metadata:
   author: directus
-  directus-version: "12.5.1"
+  directus-version: '12.6.0'
 ---
 ```
 
-The description is the only thing an agent sees before deciding to load the skill. Lead with the tasks and the words
+The description is the only thing an agent sees before deciding to load the skill. Open with "Load first, before
+exploring code, when": without it, Haiku explores the repo first and loads the skill late or never (22 of 37 trigger
+cases passed on Haiku; 33 to 34 with it, Sonnet unchanged at 37). Then lead with the tasks and the words
 a user would type (package names, feature names). Add a "Not for" clause when a sibling skill owns the neighbor topic.
+Keep it under 450 characters: name tasks, not every option or env var (the router and references carry those).
 
 ## Codex metadata
 
@@ -65,16 +72,50 @@ three.
 
 ## Grounding
 
-- Verified against **Directus v12.5.1**. Every claim must come from the source at that tag, the current docs, or a
+- Verified against **Directus v12.6.0**. Every claim must come from the source at that tag, the current docs, or a
   starter/template. Not from memory. If you can't verify something, leave `<!-- TODO(verify): ... -->` instead of
   guessing.
 - End each reference with a `## Sources` list. Use:
   - Docs pages: `https://directus.com/docs/<path>` (strip numeric prefixes from the docs repo path, e.g.
     `content/guides/12.ai/2.mcp/3.tools.md` → `https://directus.com/docs/guides/ai/mcp/tools`).
-  - Source files pinned to the tag: `https://github.com/directus/directus/blob/v12.5.1/<path>`.
+  - Source files pinned to the tag: `https://github.com/directus/directus/blob/v12.6.0/<path>`.
   - Starters: `https://github.com/directus-labs/starters/tree/main/<path>`.
 - Facts vs opinions: house conventions (choices Directus would recommend but the product doesn't enforce) are marked
-  `**House rule:**` so an agent can tell them from hard product behavior.
+  `**Recommended:**` so an agent can tell them from hard product behavior.
+
+## What to pin
+
+Skills go stale in three different ways. Treat each differently:
+
+| Kind of fact                                  | Example                                                      | How to write it                                                                                                                                    |
+| --------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Product behavior                              | `withOptions` drops auth, filter flows cancel on reject      | State it. It's covered by `directus-version` in the frontmatter and re-checked each release.                                                       |
+| Version gate                                  | MCP needs 11.12+, `draft`/`published` keys need v12          | Name the first version that has it. Gates never go stale. Don't write "latest" or "same as npm latest".                                            |
+| Values that change outside a Directus release | core-tier limits, starter file layouts, npm package versions | Don't repeat them. Give one owner the value "as of" a version, and tell agents how to read it live (`GET /license`, `npm view`, the starter repo). |
+
+Pin the Directus version once per skill (`directus-version`), not per claim. Write "Verified against" in prose only in
+the router. Upgrade hop files are the exception: they're about specific versions by design.
+
+## Version-specific advice
+
+Skills are written for the version in `directus-version`. For instances on an older major, the base `directus` skill
+has one reference per major: `references/versions-v9.md`, `versions-v10.md`, `versions-v11.md`, `versions-v12.md`.
+Each lists only what the skills would get wrong on that major and what to do instead, with minor-version gates inside
+it. Everything else is the changelog's job: agents read release notes and breaking changes through the docs MCP, and
+`directus-upgrade` covers moving between versions.
+
+Every router's first checks include one line: not on the current version, read the `directus` skill's version notes
+for your major first.
+
+## Releases of Directus
+
+The weekly `directus-release-check` workflow opens an issue when Directus ships a newer release. To close it:
+
+1. Read the release notes and breaking changes. Add the hop to `directus-upgrade` and update its version map. Add
+   what the skills would now get wrong on the previous minor to `directus` `references/versions-v<major>.md`.
+2. Diff the source between the two tags for the areas the skills cover and fix any claim that changed.
+3. Run the behavior evals on the new image: `node behavior-evals/run.mjs --clean --image directus/directus:<tag>`.
+4. Bump `directus-version` in every `SKILL.md` and the source links' tag, add a changeset, release.
 
 ## Pointing agents at more help
 
@@ -99,6 +140,8 @@ references, major for renamed or removed skills. Details in [.changeset/README.m
 
 ## Voice
 
-Plain, short, direct. Imperative ("Send `fields` on every read"). Tables for lookups, code blocks for anything an
-agent will copy. No em dashes. No marketing. No time-sensitive phrasing ("new in", "recently"); put version
-differences in `directus-upgrade` or a clearly labeled "Older versions" note.
+Plain, short, direct. Imperative ("Send `fields` on every read"). Tables only for lookups with three or more columns
+(version maps, env defaults); prefer a list for two. Write tables compact (`| a | b |`, `| --- |`), never padded: padding
+costs tokens. `node scripts/compact-tables.mjs` fixes them and the validator rejects padding. Prettier skips
+`skills/**/*.md` so editors don't re-pad. Code blocks for anything an agent will copy. No em dashes. No marketing. No time-sensitive phrasing ("new in", "recently"); put what differs on
+older versions in the `directus` version notes (`references/versions-v<major>.md`).

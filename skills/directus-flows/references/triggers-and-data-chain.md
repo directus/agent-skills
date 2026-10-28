@@ -2,17 +2,17 @@
 
 ## Triggers
 
-| `trigger`   | Starts on                                         | Key `options`                                                                                                                                         | `$trigger` holds                                                                |
-| ----------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `event`     | Data or system events                             | `type` (`filter` or `action`), `scope` (`["items.create", "items.update", "items.delete"]` or hook events like `auth.login`), `collections`, `return` | `payload`, `event`, `collection`, and `key` (create) or `keys` (update, delete) |
-| `webhook`   | `GET` or `POST /flows/trigger/<flow-id>`          | `method` (default `GET`), `async`, `return`, `error_on_reject`, `cacheEnabled`                                                                        | `path`, `query`, `body`, `method`, `headers`                                    |
-| `schedule`  | Cron                                              | `cron`, 5 or 6 fields; a 6th leading field is seconds: `"0 */15 * * * *"`                                                                                               | `null`                                                                          |
-| `operation` | A `trigger` operation in another flow             | `return`                                                                                                                                              | exactly the payload the caller passed                                           |
-| `manual`    | Studio button, or `POST /flows/trigger/<flow-id>` | `collections`, `location` (`item`, `collection`, `both`, `hidden`), `requireSelection` (default `true`), `requireConfirmation`, `fields`, `async`     | `body.collection`, `body.keys`, and confirmation inputs in `body`               |
+| `trigger` | Starts on | Key `options` | `$trigger` holds |
+| --- | --- | --- | --- |
+| `event` | Data or system events | `type` (`filter` or `action`), `scope` (`["items.create", "items.update", "items.delete"]` or hook events like `auth.login`), `collections`, `return` | `payload`, `event`, `collection`, and `key` (create) or `keys` (update, delete) |
+| `webhook` | `GET` or `POST /flows/trigger/<flow-id>` | `method` (default `GET`), `async`, `return`, `error_on_reject`, `cacheEnabled` | `path`, `query`, `body`, `method`, `headers` |
+| `schedule` | Cron | `cron`, 5 or 6 fields; a 6th leading field is seconds: `"0 */15 * * * *"` | `null` |
+| `operation` | A `trigger` operation in another flow | `return` | exactly the payload the caller passed |
+| `manual` | Studio button, or `POST /flows/trigger/<flow-id>` | `collections`, `location` (`item`, `collection`, `both`, `hidden`), `requireSelection` (default `true`), `requireConfirmation`, `fields`, `async` | `body.collection`, `body.keys`, and confirmation inputs in `body` |
 
 - Only `active` flows run. Saving a flow reloads every flow on the instance.
-- Schedules run once across all instances (the job is synchronized), not once per container. An invalid cron registers
-  nothing and only logs a warning.
+- Schedules run once across instances only with `SYNCHRONIZATION_STORE=redis`. The default store is in memory, so
+  every container runs every schedule. An invalid cron registers nothing and only logs a warning.
 - Manual flows require an authenticated user with read access to the selected keys. A public caller gets a bare 403.
   Use a webhook trigger for public callers.
 
@@ -25,18 +25,23 @@
 - **`action`** runs after commit. It can't change or stop the write. Prefer it unless you must validate or transform.
 - `items.create` filters see no primary key yet. `items.update` payloads hold only the changed fields; read the item
   for the rest.
-- A request that writes several items runs the flow once per item.
+- **How many runs a bulk write gives:**
+  - Creating several items, or a batch update (an array of objects, each with its own key): once per item.
+  - One change applied to many items (`{ "keys": [...], "data": {...} }`, `{ "query": ..., "data": ... }`, or an
+    `item-update` with several keys) and deletes: **once**, with all of them in `$trigger.keys`.
+
+  Handle every key in `keys`, not just `keys[0]`.
 - System collections use their short name: `directus_users` becomes `users.create`.
 - Keep filter flows short. They hold the request (and its transaction) open.
 
 ## Return values and errors to the caller
 
-| Trigger          | Default `return`   | Notes                                                                                                       |
-| ---------------- | ------------------ | ----------------------------------------------------------------------------------------------------------- |
-| `webhook`        | `$last`            | `async: true` responds right away with no body. `error_on_reject: true` turns a final reject into an error. |
-| `manual`         | always `$last`     | Same `async` and `error_on_reject` behavior.                                                                |
-| `operation`      | none (`undefined`) | Set `return` to an operation key, `$last`, or `$all`, or the parent gets nothing.                           |
-| `event` (filter) | none               | The value becomes the new payload. A final reject throws.                                                   |
+| Trigger | Default `return` | Notes |
+| --- | --- | --- |
+| `webhook` | `$last` | `async: true` responds right away with no body. `error_on_reject: true` turns a final reject into an error. |
+| `manual` | always `$last` | Same `async` and `error_on_reject` behavior. |
+| `operation` | none (`undefined`) | Set `return` to an operation key, `$last`, or `$all`, or the parent gets nothing. |
+| `event` (filter) | none | The value becomes the new payload. A final reject throws. |
 
 Without `error_on_reject`, a webhook or manual flow that ends on a reject still returns 200 with the error as `$last`.
 
@@ -73,12 +78,12 @@ Reference values in any option with `{{ }}`. Dot paths and array indexes work:
 
 `$accountability` is the caller of the trigger:
 
-| Trigger         | `$accountability`                                  |
-| --------------- | -------------------------------------------------- |
-| event           | the user whose request fired the event             |
+| Trigger | `$accountability` |
+| --- | --- |
+| event | the user whose request fired the event |
 | manual, webhook | the requesting user; public (no user) if anonymous |
-| schedule        | `null`                                             |
-| operation       | inherited from the parent flow                     |
+| schedule | `null` |
+| operation | inherited from the parent flow |
 
 Item operations with `permissions: "$trigger"` use this. `null` means no permission checks at all.
 
@@ -87,7 +92,7 @@ Item operations with `permissions: "$trigger"` use this. `null` means no permiss
 - https://directus.com/docs/guides/flows/triggers
 - https://directus.com/docs/guides/flows/data-chain
 - https://directus.com/docs/configuration/flows
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/emitter.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/flows/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/emitter.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/flows/prompt.md

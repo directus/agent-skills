@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Checks every skill against the Agent Skills spec and AUTHORING.md. No dependencies.
-// Usage: node scripts/validate.mjs [--strict]   (--strict also fails on TODO(verify) markers)
+// Usage: node scripts/validate.mjs [--strict]   (--strict also fails on TODO(verify) and DECISION markers)
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { compactTables } from './compact-tables.mjs';
 
 const root = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const skillsDir = join(root, 'skills');
@@ -13,7 +14,7 @@ const warnings = [];
 
 const NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const SKILL_MAX_LINES = 100;
-const DESCRIPTION_SOFT_MAX = 800;
+const DESCRIPTION_SOFT_MAX = 450;
 const REFERENCE_TOC_THRESHOLD = 100;
 
 function parseFrontmatter(text) {
@@ -39,9 +40,13 @@ function checkLinks(file, text) {
 	}
 }
 
+function checkTables(file, text) {
+	if (compactTables(text) !== text) errors.push(`${rel(file)}: padded markdown table (run node scripts/compact-tables.mjs)`);
+}
+
 function checkTodos(file, text) {
-	const count = (text.match(/TODO\(verify\)/g) ?? []).length;
-	if (count) (strict ? errors : warnings).push(`${rel(file)}: ${count} TODO(verify)`);
+	const count = (text.match(/TODO\(verify\)|<!-- DECISION/g) ?? []).length;
+	if (count) (strict ? errors : warnings).push(`${rel(file)}: ${count} TODO(verify) or DECISION marker(s)`);
 }
 
 // Codex reads agents/openai.yaml for the skill picker. Limits from codex-rs/skills (short_description 25-64 chars).
@@ -97,7 +102,12 @@ for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skills
 
 	checkLinks(skillFile, text);
 	checkTodos(skillFile, text);
+	checkTables(skillFile, text);
 	checkCodexMetadata(dir, name);
+
+	// Every router sends agents on older majors to the base skill's version notes (AUTHORING.md).
+	if (name !== 'directus-upgrade' && !/versions-v\d+\.md|version\s+notes/.test(text))
+		errors.push(`${rel(skillFile)}: first checks must point older versions to the directus version notes`);
 
 	const refDir = join(dir, 'references');
 	if (!existsSync(refDir)) continue;
@@ -117,7 +127,13 @@ for (const name of readdirSync(skillsDir).filter((entry) => statSync(join(skills
 
 		checkLinks(refFile, refText);
 		checkTodos(refFile, refText);
+		checkTables(refFile, refText);
 	}
+}
+
+for (const major of [9, 10, 11, 12]) {
+	if (!existsSync(join(skillsDir, 'directus', 'references', `versions-v${major}.md`)))
+		errors.push(`skills/directus/references: missing versions-v${major}.md`);
 }
 
 for (const w of warnings) console.warn(`warn  ${w}`);

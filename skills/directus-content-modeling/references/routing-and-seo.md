@@ -2,10 +2,10 @@
 
 ## URLs: permalink, slug, or nested pages
 
-| Pattern          | Model                                                                                            | Use when                                                                                                       |
-| ---------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| **Permalink**    | `pages.permalink`: the full path, leading `/` (`/`, `/about`, `/services/web-design`). Unique.   | Pages whose URL editors control. **House rule** for pages.                                                     |
-| **Slug**         | `posts.slug`: one segment. The frontend adds the prefix (`/blog/{slug}`). Unique.                | Items that live under a fixed route (posts, products, events).                                                 |
+| Pattern | Model | Use when |
+| --- | --- | --- |
+| **Permalink** | `pages.permalink`: the full path, leading `/` (`/`, `/about`, `/services/web-design`). Unique. | Pages whose URL editors control. **Recommended** for pages. |
+| **Slug** | `posts.slug`: one segment. The frontend adds the prefix (`/blog/{slug}`). Unique. | Items that live under a fixed route (posts, products, events). |
 | **Nested pages** | M2O `pages.parent` → `pages`, O2M alias `children`, `sort`. The path comes from walking parents. | You need a real page tree (breadcrumbs, navigation built from the hierarchy, moving a section moves its URLs). |
 
 **Why permalink by default:** the URL is one indexed field the frontend looks up directly
@@ -50,11 +50,11 @@ With translations, put `permalink` / `slug` on `*_translations` when URLs are lo
 
 Every routable collection (pages, posts, products) needs SEO metadata. Options, in order of preference:
 
-| Option                              | Shape                                                                                                                                                               | Trade-off                                                                                                                         |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **`seo` JSON field**                | `seo` (`json`, `cast-json`) with the `seo-interface` from `@directus-labs/seo-plugin`                                                                               | One field, a good editor UI (previews, keyphrase analysis, templates). Needs the extension. The CMS starter does this.            |
-| **Shared `seo` collection**         | Collection `seo` with `title`, `meta_description`, `og_image` (file), `canonical_url`, `no_index`, `no_follow`. Each routable collection gets an M2O `seo` → `seo`. | No extension needed. Typed, filterable fields, one shape for every routable collection. One extra collection against plan limits. |
-| **Plain fields on each collection** | `meta_title`, `meta_description`, `og_image` on every routable collection                                                                                           | Fine for one or two collections. Drifts once there are several.                                                                   |
+| Option | Shape | Trade-off |
+| --- | --- | --- |
+| **`seo` JSON field** | `seo` (`json`, `cast-json`) with the `seo-interface` from `@directus-labs/seo-plugin` | One field, a good editor UI (previews, keyphrase analysis, templates). Needs the extension. The CMS starter does this. |
+| **Shared `seo` collection** | Collection `seo` with `title`, `meta_description`, `og_image` (file), `canonical_url`, `no_index`, `no_follow`. Each routable collection gets an M2O `seo` → `seo`. | No extension needed. Typed, filterable fields, one shape for every routable collection. One extra collection against plan limits. |
+| **Plain fields on each collection** | `meta_title`, `meta_description`, `og_image` on every routable collection | Fine for one or two collections. Drifts once there are several. |
 
 The SEO plugin stores `title`, `meta_description`, `og_image` (a `directus_files` id), `focus_keyphrase`,
 `additional_fields.canonical_url`, `sitemap` (`{ "change_frequency": "monthly", "priority": "0.5" }`), and `no_index` /
@@ -76,5 +76,5 @@ or slug changes.
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/fields.json (pages.permalink, posts.slug, seo, redirects)
 - https://github.com/directus-labs/extensions/tree/main/packages/seo-plugin
 - https://github.com/directus-labs/extensions/tree/main/packages/tree-view-table-layout
-- https://github.com/directus/directus/tree/v12.5.1/app/src/interfaces/list-o2m-tree-view
+- https://github.com/directus/directus/tree/v12.6.0/app/src/interfaces/list-o2m-tree-view
 - https://directus.com/docs/guides/data-model/relationships

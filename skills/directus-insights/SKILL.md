@@ -1,49 +1,58 @@
 ---
 name: directus-insights
-description: 'Use when building or changing Directus Insights dashboards and panels: metrics, lists, time series, bar, line, and pie charts, meters, labels, global and relational variables, panel options and layout, dashboard permissions, or creating dashboards through the API. Not for querying items or aggregates from code (directus), automating summary data with Flows (directus-flows), writing custom panel extensions (directus-extensions), or who can see which data (directus-access-control).'
+description: "Load first, before exploring code, when building Directus Insights dashboards and panels: metrics, lists, time series, bar, line, and pie charts, meters, labels, variables, layout, and dashboard access, including creating them over the API. Not for aggregate queries from code (directus) or custom panel extensions (directus-extensions)."
 metadata:
   author: directus
-  directus-version: '12.5.1'
+  directus-version: '12.6.0'
 ---
 
 # Directus Insights
 
 Build dashboards (`directus_dashboards`) made of panels (`directus_panels`). Each panel is a `type` plus an `options`
-object. The Studio turns every panel's options into one GraphQL request and runs it **as the person viewing the
-dashboard**. Nothing is precomputed or cached server-side.
+object. The Studio turns the options of every data panel into batched GraphQL requests (labels and `variable` don't
+query; `relational-variable` reads its picked items over REST)
+(`/graphql`, plus `/graphql/system` for `directus_*` collections) and runs them **as the person viewing the dashboard**. Nothing is precomputed.
 
 ## First checks
 
-1. **Read the data first.** `GET /fields/<collection>` for the collections you'll chart: you need the exact date field,
+1. **Check the version before anything else.** `GET /server/info` with a token returns `data.version`. Older than
+   12.6: read the version notes for its major in the `directus` skill (`references/versions-v<major>.md`), or without
+   that skill `https://directus.com/docs/raw/releases/breaking-changes/version-<major>.md`. Newer: read the release
+   notes since 12.6.0 first.
+2. **Read the data first.** `GET /fields/<collection>` for the collections you'll chart: you need the exact date field,
    the numeric fields, and the status values to filter on.
-2. **Pick the path.** At 12.5.1 the Directus MCP server has no Insights tool, and its `items` tool refuses `directus_*`
+3. **Pick the path.** The Directus MCP server has no Insights tool (12.6), and its `items` tool refuses `directus_*`
    collections. Use REST (`/dashboards`, `/panels`) or the SDK (`createDashboard`, `createPanel`).
-   <!-- When the MCP Insights tool ships: add references/mcp.md and route to it here. -->
-3. **Check who will view it.** Viewers need read on the charted collections and on `directus_dashboards` /
+4. **Check who will view it.** Viewers need read on the charted collections and on `directus_dashboards` /
    `directus_panels`, which app access doesn't include by default.
-4. **Copy before inventing.** If the instance already has a dashboard, read its panels
-   (`GET /panels?filter[dashboard][_eq]=<id>`) and reuse their `options` shapes, especially for chart types.
+5. **Use the known payloads.** [references/panels.md](references/panels.md) has the required `options` keys for every
+   type. The API saves any `options` unchecked, so a wrong key only shows up as an empty or failing panel.
 
 ## Critical traps
 
-- **Set the layout yourself.** The grid starts at `position_x: 1`, `position_y: 1`. Always send `position_x`,
-  `position_y`, `width`, and `height`. The API checks neither overlaps nor minimum sizes; the Studio does.
+- **Set the layout yourself.** The grid starts at `position_x: 1`, `position_y: 1`. The API requires `position_x`,
+  `position_y`, `width`, and `height`, but not minimum sizes (the Studio enforces those).
+  Nothing checks overlaps.
 - **Panels run as the viewer.** A panel over a collection the viewer can't read shows an error or nothing, and
   aggregates only count rows the viewer can see.
-- **`time-series` filters to `range` on `dateField`** (`$NOW(-<range>)` to `$NOW`, default `1 week`). Use `auto` for
-  all data. It needs a datetime field.
-- **Singletons can't be charted** by `metric` or `time-series`.
-- **Variables are typed.** A variable used in a datetime filter must be a datetime. Values live in the browser
-  session, not per user.
-- **Every panel queries on load and on each auto-refresh.** Filter large collections, or chart a summary collection
-  a scheduled flow keeps up to date.
+- **Each type has its own keys; unknown ones save silently and render nothing.** `time-series` takes `function`,
+  `valueField`, `dateField` (not `xAxis`/`yAxis`, which are `bar-chart`/`line-chart`). Copy from
+  [panels.md](references/panels.md#minimal-options-per-type).
+- **`time-series` filters to `range` on `dateField`** (`$NOW(-<range>)` to `$NOW`, default `1 week`). Use `auto` for all
+  data. It needs a datetime field.
+- **Singletons can't be charted** by `metric`, `metric-list`, `list`, or `time-series`. They render empty.
+- **Picking an item (an author, a product) is a `relational-variable`,** not a `variable` with a text input. It holds
+  the id (or ids with `multiple`); filter the related key: `{"author": {"id": {"_eq": "{{author}}"}}}`.
+- **Variables are typed.** A variable used in a datetime filter must be a datetime. Values live in the open Studio tab,
+  not per user.
+- **Data panels query on load and on each auto-refresh.** Filter large collections, or chart a summary collection a
+  scheduled flow keeps up to date. With `CACHE_ENABLED`, `/graphql` responses use the normal cache, but Studio requests
+  skip it unless `CACHE_AUTO_PURGE` is on.
 
 ## Routing
 
-| Load when                                                                           | Reference                                        |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Creating a dashboard and panels over REST, layout and sizes, permissions, promoting | [references/building.md](references/building.md) |
-| Choosing a panel type, exact `options` keys, aggregate functions, variables         | [references/panels.md](references/panels.md)     |
+- Creating a dashboard and panels over REST, layout and sizes, permissions, promoting → [building.md](references/building.md)
+- Choosing a panel type, exact `options` keys, aggregate functions, variables → [panels.md](references/panels.md)
 
 ## Related skills
 

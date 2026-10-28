@@ -15,31 +15,31 @@ and `meta.special` (behavior flags). Get the type right first. It's the only par
 
 Non-obvious picks only. Full list: https://directus.com/docs/guides/data-model/fields
 
-| Data                                                  | `type`              | Notes                                                        |
-| ----------------------------------------------------- | ------------------- | ------------------------------------------------------------ |
-| Short text (titles, names, slugs)                     | `string`            | Default length 255; set `schema.max_length` higher if needed |
-| Money, exact decimals                                 | `decimal`           | Set precision and scale. Never `float` for money.            |
-| Counts, ratings, sort                                 | `integer`           | `bigInteger` only past 2.1 billion                           |
-| Yes/no                                                | `boolean`           | Set `default_value` and `is_nullable: false`                 |
-| A moment in time (`published_at`, event start)        | `timestamp`         | Stored in UTC. The usual pick.                               |
-| Calendar date with no time (birthday)                 | `date`              |                                                              |
-| Wall-clock time with no zone                          | `dateTime` / `time` | Rare. Prefer `timestamp`.                                    |
-| Structured blob, repeater rows, SEO object            | `json`              | Add `special: ["cast-json"]`                                 |
-| Relational alias (O2M, M2M, M2A, files, translations) | `alias`             | `schema: null`, no column                                    |
-| Presentation (divider, notice, header, group)         | `alias`             | `special: ["alias", "no-data"]` (+ `"group"` for groups)     |
+| Data | `type` | Notes |
+| --- | --- | --- |
+| Short text (titles, names, slugs) | `string` | Default length 255; set `schema.max_length` higher if needed |
+| Money, exact decimals | `decimal` | Set precision and scale. Never `float` for money. |
+| Counts, ratings, sort | `integer` | `bigInteger` only past 2.1 billion |
+| Yes/no | `boolean` | Set `default_value` and `is_nullable: false` |
+| A moment in time (`published_at`, event start) | `timestamp` | Stored in UTC. The usual pick. |
+| Calendar date with no time (birthday) | `date` |  |
+| Wall-clock time with no zone | `dateTime` / `time` | Rare. Prefer `timestamp`. |
+| Structured blob, repeater rows, SEO object | `json` | Add `special: ["cast-json"]` |
+| Relational alias (O2M, M2M, M2A, files, translations) | `alias` | `schema: null`, no column |
+| Presentation (divider, notice, header, group) | `alias` | `special: ["alias", "no-data"]` (+ `"group"` for groups) |
 
 ## Interface picker
 
 Non-obvious picks only. Full list: https://directus.com/docs/guides/data-model/interfaces
 
-| Need                                            | Interface                                                                                                                                               |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| One line of text                                | `input` (`options.trim: true` on slugs, `font: "monospace"` for codes and URLs); `options.slug: true` for slugs                                         |
-| Structured editorial content (Editor.js blocks) | `input-block-editor` (`json`)                                                                                                                           |
-| Fixed values                                    | `select-dropdown`, or `select-radio` for 2-4 that should be visible. Several: `select-multiple-dropdown` / `select-multiple-checkbox` (`json` or `csv`) |
-| Free-form tags                                  | `tags` (`json` / `csv`). Use an M2M to `tags` instead if tags need pages, filtering, or reuse.                                                          |
-| Ordered list of small objects                   | `list` (Repeater, `json`)                                                                                                                               |
-| Link to one item in any collection, no relation | `collection-item-dropdown` (`json`)                                                                                                                     |
+| Need | Interface |
+| --- | --- |
+| One line of text | `input` (`options.trim: true` on slugs, `font: "monospace"` for codes and URLs); `options.slug: true` for slugs |
+| Structured editorial content (Editor.js blocks) | `input-block-editor` (`json`) |
+| Fixed values | `select-dropdown`, or `select-radio` for 2-4 that should be visible. Several: `select-multiple-dropdown` / `select-multiple-checkbox` (`json` or `csv`) |
+| Free-form tags | `tags` (`json` / `csv`). Use an M2M to `tags` instead if tags need pages, filtering, or reuse. |
+| Ordered list of small objects | `list` (Repeater, `json`) |
+| Link to one item in any collection, no relation | `collection-item-dropdown` (`json`) |
 
 ## JSON or a related collection
 
@@ -54,14 +54,16 @@ Use `json` + `list` (Repeater) when the rows are small, owned by one item, and r
 `globals`, feature bullets on a pricing card). Set the `list` edit mode to `inline` for short rows. It also saves a
 collection against plan limits.
 
-**House rule: config collections.** When several items share a set of values editors should manage (product
+**Recommended: config collections.** When several items share a set of values editors should manage (product
 categories, regions, event types), make a small config collection and relate to it (M2O or M2M). Don't hard-code
 `choices` on a dropdown, and don't copy the values into JSON on every item.
 
 ## Rich text
 
-- **House rule:** `input-rich-text-html` (WYSIWYG) for editor-facing long-form content (posts, rich text blocks).
+- **Recommended:** `input-rich-text-html` (WYSIWYG) for editor-facing long-form content (posts, rich text blocks).
   Editors expect WYSIWYG, and the frontend renders HTML directly.
+- From 12.6.0, `richtext` extensions add editor features to `input-rich-text-html` through `meta.options.extensions`
+  (ids) and `extensionOptions`. None are on by default. Building one: `directus-extensions`.
 - `input-rich-text-md` when the content is developer-facing (docs, changelogs) or the frontend already renders
   Markdown.
 - The WYSIWYG editor doesn't load your frontend CSS. Custom formats (`options.customFormats`) only add classes. Style
@@ -78,7 +80,7 @@ categories, regions, event types), make a small config collection and relate to 
 - Presentation (`special: ["alias", "no-data"]`): `presentation-divider`, `presentation-notice` (tell editors what a
   section does), `header` (section header with action links), `presentation-links` (buttons to the live page or docs).
 
-**House rule:** a collection with more than ~8 editor-facing fields gets tabs (the CMS starter splits pages and posts
+**Recommended:** a collection with more than ~8 editor-facing fields gets tabs (the CMS starter splits pages and posts
 into "Content" and "SEO"). Name presentation and group fields with a `meta_` prefix so they're easy to spot in the API
 and the field list.
 
@@ -88,14 +90,16 @@ and the field list.
   `hidden` / `readonly` / `required` / `options`). Classic use: a link `type` select shows only `page`, `post`, or `url`.
 - `meta.validation` is a filter rule the value must pass. Add `meta.validation_message`. Example:
   [routing-and-seo.md](routing-and-seo.md#urls-permalink-slug-or-nested-pages) (`pages.permalink`).
-- The API enforces on every write (admins included) only `meta.validation` and `schema.is_nullable: false` (on create
-  the field must be submitted unless it has a default). `meta.required` is enforced only by the Studio form, so for a
+- The API enforces `meta.validation` on every write by a user or token (admins included), and the database enforces
+  `schema.is_nullable: false` (on create the field must be submitted unless it has a default). Writes with no
+  accountability skip `meta.validation`: a schedule Flow's item operations with `$trigger` permissions, and extension
+  code that builds a service without `accountability`. (`$full` runs as admin, so it is validated.) `meta.required` is enforced only by the Studio form, so for a
   field that must always have a value, set `is_nullable: false` too. `schema.is_unique: true` adds a unique index
   (slugs, permalinks).
 
 ## Marketplace interfaces
 
-**House rule:** core interfaces first. Several interfaces the CMS starter originally pulled from `@directus-labs` are
+**Recommended:** core interfaces first. Several interfaces the CMS starter originally pulled from `@directus-labs` are
 core at 12.5.1: `super-header` (`@directus-labs/super-header-interface`) is now `header`, and
 `inline-repeater-interface` is `list` with edit mode `inline`.
 
@@ -109,7 +113,7 @@ list) or ask the user to install it. A field with a missing interface still save
 - https://directus.com/docs/guides/data-model/fields
 - https://directus.com/docs/guides/data-model/interfaces
 - https://directus.com/docs/guides/data-model/rich-text
-- https://github.com/directus/directus/tree/v12.5.1/app/src/interfaces
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/fields/prompt.md
+- https://github.com/directus/directus/tree/v12.6.0/app/src/interfaces
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/fields/prompt.md
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/fields.json
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/extensions.json

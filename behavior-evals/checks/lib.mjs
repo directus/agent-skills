@@ -1,15 +1,26 @@
+import { execFileSync } from 'node:child_process';
+
 // Shared helpers for behavior checks. Each check prints PASS/FAIL lines and exits 1 on any failure.
 export const URL = process.env.DIRECTUS_URL ?? 'http://127.0.0.1:18255';
+export const TARGET_URL = process.env.TARGET_URL;
+export const WORK_DIR = process.env.WORK_DIR;
 const TOKEN = process.env.DIRECTUS_ADMIN_TOKEN ?? 'skills-evals-admin-token';
 
 const failures = [];
 
-export async function api(path, { method = 'GET', body, token = TOKEN } = {}) {
-	const res = await fetch(URL + path, {
-		method,
-		headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), 'Content-Type': 'application/json' },
-		body: body === undefined ? undefined : JSON.stringify(body),
-	});
+export async function api(path, { method = 'GET', body, token = TOKEN, base = URL } = {}) {
+	let res;
+	try {
+		res = await fetch(base + path, {
+			signal: AbortSignal.timeout(15_000),
+			method,
+			headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), 'Content-Type': 'application/json' },
+			body: body === undefined ? undefined : JSON.stringify(body),
+		});
+	} catch (error) {
+		// Status 0: no response (hung or refused).
+		return { status: 0, errors: [{ message: error.message }] };
+	}
 	const text = await res.text();
 	let json = null;
 	try {
@@ -18,8 +29,10 @@ export async function api(path, { method = 'GET', body, token = TOKEN } = {}) {
 	return { status: res.status, data: json?.data, errors: json?.errors };
 }
 
-export function check(ok, label, detail = '') {
-	console.log(`${ok ? 'PASS' : 'FAIL'} ${label}${detail && !ok ? `: ${detail}` : ''}`);
+// `recommended: true` marks a check of our Recommended conventions (naming, key types, on_delete), not of whether
+// the build works. The harness scores those separately.
+export function check(ok, label, detail = '', { recommended = false } = {}) {
+	console.log(`${ok ? 'PASS' : 'FAIL'} ${recommended ? '(recommended) ' : ''}${label}${detail && !ok ? `: ${detail}` : ''}`);
 	if (!ok) failures.push(label);
 	return ok;
 }
@@ -50,7 +63,78 @@ export async function requiredStub(collection) {
 	return stub;
 }
 
+// `docker compose config` as JSON, or a FAIL and exit. A `${VAR:?}` guard left blank for the operator to fill is fine:
+// fill only what compose says is required.
+export function composeConfig() {
+	const filled = {};
+	for (let i = 0; i < 10; i++) {
+		try {
+			const config = JSON.parse(
+				execFileSync('docker', ['compose', 'config', '--format', 'json'], {
+					cwd: WORK_DIR,
+					env: { ...process.env, ...filled },
+					encoding: 'utf8',
+					stdio: ['ignore', 'pipe', 'pipe'],
+				}),
+			);
+			if (Object.keys(filled).length) console.log(`INFO required variables left for the operator: ${Object.keys(filled).join(', ')}`);
+			check(true, 'docker compose config accepts the file');
+			return config;
+		} catch (error) {
+			const name = String(error.stderr).match(/required variable (\w+) is missing/)?.[1];
+			if (!name || filled[name]) {
+				check(false, 'docker compose config accepts the file', String(error.stderr ?? error.message).slice(0, 400));
+				done();
+			}
+			filled[name] = `filled-by-check-${name.toLowerCase()}-0123456789abcdef`;
+		}
+	}
+	check(false, 'docker compose config accepts the file', 'too many required variables');
+	done();
+}
+
 export function done() {
 	console.log(failures.length ? `\n${failures.length} check(s) failed` : '\nall checks passed');
 	process.exit(failures.length ? 1 : 0);
+}
+
+// Whether a semver range (^, ~, >=, <, ||, *) includes a version. Enough for extension `host` fields.
+export function rangeIncludes(range, version) {
+	const parse = (v) => v.replace(/^v/, '').split('.').map((n) => Number(n) || 0);
+	const cmp = (a, b) => {
+		for (let i = 0; i < 3; i++) if ((a[i] ?? 0) !== (b[i] ?? 0)) return (a[i] ?? 0) - (b[i] ?? 0);
+		return 0;
+	};
+	const v = parse(version);
+	const test = (c) => {
+		const [, op, raw] = c.match(/^(\^|~|>=|<=|>|<|=)?\s*(.*)$/);
+		if (raw === '*' || raw === 'x' || raw === '') return true;
+		const r = parse(raw);
+		if (op === '^') return cmp(v, r) >= 0 && v[0] === r[0];
+		if (op === '~') return cmp(v, r) >= 0 && v[0] === r[0] && v[1] === r[1];
+		if (op === '>=') return cmp(v, r) >= 0;
+		if (op === '<=') return cmp(v, r) <= 0;
+		if (op === '>') return cmp(v, r) > 0;
+		if (op === '<') return cmp(v, r) < 0;
+		return cmp(v, r) === 0;
+	};
+	return String(range)
+		.split('||')
+		.some((part) => part.trim().replace(/(>=|<=|>|<|=|\^|~)\s+/g, '$1').split(/\s+/).every(test));
+}
+
+// A user in `roleId` with this static token. Core tier caps Studio seats, so when the agent already used them up,
+// reuse one of its users in that role instead of creating ours.
+export async function userWithToken(roleId, token) {
+	const created = await api('/users', {
+		method: 'POST',
+		body: { email: `${token}@example.com`, password: 'Check-password-123!', role: roleId, token },
+	});
+	if (created.status === 200) return true;
+	const existing = (await api(`/users?filter[role][_eq]=${roleId}&fields=id&limit=1`)).data?.[0];
+	if (!existing) {
+		console.log(`INFO no user for role ${roleId}: ${created.status} ${JSON.stringify(created.errors)}`);
+		return false;
+	}
+	return (await api(`/users/${existing.id}`, { method: 'PATCH', body: { token, status: 'active' } })).status === 200;
 }

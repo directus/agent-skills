@@ -1,6 +1,6 @@
 # Upgrade checklist
 
-Copy into the upgrade ticket or PR and tick off per stop (for example 10.13.4 → 11.17.4, then → 12.5.1).
+Copy into the upgrade ticket or PR and tick off per stop (for example 10.13.4 → 11.17.4, then → 12.6.0).
 
 ## Contents
 
@@ -17,16 +17,17 @@ Copy into the upgrade ticket or PR and tick off per stop (for example 10.13.4 �
 
 ### Before
 
-- [ ] Current version confirmed (`GET /server/info` with a token → `data.version` on 10.8.3+; 10.2.0 to 10.8.2 return
-      none, use `npx directus --version` or the image tag)
+- [ ] Current version confirmed (`GET /server/info` with a token → `data.version` on 10.8.3+; 10.2.0 to 10.8.2 omit it:
+      `GET /server/health` with an admin token returns `releaseId`, or use `npx directus --version` or the image tag)
 - [ ] Final target confirmed with the requester; this stop is the last release of the next major or the target
       itself (never 12.4.0)
 - [ ] Read breaking changes for every release crossed (docs page + GitHub release notes)
 - [ ] Grep sweep run on: frontend(s), SDK clients, extensions, infra repo, flows export
-- [ ] Node version meets target (22 for 11.4+), Docker base image updated
+- [ ] Node version meets target (22 for 11.4+, 26 for 12.6+), Docker base and extension build images updated
 - [ ] Database version supported (MySQL 5.7 dropped in 11.7)
 - [ ] 12.x only: license plan decided, `LICENSE_KEY` ready, `PUBLIC_URL` absolute, outbound HTTPS to licensing.directus.com allowed
 - [ ] 12.5 only: `directus_policies.ip_access` and `IMPORT_IP_DENY_LIST` entries valid
+- [ ] 12.6 only: outbound HTTPS to telemetry.directus.com allowed; AI allowed-model lists rechecked
 - [ ] Staging copy of prod DB + uploads available to rehearse
 
 ### Backup
@@ -39,10 +40,10 @@ Copy into the upgrade ticket or PR and tick off per stop (for example 10.13.4 �
 
 ### Upgrade
 
-- [ ] Scale to one replica (House rule: one process runs the migrations)
+- [ ] Scale to one replica (Recommended: one process runs the migrations)
 - [ ] Bump Docker tag / `directus` package to the target (pinned, not `latest`)
 - [ ] Env changes from each hop file applied
-- [ ] Health checks point at `/server/ping` (12.x)
+- [ ] Health checks point at `http://127.0.0.1:8055/server/ping` (12.x; not `localhost`)
 - [ ] Start; migrations ran (Docker: bootstrap on start; npm: `database migrate:latest`)
 - [ ] No "Database migrations have not all been run" warning in logs
 - [ ] Extensions loaded (no load errors in logs)
@@ -76,7 +77,7 @@ docker compose exec directus node /directus/cli.js schema snapshot --yes /direct
 # Migrations
 npx directus database migrate:latest
 docker compose exec directus node /directus/cli.js database migrate:latest
-npx directus bootstrap            # install or migrate, then ensure an admin exists
+npx directus bootstrap            # install or migrate; creates an admin only on an empty database with ADMIN_* set
 
 # Which migrations ran
 SELECT version, name, timestamp FROM directus_migrations ORDER BY version DESC LIMIT 10;
@@ -93,12 +94,13 @@ Each hop file lists its env changes. Combined sweep:
   (decimals as strings, strict charset comparison; match `DB_CHARSET`).
 - Docker: pin a version tag. Images run `bootstrap` (migrations) on every start.
 - Redis: required for multiple replicas.
-- **House rule:** clear caches after each upgrade stop: `npx directus cache clear` (exists in 11.17.4 and 12.x, not in
-  10.13.4; there, flush the Redis cache or restart, which resets a memory cache).
+- **Recommended:** clear caches after each upgrade stop. With `CACHE_STORE=redis`: `node /directus/cli.js cache clear`
+  in the container (12.1+ images have no `npx`; the command doesn't exist in 10.13.4). With a memory cache the
+  command refuses; restart instead.
 
 ## Rollback
 
-- **House rule:** treat database restore as the rollback path. `database migrate:down` reverts one migration at a time
+- **Recommended:** treat database restore as the rollback path. `database migrate:down` reverts one migration at a time
   and some migrations transform data (roles to policies in 11.0, webhooks table dropped in 11.14.1, comments moved in
   11.1.2), so stepping down a major is not reliable.
 - Steps: stop Directus, restore the DB dump and uploads backup taken before this stop, redeploy the previous image tag
@@ -106,7 +108,7 @@ Each hop file lists its env changes. Combined sweep:
 - 12.x: deactivate a license activated on a throwaway rehearsal instance (**Settings > License**) before destroying it.
 - Keep the pre-upgrade snapshot with the pre-upgrade backup; apply it only to an instance restored to that same version.
   `POST /schema/diff` refuses a mismatch, but CLI `directus schema apply` checks neither version nor vendor. Details:
-  `directus-environment-sync` (how-it-works.md).
+  `directus-environment-sync` ("Schema snapshot and apply").
 
 ## Sources
 
@@ -115,13 +117,13 @@ Each hop file lists its env changes. Combined sweep:
 - https://directus.com/docs/self-hosting/hardened-images
 - https://directus.com/docs/licensing/overview
 - https://directus.com/docs/releases/breaking-changes
-- https://github.com/directus/directus/blob/v12.5.1/api/src/cli/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/cli/commands/bootstrap/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/app.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/schema/validate-snapshot.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/cli/commands/schema/apply.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/cli/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/cli/commands/bootstrap/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/app.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/schema/validate-snapshot.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/cli/commands/schema/apply.ts
 - https://github.com/directus/directus/blob/v10.8.3/api/src/services/server.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/database/seeds/15-migrations.yaml
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
-- https://github.com/directus/directus/blob/v12.5.1/Dockerfile
-- https://github.com/directus/directus/blob/v12.5.1/docker-entrypoint.cjs
+- https://github.com/directus/directus/blob/v12.6.0/api/src/database/seeds/15-migrations.yaml
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/Dockerfile
+- https://github.com/directus/directus/blob/v12.6.0/docker-entrypoint.cjs

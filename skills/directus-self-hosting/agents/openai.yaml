@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Self-Hosting"
+  short_description: "Deploy, configure, scale, and back up Directus"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-self-hosting to set up Directus with Docker, Postgres, and Redis for production."

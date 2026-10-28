@@ -43,7 +43,7 @@ starter is the reference build. Naming follows [relationships.md](relationships.
 
 ## Designing blocks
 
-**House rules:**
+**Recommended:**
 
 - **Content on the block, placement on the junction.** Headline, image, and buttons go on `block_hero`. "Hide this
   block" and "background color" go on `page_blocks`, because the same block could be placed differently elsewhere.
@@ -58,12 +58,12 @@ starter is the reference build. Naming follows [relationships.md](relationships.
 
 ## Nested content inside blocks
 
-| Need                              | Pattern                                                                                                                                                                                               | Starter example                                  |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| A list owned by the block         | O2M child collection `block_<name>_<children>`, `sort_field: sort`, `on_delete: SET NULL`. Set `one_deselect_action: delete` so rows removed in the form don't linger (the starter leaves `nullify`). | `block_pricing_cards` → `block_pricing`          |
-| Many files                        | M2M to `directus_files`                                                                                                                                                                               | `block_gallery_items`                            |
-| A reusable group shared by blocks | M2O to a shared collection                                                                                                                                                                            | `block_hero.button_group` → `block_button_group` |
-| Link to a page or post            | M2O `page`, M2O `post`, plus a `type` select and a `url` string, with conditions that show only the one in use                                                                                        | `block_button`, `navigation_items`               |
+| Need | Pattern | Starter example |
+| --- | --- | --- |
+| A list owned by the block | O2M child collection `block_<name>_<children>`, `sort_field: sort`, `on_delete: SET NULL`. Set `one_deselect_action: delete` so rows removed in the form don't linger (the starter leaves `nullify`). | `block_pricing_cards` → `block_pricing` |
+| Many files | M2M to `directus_files` | `block_gallery_items` |
+| A reusable group shared by blocks | M2O to a shared collection | `block_hero.button_group` → `block_button_group` |
+| Link to a page or post | M2O `page`, M2O `post`, plus a `type` select and a `url` string, with conditions that show only the one in use | `block_button`, `navigation_items` |
 
 ## Querying it
 
@@ -91,7 +91,7 @@ The frontend switches on `block.collection` to pick a component. See the starter
 ## Sources
 
 - https://directus.com/docs/guides/data-model/relationships#many-to-any-m2a
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/relations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/relations/prompt.md
 - https://github.com/directus-labs/starters/tree/main/cms/directus/template/src (collections.json, fields.json, relations.json)
 - https://github.com/directus-labs/starters/blob/main/cms/nextjs/src/lib/directus/fetchers.ts
 - https://github.com/directus-labs/starters/blob/main/cms/nextjs/src/components/blocks/BaseBlock.tsx

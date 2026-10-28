@@ -1,10 +1,12 @@
 # API extensions: hooks, endpoints, operations
 
 Code here runs inside the Directus Node process (unless sandboxed, see [sandbox-and-security.md](sandbox-and-security.md)).
+The docs cover register functions, context keys, the full event list, and operation config. This file holds what the
+docs miss or get wrong.
 
 ## Contents
 
-- [Shared context](#shared-context)
+- [Docs per type](#docs-per-type)
 - [Hooks](#hooks)
 - [Endpoints](#endpoints)
 - [Operations](#operations)
@@ -13,18 +15,19 @@ Code here runs inside the Directus Node process (unless sandboxed, see [sandbox-
 - [Environment variables](#environment-variables)
 - [Testing](#testing)
 
-## Shared context
+## Docs per type
 
-| Key         | What                                                                                                                                                                                   |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `services`  | All API services (`ItemsService`, `FilesService`, `UsersService`, `MailService`, ...).                                                                                                 |
-| `database`  | Knex instance (not a transaction).                                                                                                                                                     |
-| `getSchema` | `async (opts?) => SchemaOverview`. Needed by every service.                                                                                                                            |
-| `env`       | Parsed env (all variables, not just Directus ones).                                                                                                                                    |
-| `logger`    | Pino logger. Prefer over `console`.                                                                                                                                                    |
-| `emitter`   | Hooks and endpoints only. **Extension-local**: events you emit are only heard by listeners on the same object (`emitter.onAction(...)`), never by `action()`/`filter()` hooks or core. |
+| Type | Define function | Docs |
+| --- | --- | --- |
+| hook | `defineHook` | https://directus.com/docs/guides/extensions/api-extensions/hooks |
+| endpoint | `defineEndpoint` | https://directus.com/docs/guides/extensions/api-extensions/endpoints |
+| operation | `defineOperationApp` + `defineOperationApi` | https://directus.com/docs/guides/extensions/api-extensions/operations |
+| services | n/a | https://directus.com/docs/guides/extensions/api-extensions/services |
 
-Operations get `data` (the flow's data chain) and `accountability` instead of `emitter`.
+Context (second argument): `services`, `database` (Knex, **not** a transaction), `getSchema`, `env` (all variables),
+`logger` (Pino), and `emitter` (hooks and endpoints). Operations get `data` and `accountability` instead of `emitter`.
+The `emitter` is **extension-local**: events you emit are only heard by listeners on the same object
+(`emitter.onAction(...)`), never by `action()`/`filter()` hooks or core.
 
 ## Hooks
 
@@ -42,52 +45,44 @@ const slugify = (text: string) =>
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-+|-+$/g, '');
 
-export default defineHook(({ filter, action, init, schedule, embed }, { services, logger }) => {
+export default defineHook(({ filter, action }, { logger }) => {
 	// Before write, inside the transaction. Return the (modified) payload.
-	filter('articles.items.create', async (payload: any, meta, { database, schema, accountability }) => {
+	filter('articles.items.create', async (payload: any, meta, { database }) => {
 		if (!payload.slug && payload.title) payload.slug = slugify(payload.title);
+		if (!payload.slug) return payload;
+		// A friendly error only; two creates at once can both pass. Keep slug `is_unique` for the real guarantee.
 		const exists = await database('articles').where({ slug: payload.slug }).first();
 		if (exists) throw new SlugTaken();
 		return payload;
 	});
 
 	// After commit. Errors are logged, not returned to the caller.
-	action('articles.items.update', async ({ keys, payload, collection }, { schema, accountability }) => {
+	action('articles.items.update', async ({ keys, collection }) => {
 		logger.info(`updated ${collection} ${keys.join(',')}`);
 	});
-
-	init('routes.custom.before', ({ app }) => {}); // app is the Express app
-	schedule('*/15 * * * *', async () => {}); // runs on one instance at a time
-	embed('head', '<script>/* injected into the Studio */</script>');
 });
 ```
 
-### Event names
+Event names and payload shapes: [hooks docs](https://directus.com/docs/guides/extensions/api-extensions/hooks). Facts
+that bite (beyond the router traps):
 
-`<scope>.<action>`: scope is `items` (all user collections), `<collection>.items` (one), or a system collection name **without** `directus_` (`users`, `files`, `roles`, `settings`, ...). Full list: [hooks docs](https://directus.com/docs/guides/extensions/api-extensions/hooks).
-
-| Event           | Filter payload      | Filter `meta`                   | Action `meta`                              |
-| --------------- | ------------------- | ------------------------------- | ------------------------------------------ |
-| `items.query`   | the query           | `collection`                    | (no action)                                |
-| `items.read`    | the read result     | `query`, `collection`           | `payload`, `query`, `collection`           |
-| `items.create`  | new item            | `collection`                    | `payload`, `key`, `collection`             |
-| `items.update`  | the changes (delta) | `keys`, `collection`            | `payload`, `keys`, `collection`            |
-| `items.delete`  | array of keys       | `collection`                    | `keys`, `collection`                       |
-| `items.promote` | promoted item       | `collection`, `item`, `version` | `payload`, `collection`, `item`, `version` |
-| `items.sort`    | (no filter)         |                                 | `collection`, `item`, `to`                 |
-
-System collections use the same shapes. Also filter/action: `auth.login`, `auth.jwt`, `authenticate`, `email.send`, `request.error`, `request.not_found`, `database.error`, `websocket.*` (shapes in the docs). Action only: `server.start`, `server.stop`, `response`, `files.upload`, `extensions.*`. Init events: `cli.*`, `app.*`, `routes.*`, `routes.custom.*`, `middlewares.*`, each with `.before` and `.after`.
-
-Facts that bite (beyond the router traps):
-
-- `collections` and `fields` don't emit `read`. `files` doesn't emit `create`/`update` on upload (use action `files.upload`). `relations` doesn't emit `delete`.
-- Filters run in order, awaited. Throwing aborts the whole request.
-- In a filter, query through `context.database` (the transaction). The top-level `database`, or a service without `knex: context.database`, won't see uncommitted rows, and writes through it can block on SQLite (one writer at a time).
+- Scope is `items` (all user collections), `<collection>.items` (one), or a system collection name **without**
+  `directus_` (`users.create`, `files.delete`). `items.*` never fires for system collections.
+- The `items.update` filter payload is only the changed fields (the delta), not the whole item.
+- `collections` and `fields` don't emit `read`. `files` doesn't emit `create`/`update` on upload (use action
+  `files.upload`). `relations` doesn't emit `delete`.
+- Filters run in order, awaited. Return the modified payload (returning nothing keeps it). Throwing aborts the whole
+  request.
+- In a filter, query through `context.database` (the transaction). The top-level `database`, or a service without
+  `knex: context.database`, won't see uncommitted rows, and writes through it can block on SQLite (one writer at a time).
 - Filters on `read`/`query` run on every read, including the Studio's own system reads. Keep them cheap.
 - A thrown action error is logged as `An error was thrown while executing action`; the client never sees it.
 - `{ emitEvents: false }` goes in the mutation options: `service.updateOne(key, data, { emitEvents: false })`.
-- `schedule` takes 5 or 6 field cron (optional seconds first). Invalid cron logs `Couldn't register cron hook`. Jobs are synchronized across instances. CLI commands load extensions with schedules off.
-- `embed(position, code)`: `position` is `head` or `body`; `code` is a string or a function returning one. Empty strings are rejected.
+- `schedule` takes 5 or 6 field cron (optional seconds first). Invalid cron logs `Couldn't register cron hook`. Jobs run
+  once across instances only with `SYNCHRONIZATION_STORE=redis`; the default (memory) runs them on every instance. CLI
+  commands load extensions with schedules off.
+- `embed(position, code)`: `position` is `head` or `body`; `code` is a string or a function returning one. Empty strings
+  are rejected.
 
 ## Endpoints
 
@@ -116,60 +111,38 @@ export default defineEndpoint({
 });
 ```
 
-- `req.accountability` is set on every request (public requests have `user: null`, `role: null`). `.admin` and `.app` (has Studio access) are handy gates.
-- Middleware has already run: `req.body` is parsed, `req.schema` is loaded, `req.sanitizedQuery` holds the parsed Directus query params.
+- `req.accountability` is set on every request (public requests have `user: null`, `role: null`). `.admin` and `.app`
+  (has Studio access) are handy gates.
+- Middleware has already run: `req.body` is parsed, `req.schema` is loaded, `req.sanitizedQuery` holds the parsed
+  Directus query params.
 
 ## Operations
 
-Two files, same `id`:
-
-```ts
-// src/app.ts
-import { defineOperationApp } from '@directus/extensions-sdk';
-
-export default defineOperationApp({
-	id: 'acme-notify',
-	name: 'Notify Slack',
-	icon: 'campaign',
-	description: 'Post a message to Slack.', // max 80 chars
-	overview: ({ channel }) => [{ label: 'Channel', text: channel }],
-	options: [
-		{ field: 'channel', name: 'Channel', type: 'string', meta: { width: 'half', interface: 'input' } },
-		{ field: 'text', name: 'Text', type: 'text', meta: { width: 'full', interface: 'input-multiline' } },
-	],
-});
-```
-
-```ts
-// src/api.ts
-import { defineOperationApi } from '@directus/extensions-sdk';
-
-type Options = { channel: string; text: string };
-
-export default defineOperationApi<Options>({
-	id: 'acme-notify',
-	handler: async ({ channel, text }, { env, data, accountability, logger }) => {
-		const res = await fetch(env.SLACK_WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ channel, text }) });
-		if (!res.ok) throw new Error(`Slack returned ${res.status}`); // -> reject path
-		return { ok: true }; // -> resolve path, added to data chain under the operation key
-	},
-});
-```
+The app half (`defineOperationApp`) and API half (`defineOperationApi`) must share the same `id`. Shapes are in the
+[operations docs](https://directus.com/docs/guides/extensions/api-extensions/operations).
 
 - Options arrive with `{{ $trigger.payload.title }}`-style templates already resolved.
-- Return value must be JSON-serializable; `undefined` becomes `null`. A thrown error (stack removed) becomes the data for the reject path.
-- `accountability` is whatever the flow trigger had (`null`, so admin, for schedules and many system events). Built-in item operations solve this with a `permissions` option (`$trigger`, `$public`, `$full`, or a role id); copy that pattern for data access ([item-read source](https://github.com/directus/directus/blob/v12.5.1/api/src/operations/item-read/index.ts)).
-- `id` is a global key in the flow manager. Reusing a built-in id (`log`, `mail`, `request`, `item-create`, `exec`, ...) replaces that operation. Prefix your ids.
+- Return value must be JSON-serializable; `undefined` becomes `null`. A thrown error (stack removed) becomes the data
+  for the reject path.
+- `accountability` is whatever the flow trigger had (`null`, so admin, for schedules and many system events). Built-in
+  item operations solve this with a `permissions` option (`$trigger`, `$public`, `$full`, or a role id); copy that
+  pattern for data access ([item-read source](https://github.com/directus/directus/blob/v12.6.0/api/src/operations/item-read/index.ts)).
+- `id` is a global key in the flow manager. Reusing a built-in id (`log`, `mail`, `request`, `item-create`, `exec`, ...)
+  replaces that operation. Prefix your ids.
 
 ## Services and accountability
 
 - Caller's permissions: `new ItemsService('articles', { schema, accountability: req.accountability })`.
 - Admin access: omit `accountability` or pass `null`. Do this deliberately.
 - Inside a filter hook, reuse the transaction: `{ schema: ctx.schema!, knex: ctx.database, accountability: ctx.accountability }`.
+- `ItemsService` methods: `createOne`, `createMany`, `readOne`, `readMany`, `readByQuery`, `readSingleton`, `updateOne`,
+  `updateMany`, `updateBatch`, `updateByQuery`, `upsertOne`, `upsertMany`, `upsertSingleton`, `deleteOne`,
+  `deleteMany`, `deleteByQuery`. Mutation options worth knowing: `emitEvents: false`, `autoPurgeCache: false`,
+  `skipTracking`. Other services take only options (`new CollectionsService({ schema, accountability })`); full list
+  in [api/src/services](https://github.com/directus/directus/tree/v12.6.0/api/src/services).
 
-`ItemsService` methods: `createOne`, `createMany`, `readOne`, `readMany`, `readByQuery`, `readSingleton`, `updateOne`, `updateMany`, `updateBatch`, `updateByQuery`, `upsertOne`, `upsertMany`, `upsertSingleton`, `deleteOne`, `deleteMany`, `deleteByQuery`. Mutation options worth knowing: `emitEvents: false`, `autoPurgeCache: false`, `skipTracking`. Other services take only options (`new CollectionsService({ schema, accountability })`); full list in [api/src/services](https://github.com/directus/directus/tree/v12.5.1/api/src/services).
-
-**House rule:** default to the caller's `accountability`. Use admin access only for system work the caller can't do themselves, and check authorization yourself before you do.
+**Recommended:** default to the caller's `accountability`. Use admin access only for system work the caller can't do
+themselves, and check authorization yourself before you do.
 
 ## Errors
 
@@ -182,42 +155,40 @@ throw new InvalidPayloadError({ reason: 'title is required' });
 ```
 
 - `createError(code, message | (ext) => message, status = 500)`. Code is upper-cased.
-- Directus recognizes errors by shape (`name === 'DirectusError'`), so a bundled copy of `@directus/errors` works. Other errors become a generic 500.
-- The docs say `@directus/errors` is available without installing, but the build only leaves `directus` and `directus:api` external, and directus-labs extensions list it as a dependency. **House rule:** `npm install @directus/errors` and let it bundle.
+- Directus recognizes errors by shape (`name === 'DirectusError'`), so a bundled copy of `@directus/errors` works.
+  Other errors become a generic 500.
+- The docs say `@directus/errors` is available without installing, but the build only leaves `directus` and
+  `directus:api` external, and directus-labs extensions list it as a dependency. **Recommended:**
+  `npm install @directus/errors` and let it bundle.
 
 ## Environment variables
 
-`env` values are auto-cast: `true`/`false` become booleans, numeric strings (not starting with `0`) become numbers, and **anything containing a comma becomes an array**. Force a type with a prefix: `MY_KEYS="string:a,b"`, `PORT="number:3000"`, `CFG="json:{...}"`. Never hardcode secrets in extension code.
+`env` values are auto-cast: `true`/`false` become booleans, numeric strings (not starting with `0`) become numbers, and
+**anything containing a comma becomes an array**. Force a type with a prefix: `MY_KEYS="string:a,b"`,
+`PORT="number:3000"`, `CFG="json:{...}"`. Never hardcode secrets in extension code.
 
 ## Testing
 
-The scaffold ships no test setup. `defineHook`, `defineEndpoint`, and `defineOperationApi` return their argument unchanged, so the default export is a plain function (or `{ id, handler }`) you can call with fakes. Add Vitest (`npm install -D vitest`, script `"test": "vitest run"`) and test the hook above by capturing its handlers:
+The scaffold ships no test setup. `defineHook`, `defineEndpoint`, and `defineOperationApi` return their argument
+unchanged, so the default export is a plain function (or `{ id, handler }`) you can call with fakes. Add Vitest
+(`npm install -D vitest`, script `"test": "vitest run"`) and test the hook above by capturing its handlers:
 
 ```ts
 // src/index.test.ts
 import { expect, test, vi } from 'vitest';
 import hook from './index';
 
-type Handler = (...args: any[]) => any;
-
 test('fills slug from title', async () => {
-	const filters = new Map<string, Handler>();
-	const register = {
-		filter: (event: string, handler: Handler) => filters.set(event, handler),
-		action: vi.fn(),
-		init: vi.fn(),
-		schedule: vi.fn(),
-		embed: vi.fn(),
-	};
-	hook(register as any, { services: {}, logger: { info: vi.fn() } } as any);
+	const filters = new Map<string, (...args: any[]) => any>();
+	const register = { filter: (event: string, fn: any) => filters.set(event, fn), action: vi.fn() };
+	hook(register as any, { logger: { info: vi.fn() } } as any);
 
 	const first = vi.fn().mockResolvedValue(undefined); // no existing row with this slug
 	const database = vi.fn(() => ({ where: () => ({ first }) }));
-
 	const payload = await filters.get('articles.items.create')!(
 		{ title: 'Hello World' },
 		{ collection: 'articles' },
-		{ database, schema: {}, accountability: null },
+		{ database },
 	);
 
 	expect(payload.slug).toBe('hello-world');
@@ -225,8 +196,10 @@ test('fills slug from title', async () => {
 ```
 
 - Operations: import the API entry and call `handler(options, context)` directly.
-- Endpoints: keep route logic in plain functions you can test, or mount the handler on a real `express.Router()` and call it with `supertest`.
-- Fakes only prove your logic. Before shipping, run the built extension against a real instance (`npm run dev` plus `EXTENSIONS_AUTO_RELOAD=true`) and check the API logs.
+- Endpoints: keep route logic in plain functions you can test, or mount the handler on a real `express.Router()` and
+  call it with `supertest`.
+- Fakes only prove your logic. Before shipping, run the built extension against a real instance (`npm run dev` plus
+  `EXTENSIONS_AUTO_RELOAD=true`) and check the API logs.
 
 ## Sources
 
@@ -234,20 +207,20 @@ test('fills slug from title', async () => {
 - https://directus.com/docs/guides/extensions/api-extensions/endpoints
 - https://directus.com/docs/guides/extensions/api-extensions/operations
 - https://directus.com/docs/guides/extensions/api-extensions/services
-- https://github.com/directus/directus/blob/v12.5.1/api/src/extensions/manager.ts (`registerHook`, `registerEndpoint`, local emitter)
-- https://github.com/directus/directus/blob/v12.5.1/api/src/emitter.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/app.ts (route order)
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts (operation handler call)
-- https://github.com/directus/directus/blob/v12.5.1/api/src/operations/item-read/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/types/express.d.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/items.ts (`MutationOptions`)
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/events.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/extensions/api-extension-context.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/errors/src/create-error.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/errors/src/is-directus-error.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/utils/guess-type.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/lib/cast.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions/src/shared/utils/define-extension.ts (`define*` return their argument)
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/cli/commands/create.ts (scaffold scripts)
+- https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/manager.ts (`registerHook`, `registerEndpoint`, local emitter)
+- https://github.com/directus/directus/blob/v12.6.0/api/src/emitter.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/app.ts (route order)
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts (operation handler call)
+- https://github.com/directus/directus/blob/v12.6.0/api/src/operations/item-read/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/types/express.d.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/items.ts (`MutationOptions`)
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/events.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/extensions/api-extension-context.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/errors/src/create-error.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/errors/src/is-directus-error.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/utils/guess-type.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/lib/cast.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions/src/shared/utils/define-extension.ts (`define*` return their argument)
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/commands/create.ts (scaffold scripts)
 - https://github.com/directus-labs/extensions/tree/main/archived/collaborative-editing (Vitest with mocked services)

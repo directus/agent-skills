@@ -19,6 +19,14 @@ curl -s -X POST "$URL/panels" -H "Authorization: Bearer $TOKEN" -H 'Content-Type
 Panel fields: `dashboard`, `type`, `options`, `position_x`, `position_y`, `width`, `height`, and the optional header
 (`show_header`, `name`, `icon`, `color`, `note`). Dashboard fields: `name`, `icon`, `color`, `note`.
 
+## Edit, delete, duplicate
+
+- `PATCH /panels/<id>` with `options` **replaces the whole object**: `{"options": {"text": "bye"}}` drops every other
+  option. Read the panel, merge, then send the full `options`.
+- `DELETE /dashboards/<id>` deletes its panels too (12.5.1).
+- Duplicate: read the dashboard and `panels.*`, then `POST /dashboards` with the panels nested and their `id` and
+  `dashboard` keys removed.
+
 ## Layout
 
 - The grid is 1-based. Lay panels out left to right, top to bottom, and keep a running `position_y`.
@@ -42,9 +50,9 @@ and fields the panels use must already exist on the target. See `directus-enviro
 ## Sources
 
 - https://directus.com/docs/guides/insights/overview
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/fields/panels.yaml
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/fields/dashboards.yaml
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/insights/routes/panel-configuration.vue
-- https://github.com/directus/directus/tree/v12.5.1/app/src/panels
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/app-access-permissions/app-access-permissions.yaml
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/fields/panels.yaml
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/fields/dashboards.yaml
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/insights/routes/panel-configuration.vue
+- https://github.com/directus/directus/tree/v12.6.0/app/src/panels
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/app-access-permissions/app-access-permissions.yaml
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/permissions.json

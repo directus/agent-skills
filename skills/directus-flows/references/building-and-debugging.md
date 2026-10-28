@@ -31,25 +31,30 @@ curl -s -X POST "$URL/flows" -H "Authorization: Bearer $TOKEN" -H 'Content-Type:
 ```
 
 Read the result back with
-`GET /flows/<id>?fields=*,operations.*` and check every link. Deleting a flow deletes its operations. Deleting one operation leaves a gap: relink its neighbors first.
+`GET /flows/<id>?fields=*,operations.*` and check every link. Deleting a flow deletes its operations. Deleting an operation that another one points to
+fails (500 on 12.5.1: `resolve`/`reject` are foreign keys with no delete rule). PATCH the previous operation's
+`resolve` or `reject` to the next one (or `null`) first, then delete. `resolve` is unique across operations, and so
+is `reject`: two operations can't both `resolve` to the same next step (one `resolve` and another's `reject` can).
+Duplicate a shared tail or call a utility.
 
 ## With MCP
 
 - `flows` and `operations` are admin-only tools. Same build order as above, but leave out positions: the tool lays
   out the graph from the links.
-- `trigger-flow` (active manual flows only): read the flow with `flows` first and pass the full definition. Its `data`
-  is merged into `$trigger.body` with `collection` and `keys`.
+- `trigger-flow` (active manual flows only) takes `id`, `collection` (required), and optional `keys`, `data`, `query`,
+  `headers`. Nothing else: extra keys fail validation. `data` is merged into `$trigger.body` with `collection` and
+  `keys`, and the flow's required confirmation fields must be in `data`.
 - Flow folders are `folders` with `type: "flows"`.
 
 ## Running a flow
 
-| Trigger   | Run it with                                                                                                 |
-| --------- | ----------------------------------------------------------------------------------------------------------- |
-| manual    | Studio button, `POST /flows/trigger/<id>` with `{ "collection", "keys", ...inputs }`, or MCP `trigger-flow` |
-| webhook   | `GET` or `POST /flows/trigger/<id>` (method must match `options.method`)                                    |
-| event     | Make the write it listens for, on a test item                                                               |
-| schedule  | Temporarily set the cron to every minute (`"0 * * * * *"`), or call its body as a utility                   |
-| operation | From a parent flow, or a temporary manual wrapper                                                           |
+| Trigger | Run it with |
+| --- | --- |
+| manual | Studio button, `POST /flows/trigger/<id>` with `{ "collection", "keys", ...inputs }`, or MCP `trigger-flow` |
+| webhook | `GET` or `POST /flows/trigger/<id>` (method must match `options.method`) |
+| event | Make the write it listens for, on a test item |
+| schedule | Temporarily set the cron to every minute (`"0 * * * * *"`), or call its body as a utility |
+| operation | From a parent flow, or a temporary manual wrapper |
 
 ```bash
 curl -X POST "$URL/flows/trigger/$FLOW_ID" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
@@ -76,31 +81,31 @@ the chain.
 
 `log` operations and Run Script `console.log` go to the **server** log, not here.
 
-**House rule:** keep `accountability: "all"` while building. For hot event flows in production, consider `"activity"`
+**Recommended:** keep `accountability: "all"` while building. For hot event flows in production, consider `"activity"`
 so you're not writing a revision with the full payload on every save.
 
 ## When a flow doesn't fire or misbehaves
 
-| Symptom                                      | Check                                                                                                               |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Event flow never runs                        | `status: "active"`; `collections` set for `items.*` scopes; system collection uses the short scope (`users.update`) |
-| Runs, then stops after the first operation   | `resolve` links are UUIDs; the flow's `operation` points at the first one                                           |
-| Condition always fails                       | Filter nested from the root, and every field in it exists in the data (update payloads hold only changed fields)    |
-| Item read returns nothing in a webhook flow  | `permissions: "$trigger"` with an anonymous caller is the public policy. Use a role or `$full`                      |
-| A value arrives as the string `"undefined"`             | The `{{ }}` path doesn't exist in the data chain (wrong key or typo). Check the step `options` in the log |
-| Utility returns `null`                       | Child inactive or missing, or no `options.return` on the child                                                      |
-| Email never arrives, flow shows success      | `mail` doesn't wait for delivery. Check the server log and `EMAIL_*` config                                         |
-| Webhook returns stale data                   | `GET` responses are cached. Set `cacheEnabled: false`                                                               |
-| Flow fires twice or forever                  | An item operation with `emitEvents: true` writing to the collection the flow listens on                             |
-| Custom operation flows break after a push    | The operation's extension isn't installed on the target                                                             |
+| Symptom | Check |
+| --- | --- |
+| Event flow never runs | `status: "active"`; `collections` set for `items.*` scopes; system collection uses the short scope (`users.update`) |
+| Runs, then stops after the first operation | `resolve` links are UUIDs; the flow's `operation` points at the first one |
+| Condition always fails | Filter nested from the root, and every field in it exists in the data (update payloads hold only changed fields) |
+| Item read returns nothing in a webhook flow | `permissions: "$trigger"` with an anonymous caller is the public policy. Use a role or `$full` |
+| A value arrives as the string `"undefined"` | The `{{ }}` path doesn't exist in the data chain (wrong key or typo). Check the step `options` in the log |
+| Utility returns `null` | Child inactive or missing, or no `options.return` on the child |
+| Email never arrives, flow shows success | `mail` doesn't wait for delivery. Check the server log and `EMAIL_*` config |
+| Webhook returns stale data | `GET` responses are cached. Set `cacheEnabled: false` |
+| Flow fires twice or forever | An item operation with `emitEvents: true` writing to the collection the flow listens on |
+| Custom operation flows break after a push | The operation's extension isn't installed on the target |
 
 ## Sources
 
 - https://directus.com/docs/guides/flows
-- https://github.com/directus/directus/blob/v12.5.1/api/src/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/flows.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/flows/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/operations/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/operations/position.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/trigger-flow/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/flows.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/flows/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/operations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/operations/position.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/trigger-flow/index.ts

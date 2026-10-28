@@ -11,12 +11,12 @@ An M2M between your collection and `languages`, with the translated fields livin
 
 ## Pick a storage strategy
 
-| Strategy                           | How                                                                                                                    | Use when                                                                                                                          |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Strategy | How | Use when |
+| --- | --- | --- |
 | **Default language on the parent** | Parent keeps `title`, `slug`, etc. in the default locale. `*_translations` holds the other languages. Frontend merges. | Most sites. Works with one-language content today and adds languages later without a migration. The `cms-i18n` starter does this. |
-| **All languages in translations**  | Parent keeps only language-neutral fields. Every locale, including the default, is a translation row.                  | Every language is equal, with no fallback language.                                                                               |
+| **All languages in translations** | Parent keeps only language-neutral fields. Every locale, including the default, is a translation row. | Every language is equal, with no fallback language. |
 
-**House rule:** default language on the parent.
+**Recommended:** default language on the parent.
 
 ## Build it
 
@@ -28,8 +28,9 @@ collection → Translations). It creates `languages` if missing (seeded with 8 l
 
 1. Make sure `languages` exists: `code` (string PK, e.g. `en-US`), `name` (string), `direction` (string, `ltr`/`rtl`,
    `select-dropdown`). Seed the languages the user wants.
-2. Create `<collection>_translations`: UUID `id`, `meta.hidden: true`, `meta.group: "<collection>"`. Add
-   `<collection>` (FK named after the parent collection, same type as its PK) and `languages_code` (`string`).
+2. Create `<collection>_translations`: UUID `id` with `meta.special: ["uuid"]` (without it nested translation writes
+   fail with 400 `Value is required`), `meta.hidden: true`, `meta.group: "<collection>"`. Add
+   `<collection>` (FK named exactly like the parent collection, `posts` not `posts_id`, same type as its PK) and `languages_code` (`string`).
 3. Add the translated fields to the junction with the same names, types, and interfaces as on the parent.
 4. Create the alias on the parent:
 
@@ -70,17 +71,17 @@ collection → Translations). It creates `languages` if missing (seeded with 8 l
 ]
 ```
 
-**House rule:** give every `*_translations` collection a `status` field too, so a locale can stay in draft while
+**Recommended:** give every `*_translations` collection a `status` field too, so a locale can stay in draft while
 others are published. `cms-i18n` does this. Public read permissions then filter translations on `status`.
 
 ## What goes where
 
-| On the parent (language-neutral)                 | On `*_translations`                           |
-| ------------------------------------------------ | --------------------------------------------- |
+| On the parent (language-neutral) | On `*_translations` |
+| --- | --- |
 | `id`, `status` (overall), `sort`, `published_at` | `title`, `headline`, `tagline`, `description` |
-| Relations (author, image, blocks, category)      | `content` (rich text)                         |
-| Booleans, numbers, colors, selects, dates        | `slug` / `permalink` when URLs are localized  |
-| SEO JSON if it's per-site, not per-locale        | Per-locale `status`                           |
+| Relations (author, image, blocks, category) | `content` (rich text) |
+| Booleans, numbers, colors, selects, dates | `slug` / `permalink` when URLs are localized |
+| SEO JSON if it's per-site, not per-locale | Per-locale `status` |
 
 For an M2A page builder, translate each **block** collection (`block_hero_translations`), not the junction.
 
@@ -117,8 +118,8 @@ handles slugs, Markdown, and HTML; booleans, dates, files, and selects are skipp
 - https://directus.com/docs/guides/content/translations
 - https://directus.com/docs/guides/ai/translations
 - https://directus.com/docs/guides/data-model/relationships#translations
-- https://github.com/directus/directus/blob/v12.5.1/app/src/interfaces/_system/system-collections-translations/system-collections-translations-dialog.vue
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/settings/routes/data-model/field-detail/store/alterations/translations.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/fields/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/app/src/interfaces/_system/system-collections-translations/system-collections-translations-dialog.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/settings/routes/data-model/field-detail/store/alterations/translations.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/fields/prompt.md
 - https://github.com/directus-labs/starters/tree/main/cms-i18n/directus/template/src
 - https://github.com/directus-labs/starters/blob/main/cms-i18n/nextjs/src/lib/directus/fetchers.ts

@@ -1,6 +1,6 @@
 # @directus/visual-editing
 
-Install `@directus/visual-editing` (2.1.0 = `packages/visual-editing` at v12.5.1 = npm latest). It is client-only: call `apply()` in an effect, `onMounted`, or `afterNavigate`, never during SSR. `setAttr` is a pure string builder and is safe on the server. Full API: https://directus.com/docs/guides/content/visual-editor/frontend-library
+Install `@directus/visual-editing` (2.1.0 is `packages/visual-editing` at 12.6.0; check `npm view @directus/visual-editing version`). It is client-only: call `apply()` in an effect, `onMounted`, or `afterNavigate`, never during SSR. `setAttr` is a pure string builder and is safe on the server. Full API: https://directus.com/docs/guides/content/visual-editor/frontend-library
 
 ## Exports
 
@@ -29,7 +29,7 @@ Parsing rules (`EditableElement.editAttrToObject`):
 - The Studio filters the edit form to fields whose **top-level name** is in `fields`, plus fields inside a selected group. Dot paths match nothing, and when nothing matches the form shows **every** field. Omit `fields` to show all.
 - An element with an empty `item` never activates; `item: '+'` is rejected with an "item not found" dialog.
 
-**House rule:** render `data-directus` only inside the editor ([preview-security.md](preview-security.md#hide-attributes-from-the-public-site)). It exposes collection names and primary keys.
+**Recommended:** render `data-directus` only inside the editor ([preview-security.md](preview-security.md#hide-attributes-from-the-public-site)). It exposes collection names and primary keys.
 
 ## apply() lifecycle
 
@@ -78,12 +78,12 @@ The docs suggest `<script src="https://unpkg.com/@directus/visual-editing">` and
 - https://directus.com/docs/guides/content/visual-editor/frontend-library
 - https://directus.com/docs/guides/content/visual-editor/customization
 - https://directus.com/docs/guides/content/visual-editor/studio-module
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/tsdown.config.js
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/directus-frame.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/editable-element.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/editable-store.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/page-manager.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/lib/types/directus.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/visual/components/editing-layer.vue
-- https://github.com/directus/directus/blob/v12.5.1/app/src/views/private/components/overlay-item.vue
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/tsdown.config.js
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/directus-frame.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/editable-element.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/editable-store.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/page-manager.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/lib/types/directus.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/visual/components/editing-layer.vue
+- https://github.com/directus/directus/blob/v12.6.0/app/src/views/private/components/overlay-item.vue

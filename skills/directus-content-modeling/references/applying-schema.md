@@ -2,16 +2,16 @@
 
 ## Pick the tool
 
-| Situation                                                                                                 | Use                                                                                            |
-| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| An agent building or changing a schema interactively on a dev instance                                    | Directus MCP tools                                                                             |
-| A script or app creating schema in code                                                                   | REST: `/collections`, `/fields`, `/relations`                                                  |
-| Promoting schema + config (roles, policies, flows, settings) from dev to staging to prod, reviewed in git | Environment Sync: `d6s` (`@directus/cli@12`), Directus 12.2+                                   |
-| Schema-only promotion, or CI on older versions                                                            | `directus schema snapshot` / `apply`, or `/schema/snapshot` → `/schema/diff` → `/schema/apply` |
-| Seeding content (demo data, fixtures, initial pages)                                                      | A seed script (see [Seeding content](#seeding-content))                                        |
-| Starting a new project from a Directus starter (schema + content + frontend)                              | `directus-template-cli` (`init` / `apply`)                                                     |
+| Situation | Use |
+| --- | --- |
+| An agent building or changing a schema interactively on a dev instance | Directus MCP tools |
+| A script or app creating schema in code | REST: `/collections`, `/fields`, `/relations` |
+| Promoting schema + config (roles, policies, flows, settings) from dev to staging to prod, reviewed in git | Environment Sync: `d6s` (`@directus/cli@12`), Directus 12.2+ |
+| Schema-only promotion, or CI on older versions | `directus schema snapshot` / `apply`, or `/schema/snapshot` → `/schema/diff` → `/schema/apply` |
+| Seeding content (demo data, fixtures, initial pages) | A seed script (see [Seeding content](#seeding-content)) |
+| Starting a new project from a Directus starter (schema + content + frontend) | `directus-template-cli` (`init` / `apply`) |
 
-**House rule:** model on a dev instance, promote with Environment Sync. Never hand-build schema on production.
+**Recommended:** model on a dev instance, promote with Environment Sync. Never hand-build schema on production.
 
 ## MCP
 
@@ -40,7 +40,7 @@ Admin token required. Read back with `GET /fields/:collection` and `GET /relatio
 ## Snapshot and Environment Sync
 
 Both are owned by the **`directus-environment-sync`** skill (setup, push modes, CI, rollback; the snapshot comparison,
-`force`, and version checks are in its how-it-works.md). Load it before applying a snapshot or running any `d6s`
+`force`, and version checks are in its "Schema snapshot and apply" section). Load it before applying a snapshot or running any `d6s`
 command against a shared instance. The traps that delete data:
 
 - `POST /schema/diff` defaults to `mode=mirror`; applying that diff drops everything on the target that isn't in the
@@ -52,7 +52,7 @@ command against a shared instance. The traps that delete data:
 
 ## Seeding content
 
-**House rule:** seed content with scripts, not templates. A script runs anywhere (local, CI, against Cloud), is
+**Recommended:** seed content with scripts, not templates. A script runs anywhere (local, CI, against Cloud), is
 reviewable, and gives the same result every time. Environment Sync moves schema and config, not content.
 
 - One script per dataset, committed next to the sync files. Read `DIRECTUS_URL` and a token from env. Use
@@ -74,13 +74,14 @@ and wants PostgreSQL (don't extract from SQLite and apply to Postgres). v0.5.0+ 
 - **Don't create tables directly in the database** and expect them to behave. Directus sees unregistered tables but
   they have no metadata (interfaces, relations, permissions). If you must, register them afterwards
   (`POST /collections` with the existing name) and create relations through Directus.
-- **Don't change a field's `type` on a column with data** without a backup. Some conversions fail or truncate.
+- **Don't change a field's `type` on a column with data** without a backup. `type` without a `schema` object is
+  silently ignored, Postgres fails or truncates, and SQLite keeps mixed data. Safe paths: [schema-changes.md](schema-changes.md).
 - **Don't delete and recreate a field to "fix" it.** That drops the column's data. `PATCH` the `meta` instead.
 
 ## Sources
 
 - https://directus.com/docs/guides/environment-sync
 - https://directus.com/docs/guides/ai/mcp/tools
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/schema.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/collections/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/schema.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/collections/prompt.md
 - https://github.com/directus-labs/directus-template-cli/blob/main/README.md

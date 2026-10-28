@@ -1,0 +1,5 @@
+interface:
+  display_name: "Directus Content"
+  short_description: "Edit pages, translations, and files in Directus safely"
+  brand_color: "#6644FF"
+  default_prompt: "Use $directus-content to update the hero headline on our About page in Directus."

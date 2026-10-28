@@ -10,34 +10,34 @@
 
 ## Pick the type
 
-| The data says                                                                        | Use                                                         | Columns created                     |
-| ------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------------------------- |
-| Each post has one author                                                             | M2O `posts.author` → `team_members`                         | `posts.author`                      |
-| Show an author's posts from the author form                                          | O2M alias `team_members.posts` (the other side of that M2O) | none                                |
-| Posts have many tags, tags have many posts                                           | M2M via junction `post_tags`                                | junction collection                 |
-| A page is a list of blocks of different types                                        | M2A via junction `page_blocks`                              | junction with `item` + `collection` |
-| One image                                                                            | M2O to `directus_files` (`special: file`)                   | one `uuid` column                   |
-| A gallery                                                                            | M2M to `directus_files` (`special: files`)                  | junction collection                 |
-| Child rows owned by one parent (menu items, pricing cards, form fields)              | O2M (child has the M2O)                                     | `child.parent`                      |
-| A shared list editors manage once and pick from (categories, product types, regions) | A small **config collection** + M2O or M2M to it            |                                     |
+| The data says | Use | Columns created |
+| --- | --- | --- |
+| Each post has one author | M2O `posts.author` → `team_members` | `posts.author` |
+| Show an author's posts from the author form | O2M alias `team_members.posts` (the other side of that M2O) | none |
+| Posts have many tags, tags have many posts | M2M via junction `post_tags` | junction collection |
+| A page is a list of blocks of different types | M2A via junction `page_blocks` | junction with `item` + `collection` |
+| One image | M2O to `directus_files` (`special: file`) | one `uuid` column |
+| A gallery | M2M to `directus_files` (`special: files`) | junction collection |
+| Child rows owned by one parent (menu items, pricing cards, form fields) | O2M (child has the M2O) | `child.parent` |
+| A shared list editors manage once and pick from (categories, product types, regions) | A small **config collection** + M2O or M2M to it |  |
 
-**House rule:** if the child rows only make sense inside one parent, use O2M, not M2M. M2M is for things that exist
+**Recommended:** if the child rows only make sense inside one parent, use O2M, not M2M. M2M is for things that exist
 independently and get reused (tags, categories, people).
 
 ## Naming
 
-**House rule:** name relational fields after the collection they point to, singular. No `_id` suffix. The API returns
+**Recommended:** name relational fields after the collection they point to, singular. No `_id` suffix. The API returns
 the related object under that key when you expand it (`post.author.name`, `page_block.page.title`), so the key should
 read like the thing.
 
-| Relation                                 | Junction              | Junction fields                                              |
-| ---------------------------------------- | --------------------- | ------------------------------------------------------------ |
-| M2O `posts.author` → `team_members`      |                       | `author` (role name beats collection name when it's clearer) |
-| M2M `posts.tags` → `tags`                | `post_tags`           | `post`, `tag`, `sort`                                        |
-| M2M self-reference `posts.related_posts` | `post_related_posts`  | `post`, `related_post`                                       |
-| M2A `pages.blocks`                       | `page_blocks`         | `page`, `item`, `collection`, `sort`                         |
-| Files `block_gallery.items`              | `block_gallery_items` | `block_gallery`, `directus_file`, `sort`                     |
-| Translations `posts.translations`        | `posts_translations`  | `posts`, `languages_code`                                    |
+| Relation | Junction | Junction fields |
+| --- | --- | --- |
+| M2O `posts.author` → `team_members` |  | `author` (role name beats collection name when it's clearer) |
+| M2M `posts.tags` → `tags` | `post_tags` | `post`, `tag`, `sort` |
+| M2M self-reference `posts.related_posts` | `post_related_posts` | `post`, `related_post` |
+| M2A `pages.blocks` | `page_blocks` | `page`, `item`, `collection`, `sort` |
+| Files `block_gallery.items` | `block_gallery_items` | `block_gallery`, `directus_file`, `sort` |
+| Translations `posts.translations` | `posts_translations` | `posts`, `languages_code` |
 
 - FK to a system collection: singular of the full name (`directus_file`, `directus_user`), so it's obvious it points
   at a system collection.
@@ -123,21 +123,24 @@ frontend.
 - Many: junction `<singular parent>_<field>` (e.g. `block_gallery_items`) with `<singular parent>` + `directus_file`
   (+ `sort`), alias `special: ["files"]`, `interface: "files"`, both relations `CASCADE`. Deleting the parent removes
   the junction rows, not the files.
-- **House rule:** on collections a public site renders (pages, posts, blocks), set the file field's `options.folder`
+- **Recommended:** on collections a public site renders (pages, posts, blocks), set the file field's `options.folder`
   (the `file`, `file-image`, and `files` interfaces all have it) to the `public` folder's id, or a subfolder of it.
   Uploads then land where the public policy can serve them. See `directus-access-control` recipes.
 
 ## on_delete
 
-**House rule:**
+**Recommended:**
 
-| Relation                                                                                                              | `on_delete` (both sides of a junction) |
-| --------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| M2M, M2A, files (many), translations                                                                                  | `CASCADE`                              |
-| M2O / O2M, including single files and `user_created` / `user_updated` → `directus_users` (else deleting a user fails) | `SET NULL`                             |
+| Relation | `on_delete` (both sides of a junction) |
+| --- | --- |
+| M2M, files (many), translations; the parent FK of an M2A junction | `CASCADE` |
+| M2O / O2M, including single files and `user_created` / `user_updated` → `directus_users` (else deleting a user fails) | `SET NULL` |
 
 - Junction rows mean nothing without either side, so they go with it. That includes the `languages` side of
   translations: deleting a language deletes its translations.
+- An M2A junction's `item` column has no database FK (`schema: null`), so nothing cascades from the block side.
+  Deleting a block item leaves a junction row pointing at nothing. Delete the junction row first, or clean up with a
+  Flow on `<block>.items.delete`.
 - M2O and O2M children survive losing their parent with a null FK. Clean up orphans deliberately, not by cascade.
 - The Studio's defaults don't follow this (several junction relations default to `SET NULL` / `NO ACTION`, which leaves
   orphan junction rows). Set `on_delete` explicitly on every relation.
@@ -160,8 +163,8 @@ pricing cards).
 ## Sources
 
 - https://directus.com/docs/guides/data-model/relationships
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/relations/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/fields/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/settings/routes/data-model/utils/get-junction-collection-name.ts
-- https://github.com/directus/directus/tree/v12.5.1/app/src/modules/settings/routes/data-model/field-detail/store/alterations
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/relations/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/fields/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/settings/routes/data-model/utils/get-junction-collection-name.ts
+- https://github.com/directus/directus/tree/v12.6.0/app/src/modules/settings/routes/data-model/field-detail/store/alterations
 - https://github.com/directus-labs/starters/blob/main/cms/directus/template/src/relations.json

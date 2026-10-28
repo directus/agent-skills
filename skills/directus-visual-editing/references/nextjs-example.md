@@ -35,7 +35,7 @@ Run `npm install @directus/sdk @directus/visual-editing server-only`.
 ## Server code
 
 ```ts
-// lib/directus-schema.ts (minimal; full typing: the directus-sdk skill, references/typing.md)
+// lib/directus-schema.ts (minimal; full typing: the directus-sdk skill)
 export interface Post {
 	id: number; // match your primary key type
 	slug: string;
@@ -209,12 +209,12 @@ export default nextConfig;
 
 - https://directus.com/docs/frameworks/nextjs/visual-editor
 - https://directus.com/docs/guides/content/visual-editor/frontend-library
-- https://github.com/directus/directus/blob/v12.5.1/packages/visual-editing/src/index.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/app.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/views/private/components/live-preview.vue
-- https://github.com/directus/directus/blob/v12.5.1/packages/system-data/src/fields/settings.yaml
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/permissions.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/visual-editing/src/index.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/app.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/views/private/components/live-preview.vue
+- https://github.com/directus/directus/blob/v12.6.0/packages/system-data/src/fields/settings.yaml
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/permissions.ts
 - https://directus.com/docs/licensing/overview
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/items.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/next.config.ts
 - https://nextjs.org/docs/app/guides/self-hosting

@@ -3,6 +3,13 @@
 Files are rows in `directus_files` (metadata) plus the binary in a storage location. `/files` manages both;
 `/assets/<id>` serves the binary, optionally transformed.
 
+## Contents
+
+- [Upload and import](#upload-and-import)
+- [Metadata and folders](#metadata-and-folders)
+- [Serving and transforming assets](#serving-and-transforming-assets)
+- [Linking files to items](#linking-files-to-items)
+
 ## Upload and import
 
 `POST /files` with `multipart/form-data`. Metadata fields first, the `file` part **last**. Several `file` parts upload
@@ -13,7 +20,8 @@ curl -X POST "$DIRECTUS_URL/files" -H "Authorization: Bearer $TOKEN" \
   -F "title=Hero image" -F "folder=$FOLDER_ID" -F "file=@./hero.jpg"
 ```
 
-- You can set any file field except `filename_disk` and `filename_download`. Replace the binary of an existing file
+- Send other file fields before the `file` part. `filename_download` and `filename_disk` are accepted too (the docs
+  say otherwise; 12.5.1 keeps both). Replace the binary of an existing file
   with a multipart `PATCH /files/<id>`.
 - `storage` defaults to the first entry in `STORAGE_LOCATIONS` (default `local`). Any other value must match a
   configured location exactly or the upload fails with `INVALID_PAYLOAD`.
@@ -63,11 +71,11 @@ curl -X POST "$DIRECTUS_URL/files/import" -H "Authorization: Bearer $TOKEN" -H '
 
 The project setting `storage_asset_transform` (**Allowed Transformations**) controls what is allowed:
 
-| Setting         | Allowed requests                          |
-| --------------- | ----------------------------------------- |
-| `all` (default) | Any params, plus configured preset keys   |
-| `presets`       | Only `?key=<preset>` with no other params |
-| `none`          | Only built-in `system-*` keys             |
+| Setting | Allowed requests |
+| --- | --- |
+| `all` (default) | Any params, plus configured preset keys |
+| `presets` | Only `?key=<preset>` with no other params |
+| `none` | Only built-in `system-*` keys |
 
 Disallowed requests fail with `INVALID_QUERY`. Limits: `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` (source, default 6000),
 `ASSETS_TRANSFORM_IMAGE_MAX_OUTPUT_DIMENSION` (every step of the output, default 6000), `ASSETS_TRANSFORM_MAX_OPERATIONS`
@@ -88,12 +96,12 @@ junction field name in the schema.
 - https://directus.com/docs/configuration/files
 - https://directus.com/docs/guides/security/best-practices
 - https://directus.com/docs/releases/breaking-changes/version-12
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/files.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/controllers/assets.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/constants.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/transformations.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/request/is-denied-ip.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/types/src/assets.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/files/prompt.md
-- https://github.com/directus/directus/blob/v12.5.1/api/src/ai/tools/folders/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/files.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/controllers/assets.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/constants.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/transformations.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/request/is-denied-ip.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/types/src/assets.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/files/prompt.md
+- https://github.com/directus/directus/blob/v12.6.0/api/src/ai/tools/folders/prompt.md

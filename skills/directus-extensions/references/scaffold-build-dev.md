@@ -46,7 +46,7 @@ npx create-directus-extension@latest hook my-hook --no-install
 // "source": { "app": "src/app.ts",  "api": "src/api.ts" }
 ```
 
-- `host` is only read by the Marketplace. The scaffold writes `^10.10.0` (the SDK's `LAST_BREAKING_RELEASE`). **House rule:** set `host` to the range you actually tested, for example `"^12.0.0"` on a v12 project.
+- `host` is only read by the Marketplace. The scaffold writes `^10.10.0` (the SDK's `LAST_BREAKING_RELEASE`), or `^12.6.0` for `richtext`; a bundle takes the highest of its entries. **Recommended:** set `host` to the range you actually tested, for example `"^12.0.0"` on a v12 project.
 - Optional `hidden` (boolean). `sandbox`: see [sandbox-and-security.md](sandbox-and-security.md).
 - `"type": "module"` makes the API build output ESM; without it the API output is CJS. App output is always ESM.
 
@@ -54,10 +54,10 @@ npx create-directus-extension@latest hook my-hook --no-install
 
 `npm run build` (minified) or `npm run dev` (watch, unminified); add `--sourcemap` to `npx directus-extension build` for maps. The CLI is Rollup with esbuild for TS and `@vitejs/plugin-vue` for app code. Everything you import is **bundled** into `dist`, except:
 
-| Side | Left external (provided by Directus at runtime)                      |
-| ---- | -------------------------------------------------------------------- |
-| App  | `@directus/extensions-sdk`, `vue`, `vue-router`, `vue-i18n`, `pinia` |
-| API  | `directus`, `directus:api`                                           |
+| Side | Left external (provided by Directus at runtime) |
+| --- | --- |
+| App | `@directus/extensions-sdk`, `vue`, `vue-router`, `vue-i18n`, `pinia` |
+| API | `directus`, `directus:api` |
 
 So API-side packages like `@directus/errors` and `@directus/types` get bundled from your own `node_modules`. Install what you import. Use `import type` for types-only imports. Custom Rollup plugins go in `extension.config.js` (`export default { plugins: [], watch: { clearScreen: false } }`).
 
@@ -70,6 +70,9 @@ Directus discovers extensions from:
 3. **npm dependencies** of the project root `package.json` (`PACKAGE_FILE_LOCATION`, default `.`) whose `package.json` has `directus:extension`.
 
 Docker: bind mount `./extensions:/directus/extensions` and set `EXTENSIONS_AUTO_RELOAD: 'true'`. Develop with the extension folder **inside** `./extensions` (for example `./extensions/my-endpoint/`) and run `npm run dev` there.
+
+- **The first build doesn't load.** The watcher sees the scaffold's `package.json` before `dist/` exists, logs `Cannot find module .../dist/index.js`, and never reloads when `dist/` appears (12.6.0). After the first build, `touch package.json` in the extension folder (or restart Directus). Later rebuilds reload normally.
+- **Docker Desktop bind mounts may not deliver file events** to the container: nothing reloads at all. Add `CHOKIDAR_USEPOLLING: 'true'` to the Directus service.
 
 Beyond the reload rules in SKILL.md: a changed `docker-compose.yml` env needs a container restart, and a Windows host also needs `CHOKIDAR_USEPOLLING=true` for auto reload.
 
@@ -96,7 +99,8 @@ Production with npm packages: Directus images don't include npm. Install in a bu
 
 - **Add an entry without a TTY** (`npm run add` always prompts): scaffold it standalone with `npx create-directus-extension@latest <type> <name> --language typescript --no-install` in a scratch folder, move its `src/` to `src/<name>/` in the bundle (and its `tsconfig.json` to the bundle root if there is none), delete the scratch folder, and append an entry (`index.ts`, or `app.ts` + `api.ts` for operations). Add the dev deps `add` would install (see [Scaffold](#scaffold)). Entry `name` must be unique in the bundle.
 - **Remove an entry:** delete its folder and its `entries` item.
-- Running `add` in a non-bundle extension offers to **convert** it into a bundle.
+- Running `npx directus-extension add` in a non-bundle extension (which has no `add` script) offers to **convert** it
+  into a bundle.
 - `partial` (default enabled) lets users disable individual entries in Settings → Extensions. Only the whole bundle can be uninstalled.
 - Bundle entries have no `sandbox` option.
 
@@ -104,13 +108,13 @@ Production with npm packages: Directus images don't include npm. Install in a bu
 
 The ones that matter while building; full list in [configuration/extensions](https://directus.com/docs/configuration/extensions). Sandbox and Marketplace trust variables: [sandbox-and-security.md](sandbox-and-security.md).
 
-| Variable                 | Default                        | Notes                                                                   |
-| ------------------------ | ------------------------------ | ----------------------------------------------------------------------- |
-| `EXTENSIONS_PATH`        | `./extensions`                 | Local folder. Subpath inside storage when `EXTENSIONS_LOCATION` is set. |
-| `EXTENSIONS_AUTO_RELOAD` | `false`                        | Watch and reload. Not with `EXTENSIONS_LOCATION`.                       |
-| `EXTENSIONS_MUST_LOAD`   | `false`                        | Exit if an API extension fails to load.                                 |
-| `EXTENSIONS_LOCATION`    | unset                          | Storage location key to load extensions from.                           |
-| `MARKETPLACE_REGISTRY`   | `https://registry.directus.io` | Source default (`DEFAULT_REGISTRY`); the config docs list `.com`.       |
+| Variable | Default | Notes |
+| --- | --- | --- |
+| `EXTENSIONS_PATH` | `./extensions` | Local folder. Subpath inside storage when `EXTENSIONS_LOCATION` is set. |
+| `EXTENSIONS_AUTO_RELOAD` | `false` | Watch and reload. Not with `EXTENSIONS_LOCATION`. |
+| `EXTENSIONS_MUST_LOAD` | `false` | Exit if an API extension fails to load. |
+| `EXTENSIONS_LOCATION` | unset | Storage location key to load extensions from. |
+| `MARKETPLACE_REGISTRY` | `https://registry.directus.io` | Source default (`DEFAULT_REGISTRY`); the config docs list `.com`. |
 
 ## Sources
 
@@ -119,17 +123,17 @@ The ones that matter while building; full list in [configuration/extensions](htt
 - https://directus.com/docs/guides/extensions/bundles
 - https://directus.com/docs/configuration/extensions
 - https://directus.com/docs/self-hosting/including-extensions
-- https://github.com/directus/directus/blob/v12.5.1/packages/create-directus-extension/lib/index.js
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/cli/run.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/cli/commands/create.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/cli/commands/build.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/cli/commands/add.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/cli/commands/helpers/get-extension-dev-deps.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/cli/commands/link.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-sdk/src/constants/last-breaking.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions/src/shared/schemas/options.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions/src/shared/constants/shared-deps.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions/src/node/utils/get-extensions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/extensions/manager.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/env/src/constants/defaults.ts
-- https://github.com/directus/directus/blob/v12.5.1/packages/extensions-registry/src/constants.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/create-directus-extension/lib/index.js
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/run.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/commands/create.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/commands/build.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/commands/add.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/commands/helpers/get-extension-dev-deps.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/cli/commands/link.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-sdk/src/constants/last-breaking.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions/src/shared/schemas/options.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions/src/shared/constants/shared-deps.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions/src/node/utils/get-extensions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/extensions/manager.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/env/src/constants/defaults.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/extensions-registry/src/constants.ts

@@ -17,6 +17,8 @@
 import { isDirectusError, readItem, withToken } from '@directus/sdk';
 import type { PreviewContext } from './preview'; // lib/preview.ts in nextjs-example.md
 
+const fields = ['id', 'title', 'slug', 'content'] as const;
+
 // directus = createDirectus<Schema>(url).with(rest()), no token composable
 export async function readPost(id: string, ctx: PreviewContext) {
 	const token = ctx.token ?? ''; // same credentials for both reads; '' sends no header (Public)
@@ -69,10 +71,10 @@ Look up by slug or permalink first, then read by id. The starters run `getPageId
 - https://directus.com/docs/guides/content/visual-editor/studio-module
 - https://directus.com/docs/guides/connect/query-parameters
 - https://directus.com/docs/releases/breaking-changes/version-12
-- https://github.com/directus/directus/blob/v12.5.1/packages/constants/src/versions.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/items.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/utils/versioning/handle-version.ts
-- https://github.com/directus/directus/blob/v12.5.1/api/src/services/versions.ts
-- https://github.com/directus/directus/blob/v12.5.1/app/src/modules/visual/components/editing-layer.vue
-- https://github.com/directus/directus/blob/v12.5.1/sdk/src/rest/commands/utils/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/packages/constants/src/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/items.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/utils/versioning/handle-version.ts
+- https://github.com/directus/directus/blob/v12.6.0/api/src/services/versions.ts
+- https://github.com/directus/directus/blob/v12.6.0/app/src/modules/visual/components/editing-layer.vue
+- https://github.com/directus/directus/blob/v12.6.0/sdk/src/rest/commands/utils/versions.ts
 - https://github.com/directus-labs/starters/tree/main/cms/nextjs/src/lib/directus/fetchers.ts
