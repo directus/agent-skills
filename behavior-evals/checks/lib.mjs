@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process';
+
 // Shared helpers for behavior checks. Each check prints PASS/FAIL lines and exits 1 on any failure.
 export const URL = process.env.DIRECTUS_URL ?? 'http://127.0.0.1:18255';
 export const TARGET_URL = process.env.TARGET_URL;
@@ -59,6 +61,36 @@ export async function requiredStub(collection) {
 		else if (f.type === 'boolean') stub[f.field] = false;
 	}
 	return stub;
+}
+
+// `docker compose config` as JSON, or a FAIL and exit. A `${VAR:?}` guard left blank for the operator to fill is fine:
+// fill only what compose says is required.
+export function composeConfig() {
+	const filled = {};
+	for (let i = 0; i < 10; i++) {
+		try {
+			const config = JSON.parse(
+				execFileSync('docker', ['compose', 'config', '--format', 'json'], {
+					cwd: WORK_DIR,
+					env: { ...process.env, ...filled },
+					encoding: 'utf8',
+					stdio: ['ignore', 'pipe', 'pipe'],
+				}),
+			);
+			if (Object.keys(filled).length) console.log(`INFO required variables left for the operator: ${Object.keys(filled).join(', ')}`);
+			check(true, 'docker compose config accepts the file');
+			return config;
+		} catch (error) {
+			const name = String(error.stderr).match(/required variable (\w+) is missing/)?.[1];
+			if (!name || filled[name]) {
+				check(false, 'docker compose config accepts the file', String(error.stderr ?? error.message).slice(0, 400));
+				done();
+			}
+			filled[name] = `filled-by-check-${name.toLowerCase()}-0123456789abcdef`;
+		}
+	}
+	check(false, 'docker compose config accepts the file', 'too many required variables');
+	done();
 }
 
 export function done() {

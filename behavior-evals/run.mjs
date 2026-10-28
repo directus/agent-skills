@@ -123,8 +123,23 @@ async function startPostgres(name, port, sql) {
 	try {
 		sh('docker', ['rm', '-f', db], { stdio: 'ignore' });
 	} catch {}
-	sh('docker', ['run', '-d', '--name', db, '-p', `127.0.0.1:${port}:8055`, '--tmpfs', '/var/lib/postgresql/data',
-		'-e', 'POSTGRES_USER=directus', '-e', 'POSTGRES_PASSWORD=directus', '-e', 'POSTGRES_DB=directus', 'postgres:16-alpine']);
+	sh('docker', [
+		'run',
+		'-d',
+		'--name',
+		db,
+		'-p',
+		`127.0.0.1:${port}:8055`,
+		'--tmpfs',
+		'/var/lib/postgresql/data',
+		'-e',
+		'POSTGRES_USER=directus',
+		'-e',
+		'POSTGRES_PASSWORD=directus',
+		'-e',
+		'POSTGRES_DB=directus',
+		'postgres:16-alpine',
+	]);
 	for (let i = 0; i < 60; i++) {
 		try {
 			sh('docker', ['exec', db, 'pg_isready', '-U', 'directus', '-h', '127.0.0.1'], { stdio: 'ignore' });
@@ -132,48 +147,79 @@ async function startPostgres(name, port, sql) {
 		} catch {}
 		await new Promise((r) => setTimeout(r, 1000));
 	}
-	if (sql) sh('docker', ['exec', '-i', db, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'directus', '-d', 'directus'], { input: readFileSync(join(here, 'seeds', 'sql', sql), 'utf8') });
-	return ['--network', `container:${db}`, '-e', 'DB_CLIENT=pg', '-e', 'DB_HOST=127.0.0.1', '-e', 'DB_PORT=5432',
-		'-e', 'DB_DATABASE=directus', '-e', 'DB_USER=directus', '-e', 'DB_PASSWORD=directus'];
+	if (sql)
+		sh('docker', ['exec', '-i', db, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'directus', '-d', 'directus'], {
+			input: readFileSync(join(here, 'seeds', 'sql', sql), 'utf8'),
+		});
+	return [
+		'--network',
+		`container:${db}`,
+		'-e',
+		'DB_CLIENT=pg',
+		'-e',
+		'DB_HOST=127.0.0.1',
+		'-e',
+		'DB_PORT=5432',
+		'-e',
+		'DB_DATABASE=directus',
+		'-e',
+		'DB_USER=directus',
+		'-e',
+		'DB_PASSWORD=directus',
+	];
 }
 
-async function startDirectus(lane, { target = false, extensionsDir, env = {}, postgres = false, sql, license = false } = {}) {
+async function startDirectus(
+	lane,
+	{ target = false, extensionsDir, env = {}, postgres = false, sql, license = false } = {},
+) {
 	const name = `directus-skills-evals-${lane}${target ? '-target' : ''}`;
 	const port = (target ? 18355 : 18255) + lane;
 	try {
 		sh('docker', ['rm', '-f', name, `${name}-pg`], { stdio: 'ignore' });
 	} catch {}
-	sh('docker', [
-		'run',
-		'-d',
-		'--name',
-		name,
-		...(postgres ? await startPostgres(name, port, sql) : ['-p', `127.0.0.1:${port}:8055`]),
-		'--tmpfs',
-		'/directus/database:uid=1000,gid=1000',
-		'-e',
-		'KEY=skills-evals-key',
-		'-e',
-		'SECRET=skills-evals-secret-not-for-production-use',
-		...(postgres ? [] : ['-e', 'DB_CLIENT=sqlite3', '-e', 'DB_FILENAME=/directus/database/data.db']),
-		'-e',
-		'ADMIN_EMAIL=admin@example.com',
-		'-e',
-		'ADMIN_PASSWORD=skills-evals-password',
-		'-e',
-		`ADMIN_TOKEN=${TOKEN}`,
-		'-e',
-		`PUBLIC_URL=http://127.0.0.1:${port}`,
-		'-e',
-		'TELEMETRY=false',
-		// Bind mounts on Docker Desktop don't deliver file events, so the extension watcher polls.
-		...(extensionsDir
-			? ['-v', `${extensionsDir}:/directus/extensions`, '-e', 'EXTENSIONS_AUTO_RELOAD=true', '-e', 'CHOKIDAR_USEPOLLING=true']
-			: []),
-		...Object.entries(env).flatMap(([k, v]) => ['-e', `${k}=${v}`]),
-		...(license ? ['-e', 'LICENSE_KEY'] : []),
-		IMAGE,
-	], license ? { env: { ...process.env, LICENSE_KEY: licenseKey } } : {});
+	sh(
+		'docker',
+		[
+			'run',
+			'-d',
+			'--name',
+			name,
+			...(postgres ? await startPostgres(name, port, sql) : ['-p', `127.0.0.1:${port}:8055`]),
+			'--tmpfs',
+			'/directus/database:uid=1000,gid=1000',
+			'-e',
+			'KEY=skills-evals-key',
+			'-e',
+			'SECRET=skills-evals-secret-not-for-production-use',
+			...(postgres ? [] : ['-e', 'DB_CLIENT=sqlite3', '-e', 'DB_FILENAME=/directus/database/data.db']),
+			'-e',
+			'ADMIN_EMAIL=admin@example.com',
+			'-e',
+			'ADMIN_PASSWORD=skills-evals-password',
+			'-e',
+			`ADMIN_TOKEN=${TOKEN}`,
+			'-e',
+			`PUBLIC_URL=http://127.0.0.1:${port}`,
+			'-e',
+			'TELEMETRY=false',
+			// Bind mounts on Docker Desktop don't deliver file events, so the extension watcher polls.
+			...(extensionsDir
+				? [
+						'-v',
+						`${extensionsDir}:/directus/extensions`,
+						'-e',
+						'EXTENSIONS_AUTO_RELOAD=true',
+						'-e',
+						'CHOKIDAR_USEPOLLING=true',
+					]
+				: []),
+			...Object.entries(env).flatMap(([k, v]) => ['-e', `${k}=${v}`]),
+			...(license ? ['-e', 'LICENSE_KEY'] : []),
+			IMAGE,
+		],
+		license ? { env: { ...process.env, LICENSE_KEY: licenseKey } } : {},
+	);
 	const url = `http://127.0.0.1:${port}`;
 	for (let i = 0; i < 90; i++) {
 		try {
@@ -205,17 +251,18 @@ const PREAMBLE = (url, target, tools, mcp) =>
 		? `Our Directus project is connected to you as the MCP server \`directus\`, signed in as an admin. Work through its ` +
 			`tools. You can't ask me questions: make reasonable choices and finish the task, then summarize what you did.\n\nTask: `
 		: !url
-		? `Work in the current directory. ${RULES(tools)}`
-		: (target
-				? `Two throwaway Directus test instances are running: the source at ${url} and the target at ${target}. `
-				: `A throwaway Directus test instance is running at ${url}. `) +
-			`Use this admin static token for every request${target ? ' to either' : ''}: ${TOKEN} (it's a local test token, ` +
-			`fine to use inline). Work in the current directory. Do the Directus work directly against the instance with curl. ` +
-			RULES(['curl', 'jq', ...tools]);
+			? `Work in the current directory. ${RULES(tools)}`
+			: (target
+					? `Two throwaway Directus test instances are running: the source at ${url} and the target at ${target}. `
+					: `A throwaway Directus test instance is running at ${url}. `) +
+				`Use this admin static token for every request${target ? ' to either' : ''}: ${TOKEN} (it's a local test token, ` +
+				`fine to use inline). Work in the current directory. Do the Directus work directly against the instance with curl. ` +
+				RULES(['curl', 'jq', ...tools]);
 
 async function runJob(job, lane) {
 	const config = CASES[job.case] ?? {};
-	if (config.license && !licenseKey) throw new Error(`needs a license key: set DIRECTUS_EVALS_LICENSE_KEY or write ${LICENSE_FILE}`);
+	if (config.license && !licenseKey)
+		throw new Error(`needs a license key: set DIRECTUS_EVALS_LICENSE_KEY or write ${LICENSE_FILE}`);
 	const tools = config.tools ?? [];
 	const work = mkdtempSync(join(tmpdir(), `skills-eval-${job.case}-`));
 	if (config.fixture) cpSync(join(here, 'fixtures', config.fixture), work, { recursive: true });
@@ -237,9 +284,15 @@ async function runJob(job, lane) {
 	if (target) env.TARGET_URL = target;
 	if (config.postgres || config.sql) env.PG_CONTAINER = `directus-skills-evals-${lane}-pg`;
 	for (const seed of config.seeds ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env });
-	for (const seed of config.target ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env: { ...env, DIRECTUS_URL: target } });
+	for (const seed of config.target ?? [])
+		sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env: { ...env, DIRECTUS_URL: target } });
 
-	if (config.mcp) await fetch(`${url}/settings`, { method: 'PATCH', headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ mcp_enabled: true }) });
+	if (config.mcp)
+		await fetch(`${url}/settings`, {
+			method: 'PATCH',
+			headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+			body: JSON.stringify({ mcp_enabled: true }),
+		});
 	const prompt = PREAMBLE(url, target, tools, config.mcp) + readFileSync(join(here, 'cases', `${job.case}.md`), 'utf8');
 	const claudeArgs = [
 		'-p',
@@ -266,7 +319,9 @@ async function runJob(job, lane) {
 		'--strict-mcp-config',
 		'--mcp-config',
 		JSON.stringify({
-			mcpServers: config.mcp ? { directus: { type: 'http', url: `${url}/mcp`, headers: { Authorization: `Bearer ${TOKEN}` } } } : {},
+			mcpServers: config.mcp
+				? { directus: { type: 'http', url: `${url}/mcp`, headers: { Authorization: `Bearer ${TOKEN}` } } }
+				: {},
 		}),
 		'--no-session-persistence',
 		...(job.arm === 'with' ? ['--plugin-dir', repo] : []),
@@ -320,8 +375,10 @@ async function runJob(job, lane) {
 		seconds: Math.round((Date.now() - started) / 1000),
 		summary: final.result,
 		// Checks exit 1 on a FAIL; a crash shows up as stderr or no FAIL line to explain the exit.
-		error:
-			res.code !== 0
+		// A usage limit or API failure ends the agent before it acts; report that, not a skill failure.
+		error: final.api_error_status
+			? `agent did not run: ${final.result ?? final.subtype}`
+			: res.code !== 0
 				? res.err.slice(-2000)
 				: check.err.trim() || !lines.length || (check.code !== 0 && passed === lines.length)
 					? `checker crashed (exit ${check.code}, ${lines.length} checks): ${check.err.slice(-1000)}`
@@ -347,7 +404,14 @@ await Promise.all(
 				results.push(await runJob(job, lane));
 			} catch (error) {
 				console.log(`${job.case} [${job.model} ${job.arm} #${job.run}] ERROR ${error.message}`);
-				results.push({ ...job, passed: 0, total: 0, functional: { passed: 0, total: 0 }, recommended: { passed: 0, total: 0 }, error: error.message });
+				results.push({
+					...job,
+					passed: 0,
+					total: 0,
+					functional: { passed: 0, total: 0 },
+					recommended: { passed: 0, total: 0 },
+					error: error.message,
+				});
 			}
 		}
 		for (const name of [`directus-skills-evals-${lane}`, `directus-skills-evals-${lane}-target`]) {
@@ -401,7 +465,9 @@ const report = [
 	'directus skill.',
 	'',
 	...sections,
-	tied.length ? `**Without the plugin, every run passed:** ${tied.join(', ')}. Cut candidates unless the case guards security.` : '',
+	tied.length
+		? `**Without the plugin, every run passed:** ${tied.join(', ')}. Cut candidates unless the case guards security.`
+		: '',
 	'',
 ].join('\n');
 writeFileSync(join(outDir, 'summary.md'), report);

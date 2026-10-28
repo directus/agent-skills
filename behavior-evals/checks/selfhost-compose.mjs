@@ -1,30 +1,6 @@
-import { execFileSync } from 'node:child_process';
-import { WORK_DIR, check, done } from './lib.mjs';
+import { check, composeConfig, done } from './lib.mjs';
 
-// A `${VAR:?}` guard left blank for the operator to fill is fine: fill only what compose says is required.
-const filled = {};
-let config;
-for (let i = 0; i < 10 && !config; i++) {
-	try {
-		config = JSON.parse(
-			execFileSync('docker', ['compose', 'config', '--format', 'json'], {
-				cwd: WORK_DIR,
-				env: { ...process.env, ...filled },
-				encoding: 'utf8',
-				stdio: ['ignore', 'pipe', 'pipe'],
-			}),
-		);
-	} catch (error) {
-		const name = String(error.stderr).match(/required variable (\w+) is missing/)?.[1];
-		if (!name || filled[name]) {
-			check(false, 'docker compose config accepts the file', String(error.stderr ?? error.message).slice(0, 400));
-			done();
-		}
-		filled[name] = `filled-by-check-${name.toLowerCase()}-0123456789abcdef`;
-	}
-}
-if (Object.keys(filled).length) console.log(`INFO required variables left for the operator: ${Object.keys(filled).join(', ')}`);
-check(true, 'docker compose config accepts the file');
+const config = composeConfig();
 
 const services = Object.entries(config.services ?? {});
 const byImage = (re) => services.find(([, s]) => re.test(s.image ?? ''));

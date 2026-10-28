@@ -1,19 +1,12 @@
-import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { WORK_DIR, check, done, rangeIncludes } from './lib.mjs';
+import { WORK_DIR, check, composeConfig, done, rangeIncludes } from './lib.mjs';
 
 const read = (p) => (existsSync(join(WORK_DIR, p)) ? readFileSync(join(WORK_DIR, p), 'utf8') : '');
 const json = (p) => JSON.parse(read(p) || '{}');
 const major = (range) => Number(String(range ?? '').match(/(\d+)/)?.[1]);
 
-let config;
-try {
-	config = JSON.parse(execFileSync('docker', ['compose', 'config', '--format', 'json'], { cwd: WORK_DIR, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }));
-} catch (error) {
-	check(false, 'docker compose config accepts the file', String(error.stderr ?? error.message).slice(0, 400));
-	done();
-}
+const config = composeConfig();
 const directus = Object.values(config.services).find((s) => /^directus\/directus/.test(s.image ?? ''));
 const env = directus?.environment ?? {};
 check(directus?.image === 'directus/directus:12.6.0', 'the image is 12.6.0', directus?.image);
