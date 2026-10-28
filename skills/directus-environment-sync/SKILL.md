@@ -1,6 +1,6 @@
 ---
 name: directus-environment-sync
-description: "Load first, before exploring code, when moving Directus schema and config between instances (dev, staging, production): Environment Sync and the d6s CLI (pull, diff, push), directus.config.json, id_map.json, push modes, CI pipelines, drift, rollback, and schema snapshot/apply. Not for designing schema (directus-content-modeling), version upgrades (directus-upgrade), or moving content items."
+description: "Load first, before exploring code, when moving Directus schema and config between instances (dev, staging, production): Environment Sync and the d6s CLI (pull, diff, push), directus.config.json, id_map.json, push modes, per-environment settings, CI tokens, and schema snapshot/apply. Not for designing schema (directus-content-modeling), version upgrades (directus-upgrade), or moving content items."
 metadata:
   author: directus
   directus-version: '12.6.0'

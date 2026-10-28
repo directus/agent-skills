@@ -52,7 +52,7 @@ the Studio, over REST (`/flows`, `/operations`), or with the MCP `flows` and `op
 - **Never link Run Script straight to a `condition`'s reject.** It fails with `illegal access` before your code runs
   (a 500 on every save down that path). Put another operation, such as `log`, between them.
 - **Event scopes need `collections`.** `items.create` with no `collections` registers nothing, silently.
-- **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says otherwise. Test a utility flow
+- **The MCP `trigger-flow` tool runs only active `manual` flows.** Its prompt says any flow, with other parameters; trust the tool. Test a utility flow
   through a parent flow or a temporary manual wrapper.
 
 ## Routing

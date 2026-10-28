@@ -25,20 +25,20 @@ against **Directus 12.6.0**.
 
 ## Skills
 
-| Skill                                                           | Use it for                                                                                                                                                                                       |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`directus`](skills/directus)                                   | Working with a running instance: REST and GraphQL queries, filters, auth, files, realtime, content versions, and the Directus MCP server                                                  |
+| Skill | Use it for |
+| --- | --- |
+| [`directus`](skills/directus) | Working with a running instance: REST and GraphQL queries, filters, auth, files, realtime, content versions, and the Directus MCP server |
 | [`directus-flows`](skills/directus-flows) | Automating with Flows: triggers, the data chain, operations, reusable utility flows, loops, email, building and debugging flows over the API or MCP |
 | [`directus-insights`](skills/directus-insights) | Building Insights dashboards: panel types and options, variables, layout, and who can see them |
 | [`directus-content`](skills/directus-content) | Editing content as an editor would, over MCP or the API: pages, page-builder blocks, translations, drafts and publishing, images |
-| [`directus-access-control`](skills/directus-access-control)     | Designing who can do what: roles, policies, permissions, the public policy, stacking rules, core-tier licensing limits, the CMS starter layout, and testing access                               |
-| [`directus-content-modeling`](skills/directus-content-modeling) | Designing schemas: collections, fields, relationships, page builders (M2A), translations, indexes, and starting a project from a starter. Includes Directus's house conventions.                      |
-| [`directus-environment-sync`](skills/directus-environment-sync) | Moving schema and configuration between instances through git with the Directus CLI (`d6s`): setup, promote dev to prod, CI, rollback                                                            |
-| [`directus-sdk`](skills/directus-sdk)                           | Building frontends and apps with `@directus/sdk`: setup, auth, typing, Next.js / Nuxt / Astro / SvelteKit data fetching                                                                          |
-| [`directus-visual-editing`](skills/directus-visual-editing)     | Wiring a site to Live Preview, the Visual Editor, and content versions with `@directus/visual-editing`: Directus config, CSP, draft reads, editable page builder blocks, and safe preview tokens |
-| [`directus-extensions`](skills/directus-extensions)             | Building extensions: picking a type, scaffolding, app and API extension APIs, sandboxing, and publishing to the marketplace                                                                      |
+| [`directus-access-control`](skills/directus-access-control) | Designing who can do what: roles, policies, permissions, the public policy, stacking rules, core-tier licensing limits, the CMS starter layout, and testing access |
+| [`directus-content-modeling`](skills/directus-content-modeling) | Designing schemas: collections, fields, relationships, page builders (M2A), translations, indexes, and starting a project from a starter. Includes Directus's house conventions. |
+| [`directus-environment-sync`](skills/directus-environment-sync) | Moving schema and configuration between instances through git with the Directus CLI (`d6s`): promote dev to prod, keep per-environment settings, schema snapshots |
+| [`directus-sdk`](skills/directus-sdk) | The traps in `@directus/sdk`: client setup, auth modes on server and browser, counts, headers |
+| [`directus-visual-editing`](skills/directus-visual-editing) | Wiring a site to Live Preview, the Visual Editor, and content versions with `@directus/visual-editing`: Directus config, CSP, draft reads, editable page builder blocks, and safe preview tokens |
+| [`directus-extensions`](skills/directus-extensions) | Building extensions: picking a type, scaffolding, app and API extension APIs, sandboxing, and publishing to the marketplace |
 | [`directus-self-hosting`](skills/directus-self-hosting) | Deploying and running Directus: Docker Compose, configuration, file storage and email, scaling past one instance, backups, and what differs on Directus Cloud |
-| [`directus-upgrade`](skills/directus-upgrade)                   | Upgrading a project across versions (v9 to 12.x), with the breaking changes and how to find affected code                                                                                        |
+| [`directus-upgrade`](skills/directus-upgrade) | Upgrading a project across versions (v9 to 12.x), with the breaking changes and how to find affected code |
 
 ## Install
 
@@ -80,9 +80,9 @@ The skills work without MCP, but they're better with it. Two servers:
 - **Directus docs** is bundled with the Claude Code plugin and connects automatically on install.
 - **Your instance** can't be bundled (every URL and token is different). Add it yourself with the snippet below.
 
-| Server        | URL                             | Auth                      |
-| ------------- | ------------------------------- | ------------------------- |
-| Directus docs | `https://directus.com/docs/mcp` | none                      |
+| Server | URL | Auth |
+| --- | --- | --- |
+| Directus docs | `https://directus.com/docs/mcp` | none |
 | Your instance | `https://YOUR_DIRECTUS_URL/mcp` | static token or MCP OAuth |
 
 Enable your instance's server in **Settings → AI → Model Context Protocol** (Directus 11.12+). Use a token for a user
