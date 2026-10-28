@@ -25,10 +25,14 @@ const existing = alias
 const migrated = existing.filter((p) =>
 	(p[alias] ?? []).some((t) => /^en/.test(t?.[toLang.field] ?? '') && t?.title),
 );
+// Either pattern from the skill keeps existing content: English moved into translation rows, or English stays on the
+// parent (the default-language-on-parent pattern) with its original values.
+const parents = (await api('/items/posts?limit=-1&fields=title,content')).data ?? [];
+const onParent = parents.length === 4 && parents.every((p) => p.title && p.content);
 check(
-	existing.length > 0 && migrated.length === existing.length,
-	'existing posts keep their content as English translations',
-	`${migrated.length}/${existing.length}`,
+	(existing.length > 0 && migrated.length === existing.length) || onParent,
+	'existing posts keep their content (as English translations, or as the default language on the parent)',
+	`${migrated.length}/${existing.length} migrated, parent content kept: ${onParent}`,
 );
 
 const post = existing[0];

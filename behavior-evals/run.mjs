@@ -23,7 +23,7 @@ const { values: args } = parseArgs({
 		runs: { type: 'string', default: '1' },
 		model: { type: 'string', default: 'haiku' },
 		lanes: { type: 'string', default: '2' },
-		'max-turns': { type: 'string', default: '40' },
+		'max-turns': { type: 'string', default: '80' },
 		clean: { type: 'boolean', default: false },
 		image: { type: 'string', default: 'directus/directus:12.6.0' },
 	},

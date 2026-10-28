@@ -33,7 +33,9 @@ the existing schema says otherwise.
 ## Critical traps
 
 - **Relations are two steps.** Creating a relational field doesn't create the relation. Create the field (right `type` +
-  `special`), then the relation. For M2M/M2A/translations, create the junction first.
+  `special`), then the relation. For M2M/M2A/translations, create the junction first, and give **both** junction
+  relations `meta` (`one_field` on the parent side, `junction_field` pointing at the other FK). Without it the data
+  saves but the Studio's M2M and translations interfaces can't use the junction. Copy the payloads in the references.
 - **The primary key type is permanent.** **House rule:** UUID for every collection, except lookup tables keyed by a
   natural string (`languages.code`, `navigation.id` slugs).
 - **FK column type must match the target PK type.** M2O to a UUID-keyed collection is `type: "uuid"`; to `languages`
