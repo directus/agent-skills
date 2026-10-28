@@ -99,6 +99,20 @@ const CASES = {
 	'content-editing-mcp': { seeds: ['posts', 'editorial'], mcp: true },
 	'content-draft': { seeds: ['posts', 'editorial', 'versioned-pages'] },
 	'content-draft-mcp': { seeds: ['posts', 'editorial', 'versioned-pages'], mcp: true },
+	'access-tenant-roles': { license: true, seeds: ['tenants'], maxTurns: 100 },
+	'sync-promote': {
+		seeds: ['posts', 'promote-dev'],
+		target: ['posts', 'signups', 'promote-prod'],
+		tools: ['npm', 'npx', 'node'],
+		maxTurns: 100,
+	},
+	'sdk-ssr-sessions': {
+		license: true,
+		seeds: ['tenants', 'tenant-access'],
+		tools: ['npm', 'node', 'env'],
+		env: { ACCESS_TOKEN_TTL: '5s' },
+		maxTurns: 100,
+	},
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
