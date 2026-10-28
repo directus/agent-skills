@@ -53,6 +53,7 @@ const TOKEN = 'skills-evals-admin-token';
 // tools: shell commands allowed besides curl and jq. fixture: copied from fixtures/ into the work dir.
 // extensions: mount <work>/extensions into the instance with auto reload. env: extra instance env vars.
 // license: run licensed (see LICENSE_FILE); the job errors without a key.
+// mcp: the agent reaches Directus only through its MCP server (no curl), the way an editor's AI client does.
 // postgres: run on Postgres instead of SQLite (some queries behave differently). sql: a file in seeds/sql/ run on that
 // Postgres before Directus first boots (an existing database). maxTurns: overrides --max-turns.
 // instance: false for file-only cases.
@@ -95,6 +96,9 @@ const CASES = {
 	},
 	'assets-partners': { license: true, seeds: ['assets'], maxTurns: 80 },
 	'content-editing': { seeds: ['posts', 'editorial'] },
+	'content-editing-mcp': { seeds: ['posts', 'editorial'], mcp: true },
+	'content-draft': { seeds: ['posts', 'editorial', 'versioned-pages'] },
+	'content-draft-mcp': { seeds: ['posts', 'editorial', 'versioned-pages'], mcp: true },
 };
 
 const allCases = readdirSync(join(here, 'cases')).map((f) => f.replace(/\.md$/, ''));
@@ -196,8 +200,11 @@ const RULES = (tools) =>
 	`time.${tools.includes('env') ? ' To set environment variables for a command, prefix it with env (env NAME=value node script.mjs).' : ''} ` +
 	`You can't ask me questions: make reasonable choices and finish the task, then summarize what you did.\n\nTask: `;
 
-const PREAMBLE = (url, target, tools) =>
-	!url
+const PREAMBLE = (url, target, tools, mcp) =>
+	mcp
+		? `Our Directus project is connected to you as the MCP server \`directus\`, signed in as an admin. Work through its ` +
+			`tools. You can't ask me questions: make reasonable choices and finish the task, then summarize what you did.\n\nTask: `
+		: !url
 		? `Work in the current directory. ${RULES(tools)}`
 		: (target
 				? `Two throwaway Directus test instances are running: the source at ${url} and the target at ${target}. `
@@ -232,7 +239,8 @@ async function runJob(job, lane) {
 	for (const seed of config.seeds ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env });
 	for (const seed of config.target ?? []) sh('node', [join(here, 'seeds', `${seed}.mjs`)], { env: { ...env, DIRECTUS_URL: target } });
 
-	const prompt = PREAMBLE(url, target, tools) + readFileSync(join(here, 'cases', `${job.case}.md`), 'utf8');
+	if (config.mcp) await fetch(`${url}/settings`, { method: 'PATCH', headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ mcp_enabled: true }) });
+	const prompt = PREAMBLE(url, target, tools, config.mcp) + readFileSync(join(here, 'cases', `${job.case}.md`), 'utf8');
 	const claudeArgs = [
 		'-p',
 		prompt,
@@ -246,7 +254,8 @@ async function runJob(job, lane) {
 		'--permission-mode',
 		'acceptEdits',
 		'--allowedTools',
-		...(url ? ['Bash(curl:*)', 'Bash(jq:*)'] : []),
+		...(url && !config.mcp ? ['Bash(curl:*)', 'Bash(jq:*)'] : []),
+		...(config.mcp ? ['mcp__directus'] : []),
 		...tools.map((t) => `Bash(${t}:*)`),
 		'Read',
 		'Write',
@@ -256,7 +265,9 @@ async function runJob(job, lane) {
 		'Skill',
 		'--strict-mcp-config',
 		'--mcp-config',
-		'{"mcpServers":{}}',
+		JSON.stringify({
+			mcpServers: config.mcp ? { directus: { type: 'http', url: `${url}/mcp`, headers: { Authorization: `Bearer ${TOKEN}` } } } : {},
+		}),
 		'--no-session-persistence',
 		...(job.arm === 'with' ? ['--plugin-dir', repo] : []),
 	];
@@ -286,6 +297,8 @@ async function runJob(job, lane) {
 		.filter((c) => c.type === 'tool_use' && c.name === 'Skill')
 		.map((c) => c.input?.skill);
 
+	// Checks that judge what the agent told the user read its final message here.
+	writeFileSync(join(work, 'AGENT_SUMMARY.md'), String(final.result ?? ''));
 	const check = await runProcess('node', [join(here, 'checks', `${job.case}.mjs`)], { env });
 	const lines = check.out.split('\n').filter((l) => /^(PASS|FAIL) /.test(l));
 	const passed = lines.filter((l) => l.startsWith('PASS')).length;

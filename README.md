@@ -141,7 +141,8 @@ by default), seeds it, gives a headless `claude -p` the task with and without th
 (naming, `on_delete`, keys, and that nested writes, flows, and permissions really work). Code cases also check the files
 the agent wrote: they run the SDK script, call the endpoint extension it built (mounted into the instance), and parse
 its compose file with `docker compose config`. The sync cases add a second instance as the target, and `json-filters`
-runs on Postgres (JSON comparisons and sorts differ from SQLite). `existing-database` creates an app's tables in
+runs on Postgres (JSON comparisons and sorts differ from SQLite). Cases with `mcp: true` connect the agent to the
+instance's MCP server and give it no shell, the way an editor's AI client works. `existing-database` creates an app's tables in
 Postgres before Directus first boots. Checks that need their own users reuse the agent's when the core tier's 3 seats
 are taken.
 

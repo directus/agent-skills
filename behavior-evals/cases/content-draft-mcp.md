@@ -1,0 +1,1 @@
+I'm an editor. On the About page (`/about`), change the hero headline to "Built for teams". Don't put it live yet: my manager reviews changes before they're published, so prepare it for review and tell me how they can see it.

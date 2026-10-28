@@ -30,17 +30,11 @@ _Verified against Directus v12.6.0 (`api/src/ai/tools`, `api/src/services`) and 
 - **Writes go live.** Item writes over MCP and REST change the published item; neither can target a content version,
   and MCP has no versions tool. To stage a change for review, use the Studio, or REST: `POST /versions`
   (`{ "key": "draft", "name": "Draft", "collection": "posts", "item": "<id>" }`), then `POST /versions/<id>/save` with
-  only the changed fields, and later `POST /versions/<id>/promote`. Details: `directus` (`references/content-versioning.md`).
-- **An array replaces the whole relation.** `"translations": [ ... ]` or an M2M array sets the full list. A row sent
-  without its `id` is created new, and rows left out are unlinked, not deleted: the old German row stays behind with a
-  null parent. Change one row with `{ "translations": { "update": [{ "id": 12, "title": "Neu" }] } }`, add one with
-  `create`, remove one with `delete`. Read the existing row ids first.
-- **Bare ids in an M2M array are junction-row ids,** not the related items. The MCP tool's own example
-  (`"categories": [1, 2]`) is misleading. Link existing tag 5 with
-  `{ "tags": { "create": [{ "<junction fk to tags>": 5 }] } }`; read the junction's field names from the schema.
-- **Edit a block, not the page.** To change a hero headline, update the block item in its own collection
-  (`block_hero`), found through `blocks.collection` and `blocks.item` on the page. Re-sending the page's `blocks`
-  array recreates blocks and loses their ids. Read with `fields: ["blocks.collection", "blocks.item:block_hero.*"]`.
+  only the changed fields, and later `POST /versions/<id>/promote`. A block edit goes in the page's delta with each
+  junction row's `collection`, or reading that version breaks. Details: `directus` (`references/content-versioning.md`).
+- **Change relations with `create` / `update` / `delete` and row ids,** not by re-sending whole arrays (that recreates
+  rows and orphans the old ones). Edit a page-builder block in its own collection, not through the page. Payloads:
+  `directus` (`references/rest-api.md`, relational writes).
 - **Publishing is a field value.** Set the status field to the project's published choice (read it; it may be
   `published`, `active`, or something else). A Flow or validation can reject the save with a 400: show the user its
   message instead of retrying around it.
