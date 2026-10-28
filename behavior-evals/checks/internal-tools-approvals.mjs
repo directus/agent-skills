@@ -31,9 +31,9 @@ const small = await order(300);
 await wait();
 
 const r1 = await asOps(`/items/orders/${big}`, { method: 'PATCH', body: { status: 'fulfilled' } });
-check(r1.status >= 400 && r1.status < 500 && (await statusOf(big)) === 'new', 'Ops cannot fulfill an unapproved order over $500', `status ${r1.status}`);
+check(r1.status >= 400 && (await statusOf(big)) === 'new', 'Ops cannot fulfill an unapproved order over $500', `status ${r1.status}`);
 const r2 = await asOps(`/items/orders/${big}`, { method: 'PATCH', body: { status: 'approved' } });
-check(r2.status >= 400 && r2.status < 500 && (await statusOf(big)) === 'new', 'Ops cannot approve', `status ${r2.status}`);
+check(r2.status >= 400 && (await statusOf(big)) === 'new', 'Ops cannot approve', `status ${r2.status}`);
 const r3 = await asOps(`/items/orders/${small}`, { method: 'PATCH', body: { status: 'fulfilled' } });
 check(r3.status === 200, 'Ops can fulfill an order of $500 or less', `status ${r3.status} ${JSON.stringify(r3.errors ?? '')}`);
 
@@ -44,9 +44,17 @@ const batch = await asOps('/items/orders', { method: 'PATCH', body: { keys: [big
 check((await statusOf(big2)) !== 'fulfilled', 'a batch update cannot slip a big unapproved order through', `status ${batch.status}`);
 
 const created = await asOps('/items/orders', { method: 'POST', body: { customer: 'Sneaky', total: 700, status: 'fulfilled' } });
-check(created.status >= 400 && created.status < 500, 'Ops cannot create an order over $500 as fulfilled', `status ${created.status}`);
+const sneaky = async () => (await api("/items/orders?filter[customer][_eq]=Sneaky&aggregate[count]=*")).data?.[0]?.count;
+check(created.status >= 400 && Number(await sneaky()) === 0, 'Ops cannot create an order over $500 as fulfilled', `status ${created.status}`);
 const createdApproved = await asOps('/items/orders', { method: 'POST', body: { customer: 'Sneaky', total: 700, status: 'approved' } });
-check(createdApproved.status >= 400 && createdApproved.status < 500, 'Ops cannot create an order as approved', `status ${createdApproved.status}`);
+check(createdApproved.status >= 400 && Number(await sneaky()) === 0, 'Ops cannot create an order as approved', `status ${createdApproved.status}`);
+// A filter Flow that throws in Run Script refuses with a 500 and hides its message; `throw-error` gives a 400.
+check(
+	[r1, r2, created, createdApproved].every((r) => r.status >= 400 && r.status < 500),
+	'refusals are 4xx with a message, not 500s',
+	[r1, r2, created, createdApproved].map((r) => r.status).join(', '),
+	{ recommended: true },
+);
 
 // Approving by editing the status, or through a manual "Approve" flow on orders, are both fine.
 let approve = await asManager(`/items/orders/${big}`, { method: 'PATCH', body: { status: 'approved' } });

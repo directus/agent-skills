@@ -237,11 +237,33 @@ async function startDirectus(
 	const url = `http://127.0.0.1:${port}`;
 	for (let i = 0; i < 90; i++) {
 		try {
-			if ((await fetch(`${url}/server/ping`)).ok) return url;
-		} catch {}
+			if ((await fetch(`${url}/server/ping`)).ok) {
+				if (license) await requireLicense(url, lane);
+				return url;
+			}
+		} catch (error) {
+			if (error.license) throw error;
+		}
 		await new Promise((r) => setTimeout(r, 1000));
 	}
 	throw new Error(`Directus on lane ${lane} did not start`);
+}
+
+// An activation can fail and leave the instance on the core tier, which refuses the item rules licensed cases need.
+async function requireLicense(url, lane) {
+	let data;
+	for (let i = 0; i < 15; i++) {
+		data = (await fetch(`${url}/license`, { headers: { Authorization: `Bearer ${TOKEN}` } }).then((r) => r.json()))
+			.data;
+		if (data?.entitlements?.custom_permission_rules_enabled?.default === true) return;
+		await new Promise((r) => setTimeout(r, 2000));
+	}
+	throw Object.assign(
+		new Error(
+			`license not active on lane ${lane}: ${data?.name} (${data?.status}, ${data?.invalid_reason ?? 'no reason'})`,
+		),
+		{ license: true },
+	);
 }
 
 function runProcess(cmd, cmdArgs, opts) {
