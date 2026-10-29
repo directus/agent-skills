@@ -190,6 +190,11 @@ Versions and `CHANGELOG.md` come from [Changesets](https://github.com/changesets
 and tags `vX.Y.Z` with a GitHub release. `npx skills` and the Claude Code plugin install from the repo, so there's no
 npm publish.
 
+The release ([`scripts/release.mjs`](scripts/release.mjs)) also attaches a `.tar.gz` per skill and an
+[Agent Skills discovery](https://github.com/cloudflare/agent-skills-discovery-rfc) `index.json`. directus.com serves
+the latest release's files at `/.well-known/agent-skills/`. `node scripts/release.mjs --dry-run` builds them into
+`dist/` without publishing.
+
 ## License
 
 [MIT](LICENSE)

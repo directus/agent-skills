@@ -22,9 +22,10 @@ jobs:
         uses: changesets/action@v1
         with:
           version: npm run version
-          publish: npx changeset git-tag
+          publish: npm run release
           commit: Version skills
           title: Version skills
-          createGithubReleases: true
+          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
